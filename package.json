@@ -29,7 +29,7 @@
     "bun"
   ],
   "bin": {
-    "reddit-scrutinizer": "./src/index.ts"
+    "reddit-scrutinizer": "src/index.ts"
   },
   "files": [
     "src/**/*"
