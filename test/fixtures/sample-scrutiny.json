@@ -1,0 +1,77 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-01-01T00:00:00.000Z",
+  "tool": {
+    "name": "reddit-scrutinizer",
+    "version": "0.3.0"
+  },
+  "input": {
+    "path": "/tmp/test-project",
+    "subreddit": "programming",
+    "model": "claude-sonnet-4-20250514",
+    "comments": 2,
+    "max_depth": 3,
+    "max_replies": 1,
+    "style": "balanced",
+    "seed": 42
+  },
+  "project": {
+    "name": "test-project",
+    "tagline": "A test project",
+    "languages": [{ "name": "TypeScript", "pct": 100 }],
+    "stack": ["bun"],
+    "facts": {
+      "has_tests": true,
+      "has_ci": false,
+      "license": "MIT",
+      "files_scanned": 3,
+      "readme_excerpt": "A test project for testing."
+    }
+  },
+  "simulation": {
+    "subreddit": { "name": "programming", "display": "r/programming" },
+    "post": {
+      "id": "post_1",
+      "title": "I built a test project",
+      "body_md": "Here is my project.",
+      "body_html": "<p>Here is my project.</p>",
+      "author": "testuser",
+      "author_flair": null,
+      "post_flair": "Show /r/programming",
+      "score": 42,
+      "upvote_ratio": 0.85,
+      "created_utc": 1704067200,
+      "awards": []
+    },
+    "comments": [
+      {
+        "id": "c1",
+        "parent_id": "post_1",
+        "author": "commenter1",
+        "author_flair": null,
+        "is_op": false,
+        "body_md": "Nice project!",
+        "body_html": "<p>Nice project!</p>",
+        "score": 10,
+        "controversiality": 0,
+        "created_utc": 1704067260,
+        "depth": 0,
+        "is_deleted": false
+      },
+      {
+        "id": "c2",
+        "parent_id": "c1",
+        "author": "testuser",
+        "author_flair": null,
+        "is_op": true,
+        "body_md": "Thanks!",
+        "body_html": "<p>Thanks!</p>",
+        "score": 5,
+        "controversiality": 0,
+        "created_utc": 1704067320,
+        "depth": 1,
+        "is_deleted": false
+      }
+    ]
+  }
+}

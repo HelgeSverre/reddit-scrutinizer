@@ -1,4 +1,10 @@
 import { Command, Option } from "commander";
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const pkg = JSON.parse(readFileSync(join(__dirname, "..", "package.json"), "utf-8"));
 
 const toInt = (v: string) => parseInt(v, 10);
 const toFloat = (v: string) => parseFloat(v);
@@ -8,7 +14,7 @@ const program = new Command();
 program
   .name("reddit-scrutinizer")
   .description("Simulate how Reddit would roast your project")
-  .version("0.2.1")
+  .version(pkg.version)
   .enablePositionalOptions()
   .passThroughOptions();
 
@@ -34,7 +40,7 @@ program
 program
   .command("serve <file>")
   .description("Serve the UI for an existing scrutiny JSON file")
-  .option("--port <n>", "server port", parseInt, 3000)
+  .option("--port <n>", "server port", toInt, 3000)
   .option("--open", "open UI in browser", false)
   .action(async (file: string, opts: { port: number; open: boolean }) => {
     const { startServer } = await import("./ui/server");

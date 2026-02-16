@@ -6,4 +6,5 @@ dist/
 !package.json
 !tsconfig.json
 !src/**/*.json
+!test/**/*.json
 .idea
