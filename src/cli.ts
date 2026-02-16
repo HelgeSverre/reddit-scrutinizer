@@ -29,7 +29,12 @@ program
       .choices(["balanced", "snarky", "supportive", "hostile"])
       .default("balanced"),
   )
-  .option("--model <name>", "Anthropic model to use", "claude-sonnet-4-20250514")
+  .addOption(
+    new Option("--theme <name>", "UI theme")
+      .choices(["reddit", "hackernews", "producthunt"])
+      .default("reddit"),
+  )
+  .option("--model <name>", "Anthropic model to use", "claude-sonnet-4-5-20250929")
   .option("--out <file>", "output JSON file path", "./reddit-scrutiny.json")
   .option("--open", "open UI in browser after generation", false)
   .option("--port <n>", "UI server port", toInt, 3000)
@@ -42,9 +47,14 @@ program
   .description("Serve the UI for an existing scrutiny JSON file")
   .option("--port <n>", "server port", toInt, 3000)
   .option("--open", "open UI in browser", false)
-  .action(async (file: string, opts: { port: number; open: boolean }) => {
+  .addOption(
+    new Option("--theme <name>", "UI theme")
+      .choices(["reddit", "hackernews", "producthunt"])
+      .default("reddit"),
+  )
+  .action(async (file: string, opts: { port: number; open: boolean; theme: string }) => {
     const { startServer } = await import("./ui/server");
-    const actualPort = await startServer(file, opts.port, opts.open);
+    const actualPort = await startServer(file, opts.port, opts.open, opts.theme);
     console.log(`UI available at http://localhost:${actualPort}`);
   });
 

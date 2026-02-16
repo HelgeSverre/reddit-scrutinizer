@@ -109,7 +109,7 @@ export function assembleOutput(opts: AssembleOptions): ScrutinyOutput {
     generated_at: new Date().toISOString(),
     tool: {
       name: "reddit-scrutinizer",
-      version: "0.2.0",
+      version: "0.4.0",
     },
     input: {
       path: opts.input.path,

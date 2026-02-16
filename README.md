@@ -54,26 +54,34 @@ reddit-scrutinizer ./my-project --subreddit programming --comments 60 --style sn
 # Reproducible run with a fixed seed
 reddit-scrutinizer ./my-project --subreddit typescript --seed 42
 
+# Use the Hacker News or Product Hunt theme
+reddit-scrutinizer ./my-project --subreddit programming --theme hackernews --open
+reddit-scrutinizer ./my-project --subreddit programming --theme producthunt --open
+
 # View a previous result
 reddit-scrutinizer serve ./reddit-scrutiny.json --open
+
+# View with a different theme
+reddit-scrutinizer serve ./reddit-scrutiny.json --theme hackernews --open
 ```
 
 ## Options
 
-| Flag                 | Default                    | Description                                   |
-| -------------------- | -------------------------- | --------------------------------------------- |
-| `--subreddit <name>` | `programming`              | Target subreddit voice                        |
-| `--comments <n>`     | `40`                       | Number of comments to generate                |
-| `--max-depth <n>`    | `4`                        | Max reply nesting depth                       |
-| `--max-replies <n>`  | `3`                        | Number of OP replies                          |
-| `--style <mode>`     | `balanced`                 | `balanced`, `snarky`, `supportive`, `hostile` |
-| `--model <name>`     | `claude-sonnet-4-20250514` | Anthropic model                               |
-| `--out <file>`       | `./reddit-scrutiny.json`   | Output file path                              |
-| `--open`             | `false`                    | Auto-open browser                             |
-| `--port <n>`         | `3000`                     | UI server port                                |
-| `--no-ui`            | —                          | Skip web UI                                   |
-| `--temperature <n>`  | `0.8`                      | Generation temperature                        |
-| `--seed <n>`         | —                          | Random seed for reproducibility               |
+| Flag                 | Default                    | Description                                        |
+| -------------------- | -------------------------- | -------------------------------------------------- |
+| `--subreddit <name>` | `programming`              | Target subreddit voice                             |
+| `--comments <n>`     | `40`                       | Number of comments to generate                     |
+| `--max-depth <n>`    | `4`                        | Max reply nesting depth                            |
+| `--max-replies <n>`  | `3`                        | Number of OP replies                               |
+| `--style <mode>`     | `balanced`                 | `balanced`, `snarky`, `supportive`, `hostile`      |
+| `--theme <name>`     | `reddit`                   | UI theme: `reddit`, `hackernews`, `producthunt`    |
+| `--model <name>`     | `claude-sonnet-4-20250514` | Anthropic model                                    |
+| `--out <file>`       | `./reddit-scrutiny.json`   | Output file path                                   |
+| `--open`             | `false`                    | Auto-open browser                                  |
+| `--port <n>`         | `3000`                     | UI server port                                     |
+| `--no-ui`            | —                          | Skip web UI                                        |
+| `--temperature <n>`  | `0.8`                      | Generation temperature                             |
+| `--seed <n>`         | —                          | Random seed for reproducibility                    |
 
 ## Available subreddits
 
@@ -87,4 +95,7 @@ View results from a previous run without re-generating:
 
 ```bash
 reddit-scrutinizer serve ./reddit-scrutiny.json --port 3000 --open
+reddit-scrutinizer serve ./reddit-scrutiny.json --theme producthunt --open
 ```
+
+The `serve` command accepts `--port`, `--open`, and `--theme`.

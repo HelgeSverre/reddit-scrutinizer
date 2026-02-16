@@ -1,6 +1,6 @@
 {
   "name": "reddit-scrutinizer",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Simulate Reddit reactions to your codebase before you post. Uses Claude to generate realistic community feedback in the voice of any subreddit.",
   "type": "module",
   "license": "MIT",
@@ -45,15 +45,16 @@
     "bun": ">=1.0.0"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.74.0",
     "bun": "^1.0.0",
-    "@anthropic-ai/sdk": "^0.39.0",
     "chalk": "^5.6.2",
     "commander": "^13.1.0",
     "get-port": "^7.1.0",
     "ignore": "^7.0.5",
     "marked": "^15.0.12",
     "open": "^11.0.0",
-    "zod": "^3.25.76"
+    "zod": "^3.25.76",
+    "zod-to-json-schema": "^3.25.1"
   },
   "devDependencies": {
     "@types/bun": "latest",

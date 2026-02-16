@@ -4,6 +4,7 @@ import type { ProjectDossier } from "../scan/dossier";
 import { generateJSON, type GenerateOptions } from "./client";
 import type { GeneratedPost } from "./generate-post";
 import type { AgendaItem } from "./generate-agenda";
+import type { EvidencePack } from "./discover";
 
 const GeneratedCommentSchema = z.object({
   id: z.string(),
@@ -51,6 +52,7 @@ export async function generateComments(
   vibePack: Record<string, unknown>,
   post: GeneratedPost,
   agenda: AgendaItem[],
+  evidence: EvidencePack | null,
   options: CommentOptions,
 ): Promise<GeneratedComment[]> {
   const subreddit = vibePack.subreddit as string;
@@ -70,6 +72,8 @@ Requirements:
 - Follow the agenda for theme distribution
 - Comment style: ${STYLE_DESCRIPTIONS[options.style] ?? options.style}
 - Use sequential IDs like "c1", "c2", "c3", etc.
+- When evidence is available, reference specific code patterns, file names, and technical details in comments
+- Use evidence quotes naturally — as a redditor who actually looked at the repo
 
 Subreddit vibe:
 ${JSON.stringify(vibePack, null, 2)}
@@ -94,7 +98,16 @@ Project details:
 - Languages: ${dossier.languages.map((l) => `${l.name} (${l.pct}%)`).join(", ")}
 - Stack: ${dossier.stack.join(", ")}
 - Has tests: ${dossier.has_tests}
-- License: ${dossier.license ?? "none detected"}`;
+- License: ${dossier.license ?? "none detected"}${
+    evidence
+      ? `
+
+---
+
+Code evidence pack (use these to make comments specific and technically grounded):
+${JSON.stringify(evidence, null, 2)}`
+      : ""
+  }`;
 
   return generateJSON<GeneratedComment[]>(client, system, userPrompt, options, z.array(GeneratedCommentSchema));
 }

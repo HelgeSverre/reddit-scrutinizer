@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.4.0] - 2026-02-16
+
+### Added
+
+- **UI themes** — `--theme` flag to switch between `reddit` (default), `hackernews`, and `producthunt` visual styles
+- **Hacker News template** — orange header, Verdana font, beige background, classic HN threaded layout at 85% width
+- **Product Hunt template** — upvote box, maker badges, tech stack sidebar, clean modern design
+- **GitHub Actions CI** — runs `bun test` and `bun run typecheck` on push and PR
+- Template files extracted from inline HTML to `src/ui/templates/` directory
+- `--theme` flag on both main command and `serve` subcommand
+- 19 new tests for theme support (template files, server themes, CLI validation)
+
+### Changed
+
+- UI server reads templates from `src/ui/templates/{theme}.html` instead of inline HTML
+- Total test count: 160 (up from 141)
+
 ## [0.3.0] - 2026-02-16
 
 ### Added

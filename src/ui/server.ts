@@ -3,11 +3,11 @@ import { resolve, join } from "node:path";
 import getPort from "get-port";
 import open from "open";
 
-export async function startServer(jsonPath: string, preferredPort: number, autoOpen: boolean): Promise<number> {
+export async function startServer(jsonPath: string, preferredPort: number, autoOpen: boolean, theme: string = "reddit"): Promise<number> {
   const dataPath = resolve(jsonPath);
   const jsonData = await readFile(dataPath, "utf-8");
 
-  const templatePath = join(import.meta.dir, "template.html");
+  const templatePath = join(import.meta.dir, "templates", `${theme}.html`);
   const template = await readFile(templatePath, "utf-8");
 
   const port = await getPort({ port: preferredPort });

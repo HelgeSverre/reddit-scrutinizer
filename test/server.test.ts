@@ -35,14 +35,14 @@ Bun.serve = function (...args: any[]) {
 describe("startServer", () => {
   test("starts server on the requested port", async () => {
     const port = 19876;
-    const actualPort = await startServer(FIXTURE_JSON, port, false);
+    const actualPort = await startServer(FIXTURE_JSON, port, false, "reddit");
 
     expect(actualPort).toBe(port);
   });
 
   test("serves HTML on /", async () => {
     const port = 19877;
-    await startServer(FIXTURE_JSON, port, false);
+    await startServer(FIXTURE_JSON, port, false, "reddit");
 
     const res = await fetch(`http://localhost:${port}/`);
     expect(res.status).toBe(200);
@@ -54,7 +54,7 @@ describe("startServer", () => {
 
   test("serves JSON on /api/data", async () => {
     const port = 19878;
-    await startServer(FIXTURE_JSON, port, false);
+    await startServer(FIXTURE_JSON, port, false, "reddit");
 
     const res = await fetch(`http://localhost:${port}/api/data`);
     expect(res.status).toBe(200);
@@ -69,7 +69,7 @@ describe("startServer", () => {
 
   test("returns 404 for unknown routes", async () => {
     const port = 19879;
-    await startServer(FIXTURE_JSON, port, false);
+    await startServer(FIXTURE_JSON, port, false, "reddit");
 
     const res = await fetch(`http://localhost:${port}/nonexistent`);
     expect(res.status).toBe(404);
@@ -77,9 +77,45 @@ describe("startServer", () => {
 
   test("serves /api/data with CORS header", async () => {
     const port = 19880;
-    await startServer(FIXTURE_JSON, port, false);
+    await startServer(FIXTURE_JSON, port, false, "reddit");
 
     const res = await fetch(`http://localhost:${port}/api/data`);
     expect(res.headers.get("access-control-allow-origin")).toBe("*");
+  });
+
+  test("serves hackernews theme", async () => {
+    const port = 19881;
+    await startServer(FIXTURE_JSON, port, false, "hackernews");
+
+    const res = await fetch(`http://localhost:${port}/`);
+    expect(res.status).toBe(200);
+    const body = await res.text();
+    expect(body).toContain("Hacker News");
+    expect(body).toContain("</html>");
+  });
+
+  test("serves producthunt theme", async () => {
+    const port = 19882;
+    await startServer(FIXTURE_JSON, port, false, "producthunt");
+
+    const res = await fetch(`http://localhost:${port}/`);
+    expect(res.status).toBe(200);
+    const body = await res.text();
+    expect(body).toContain("Product Hunt");
+    expect(body).toContain("</html>");
+  });
+
+  test("reddit theme contains reddit-specific content", async () => {
+    const port = 19883;
+    await startServer(FIXTURE_JSON, port, false, "reddit");
+
+    const res = await fetch(`http://localhost:${port}/`);
+    const body = await res.text();
+    expect(body).toContain("reddit-scrutinizer");
+    expect(body).toContain("/api/data");
+  });
+
+  test("invalid theme throws an error", async () => {
+    expect(startServer(FIXTURE_JSON, 19884, false, "nonexistent")).rejects.toThrow();
   });
 });

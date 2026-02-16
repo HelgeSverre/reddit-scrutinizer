@@ -1,5 +1,5 @@
 import { describe, test, expect } from "bun:test";
-import { Command } from "commander";
+import { Command, Option } from "commander";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -28,6 +28,11 @@ function buildProgram() {
     .option("--open", "open browser", false)
     .option("--temperature <n>", "temperature", toFloat, 0.8)
     .option("--seed <n>", "seed", toInt)
+    .addOption(
+      new Option("--theme <name>", "UI theme")
+        .choices(["reddit", "hackernews", "producthunt"])
+        .default("reddit"),
+    )
     .action((path: string) => {
       mainCapture = { path };
     });
@@ -37,6 +42,11 @@ function buildProgram() {
     .command("serve <file>")
     .option("--port <n>", "server port", toInt, 3000)
     .option("--open", "open browser", false)
+    .addOption(
+      new Option("--theme <name>", "UI theme")
+        .choices(["reddit", "hackernews", "producthunt"])
+        .default("reddit"),
+    )
     .action((file: string, opts: any) => {
       serveCapture = { file, opts };
     });
@@ -106,5 +116,43 @@ describe("CLI option parsing", () => {
   test("--version outputs correct version from package.json", () => {
     const { program } = buildProgram();
     expect(program.version()).toBe(pkg.version);
+  });
+
+  test("main command parses --theme option", () => {
+    const { program } = buildProgram();
+    program.parse(["node", "test", "--theme", "hackernews", "./my-project"]);
+    expect(program.opts().theme).toBe("hackernews");
+  });
+
+  test("main command defaults --theme to reddit", () => {
+    const { program } = buildProgram();
+    program.parse(["node", "test", "./my-project"]);
+    expect(program.opts().theme).toBe("reddit");
+  });
+
+  test("serve subcommand parses --theme option", () => {
+    const { program, getServeCapture } = buildProgram();
+    program.parse(["node", "test", "serve", "data.json", "--theme", "producthunt"]);
+    expect(getServeCapture()!.opts.theme).toBe("producthunt");
+  });
+
+  test("serve subcommand defaults --theme to reddit", () => {
+    const { program, getServeCapture } = buildProgram();
+    program.parse(["node", "test", "serve", "data.json"]);
+    expect(getServeCapture()!.opts.theme).toBe("reddit");
+  });
+
+  test("--theme rejects invalid choices", () => {
+    const { program } = buildProgram();
+    expect(() => {
+      program.parse(["node", "test", "--theme", "foobar", "./my-project"]);
+    }).toThrow();
+  });
+
+  test("serve --theme rejects invalid choices", () => {
+    const { program } = buildProgram();
+    expect(() => {
+      program.parse(["node", "test", "serve", "data.json", "--theme", "foobar"]);
+    }).toThrow();
   });
 });

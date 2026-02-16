@@ -4,8 +4,11 @@ import { program } from "./cli";
 import chalk from "chalk";
 import { resolve } from "node:path";
 import { buildDossier } from "./scan/dossier";
+import { walkDirectory } from "./scan/walk";
+import { buildFileIndex, scanRiskPatterns, executeDiscoveryPlan } from "./scan/snippets";
 import { loadVibePack } from "./ai/load-vibe";
 import { createClient } from "./ai/client";
+import { planDiscovery, synthesizeEvidence } from "./ai/discover";
 import { generatePost } from "./ai/generate-post";
 import { generateAgenda } from "./ai/generate-agenda";
 import { generateComments, type CommentOptions } from "./ai/generate-comments";
@@ -22,6 +25,7 @@ interface RunOptions {
   open: boolean;
   port: number;
   ui: boolean;
+  theme: string;
   temperature: number;
   seed?: number;
 }
@@ -49,15 +53,33 @@ async function run(path: string, options: RunOptions) {
   const client = createClient(apiKey);
   const genOptions = { model: options.model, temperature: options.temperature };
 
-  // 3. Generate post
+  // 3. AI-driven code discovery
+  console.log(chalk.cyan("Discovering code patterns..."));
+  const files = await walkDirectory(rootPath);
+  const fileIndex = buildFileIndex(files);
+  const patternSummary = await scanRiskPatterns(rootPath, files);
+  if (patternSummary.signals.length > 0) {
+    console.log(chalk.dim(`Found ${patternSummary.signals.length} risk signals across ${patternSummary.total_files_with_signals} files`));
+  }
+
+  console.log(chalk.cyan("Planning targeted code reads..."));
+  const discoveryPlan = await planDiscovery(client, dossier, fileIndex, patternSummary, genOptions);
+  console.log(chalk.dim(`Reading ${discoveryPlan.reads.length} code regions...`));
+  const snippets = await executeDiscoveryPlan(rootPath, discoveryPlan);
+
+  console.log(chalk.cyan("Synthesizing evidence..."));
+  const evidence = await synthesizeEvidence(client, dossier, snippets, genOptions);
+  console.log(chalk.dim(`Found ${evidence.strengths.length} strengths, ${evidence.risks.length} risks, ${evidence.comment_ammo.length} comment angles`));
+
+  // 4. Generate post
   console.log(chalk.cyan(`Generating r/${options.subreddit} post...`));
   const post = await generatePost(client, dossier, vibePack, genOptions);
 
-  // 4. Generate agenda
+  // 5. Generate agenda
   console.log(chalk.cyan("Analyzing critique themes..."));
-  const agenda = await generateAgenda(client, dossier, vibePack, post, genOptions);
+  const agenda = await generateAgenda(client, dossier, vibePack, post, evidence, genOptions);
 
-  // 5. Generate comments
+  // 6. Generate comments
   console.log(chalk.cyan(`Generating ${options.comments} comments...`));
   const commentOpts: CommentOptions = {
     ...genOptions,
@@ -66,9 +88,9 @@ async function run(path: string, options: RunOptions) {
     maxReplies: options.maxReplies,
     style: options.style,
   };
-  const comments = await generateComments(client, dossier, vibePack, post, agenda, commentOpts);
+  const comments = await generateComments(client, dossier, vibePack, post, agenda, evidence, commentOpts);
 
-  // 6. Assemble and write output
+  // 7. Assemble and write output
   console.log(chalk.cyan("Assembling output..."));
   const output = assembleOutput({
     input: {
@@ -110,10 +132,10 @@ async function run(path: string, options: RunOptions) {
   await writeOutput(output, outPath);
   console.log(chalk.green(`Written to ${outPath}`));
 
-  // 7. Start UI server (unless --no-ui)
+  // 8. Start UI server (unless --no-ui)
   if (options.ui) {
     const { startServer } = await import("./ui/server");
-    const actualPort = await startServer(outPath, options.port, options.open);
+    const actualPort = await startServer(outPath, options.port, options.open, options.theme);
     console.log(chalk.cyan(`UI available at http://localhost:${actualPort}`));
   }
 }

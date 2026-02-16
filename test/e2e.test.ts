@@ -39,8 +39,8 @@ async function runPipeline(seed: number) {
   const options = { model: "claude-sonnet-4-20250514", temperature: 0.7 };
 
   const post = await generatePost(client, dossier, vibePack, options);
-  const agenda = await generateAgenda(client, dossier, vibePack, post, options);
-  const comments = await generateComments(client, dossier, vibePack, post, agenda, {
+  const agenda = await generateAgenda(client, dossier, vibePack, post, null, options);
+  const comments = await generateComments(client, dossier, vibePack, post, agenda, null, {
     ...options,
     comments: 5,
     maxDepth: 3,
