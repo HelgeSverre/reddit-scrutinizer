@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { resolve, join } from "node:path";
 import getPort from "get-port";
+import open from "open";
 
 export async function startServer(jsonPath: string, preferredPort: number, autoOpen: boolean): Promise<number> {
   const dataPath = resolve(jsonPath);
@@ -37,16 +38,8 @@ export async function startServer(jsonPath: string, preferredPort: number, autoO
 
   if (autoOpen) {
     const url = `http://localhost:${server.port}`;
-    const platform = process.platform;
-    const cmd = platform === "darwin" ? ["open", url]
-      : platform === "win32" ? ["cmd", "/c", "start", url]
-      : ["xdg-open", url];
     try {
-      const proc = Bun.spawn(cmd);
-      const code = await proc.exited;
-      if (code !== 0) {
-        console.log(`Could not open browser automatically. Visit ${url}`);
-      }
+      await open(url);
     } catch {
       console.log(`Could not open browser automatically. Visit ${url}`);
     }

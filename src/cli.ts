@@ -8,7 +8,9 @@ const program = new Command();
 program
   .name("reddit-scrutinizer")
   .description("Simulate how Reddit would roast your project")
-  .version("0.2.0");
+  .version("0.2.1")
+  .enablePositionalOptions()
+  .passThroughOptions();
 
 program
   .argument("<path>", "path to the project to scrutinize")

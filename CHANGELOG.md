@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.1] - 2026-02-16
+
+### Fixed
+- `--open` flag on `serve` subcommand was silently ignored due to Commander.js flag conflict with parent command
+- Use `open` npm package for cross-platform browser opening (handles macOS, Windows, Linux, WSL)
+
 ## [0.2.0] - 2026-02-16
 
 ### Added
