@@ -15,11 +15,29 @@ Uses Claude to generate realistic community feedback in the voice of any subredd
 
 ## How it works
 
-1. **Scan** — walks your project, detects languages/stack, reads key files
-2. **Post** — generates a realistic Reddit submission as if you posted your project
-3. **Agenda** — analyzes critique themes the community would focus on
-4. **Comments** — generates a threaded comment tree with votes, flairs, awards, and OP replies
-5. **Output** — writes structured JSON and optionally opens a browser UI
+1. **Scan** — walks your project, detects languages/stack, reads key files into a project dossier
+2. **Discover** — builds a file index, scans for risk patterns (eval, innerHTML, TODO/FIXME, etc.)
+3. **Plan** — 🤖 AI picks the most interesting code regions to read based on the dossier and risk signals
+4. **Synthesize** — 🤖 AI reads those code snippets and produces an evidence pack (strengths, risks, comment ammo)
+5. **Post** — 🤖 AI generates a realistic Reddit submission as if you posted your project
+6. **Agenda** — 🤖 AI analyzes critique themes the community would focus on, grounded in the evidence
+7. **Comments** — 🤖 AI generates a threaded comment tree with votes, flairs, awards, and OP replies
+8. **Output** — assigns scores/timestamps, writes structured JSON, and optionally opens a browser UI
+
+```mermaid
+flowchart TD
+    codebase[Your Codebase] --> scan[1. Scan — languages, stack, readme, license]
+    scan --> discover[2. Discover — file index + risk pattern scan]
+    discover --> plan["3. Plan 🤖 — AI picks ≤12 code regions to read"]
+    plan --> synthesize["4. Synthesize 🤖 — strengths, risks, comment ammo"]
+    synthesize --> vibe
+    vibe{{Vibe Pack — tone, archetypes, pet topics}} --> post["5. Post 🤖 — title, body, author, flair"]
+    vibe --> agenda
+    vibe --> comments
+    post --> agenda["6. Agenda 🤖 — 8–15 critique themes with stances"]
+    agenda --> comments["7. Comments 🤖 — threaded tree with OP replies"]
+    comments --> output[8. Output — scores, timestamps, JSON + browser UI]
+```
 
 ## Prerequisites
 
