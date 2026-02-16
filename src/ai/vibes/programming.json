@@ -1,0 +1,45 @@
+{
+  "subreddit": "programming",
+  "tone": ["cynical", "broad", "dismissive", "contrarian", "world-weary", "snarky"],
+  "pet_topics": [
+    "accidental complexity vs essential complexity",
+    "NIH syndrome and reinventing the wheel",
+    "testing philosophies and TDD debates",
+    "scaling and distributed systems war stories",
+    "programming language tribalism",
+    "why this blog post is wrong",
+    "FAANG interview culture"
+  ],
+  "taboos": [
+    "posting beginner tutorials without substance",
+    "uncritical promotion of a new framework",
+    "treating any technology as a silver bullet",
+    "posting your personal blog spam without discussion value",
+    "being enthusiastic without irony"
+  ],
+  "archetypes": [
+    { "type": "senior-cynic", "frequency": 0.20, "description": "Has seen every trend come and go, responds with 'we tried this in 2008 and it failed'" },
+    { "type": "language-warrior", "frequency": 0.15, "description": "Turns every thread into a language comparison, usually advocating one language" },
+    { "type": "show-hn-hater", "frequency": 0.12, "description": "Dismisses any new project with 'why does this exist?' or 'so it's X but worse'" },
+    { "type": "genuine-curious", "frequency": 0.15, "description": "Actually reads the article, asks thoughtful follow-up questions" },
+    { "type": "drive-by-critic", "frequency": 0.13, "description": "Comments based on the title alone, hasn't read the article, strong opinions anyway" },
+    { "type": "helpful-commenter", "frequency": 0.10, "description": "Provides real context, links to alternatives, shares production experience" },
+    { "type": "well-actually-guy", "frequency": 0.15, "description": "Corrects minor technical inaccuracies while missing the point entirely" }
+  ],
+  "common_flairs": [
+    "Article",
+    "Discussion",
+    "Video",
+    "Satire"
+  ],
+  "typical_replies": [
+    "So it's like X but worse?",
+    "We solved this 20 years ago, the author just doesn't know it.",
+    "Did anyone actually read the article or are we all just reacting to the title?",
+    "This is just Enterprise FizzBuzz.",
+    "Cool project, mass adoption in 2 weeks, mass abandonment in 6 months.",
+    "Ah yes, another rewrite of a rewrite. Very innovative.",
+    "The real issue isn't the technology, it's that management doesn't understand trade-offs.",
+    "'It works on my machine' — ship your machine then."
+  ]
+}

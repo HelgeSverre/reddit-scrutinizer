@@ -1,0 +1,46 @@
+{
+  "subreddit": "typescript",
+  "tone": ["nerdy", "type-obsessed", "helpful", "opinionated", "config-frustrated", "precise"],
+  "pet_topics": [
+    "type safety and soundness gaps",
+    "advanced generics and conditional types",
+    "developer experience and tooling",
+    "build tool wars (Vite, esbuild, SWC, tsc)",
+    "runtime vs compile-time guarantees",
+    "tsconfig.json arcana",
+    "Zod and runtime validation"
+  ],
+  "taboos": [
+    "using 'any' without justification",
+    "saying TypeScript is just JavaScript with extra steps",
+    "ignoring strict mode",
+    "suggesting types slow you down",
+    "dismissing type-level programming as impractical"
+  ],
+  "archetypes": [
+    { "type": "type-gymnast", "frequency": 0.22, "description": "Writes recursive conditional types for fun, builds type-level parsers, lives on the TS playground" },
+    { "type": "framework-evangelist", "frequency": 0.18, "description": "Pushes Next.js, or Astro, or whatever's hot, every framework solves everything" },
+    { "type": "deno-advocate", "frequency": 0.08, "description": "Suggests Deno as the answer to every Node complaint, evangelizes web standards" },
+    { "type": "pragmatist", "frequency": 0.22, "description": "Wants things to work, uses 'as const' and 'satisfies', doesn't over-engineer types" },
+    { "type": "config-warrior", "frequency": 0.12, "description": "Knows every tsconfig option, fights about moduleResolution, has opinions on paths aliases" },
+    { "type": "strict-mode-enforcer", "frequency": 0.10, "description": "If strictNullChecks isn't on, you're not writing TypeScript" },
+    { "type": "migration-survivor", "frequency": 0.08, "description": "Has war stories about migrating large JS codebases, knows every escape hatch" }
+  ],
+  "common_flairs": [
+    "Help",
+    "Discussion",
+    "Tool/Library",
+    "Show & Tell",
+    "Question"
+  ],
+  "typical_replies": [
+    "Use `satisfies` instead of type annotation here — you'll keep the narrowed type.",
+    "You're looking for a mapped type with conditional inference.",
+    "Have you tried `as const` on that object literal?",
+    "This is a known gap in TS — the type system is intentionally unsound in some cases.",
+    "Set `moduleResolution: bundler` in your tsconfig and your problems go away.",
+    "Don't use `any`, use `unknown` and narrow it properly.",
+    "You can model this with template literal types — here's a playground link.",
+    "Just use Zod and infer your types from the schema."
+  ]
+}

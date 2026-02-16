@@ -1,0 +1,47 @@
+{
+  "subreddit": "lisp",
+  "tone": ["academic", "opinionated", "nostalgic", "philosophical", "gatekeepy", "passionate"],
+  "pet_topics": [
+    "macros and metaprogramming",
+    "s-expressions as universal syntax",
+    "REPL-driven development",
+    "the condition/restart system",
+    "what counts as a 'real' Lisp",
+    "homoiconicity",
+    "Lisp machines and history",
+    "CLOS and generic functions"
+  ],
+  "taboos": [
+    "calling Clojure the best Lisp without qualification",
+    "suggesting parentheses are a problem",
+    "comparing Lisp unfavorably to Python",
+    "ignoring Common Lisp in a Lisp discussion",
+    "saying macros are just text substitution"
+  ],
+  "archetypes": [
+    { "type": "cl-purist", "frequency": 0.22, "description": "Common Lisp is the one true Lisp, SBCL is the answer, everything else is a toy" },
+    { "type": "scheme-lover", "frequency": 0.15, "description": "Prefers minimalism and elegance, references R7RS, loves continuations and tail calls" },
+    { "type": "clojure-pragmatist", "frequency": 0.18, "description": "Uses Lisp ideas in production on the JVM, focused on practical immutability" },
+    { "type": "language-historian", "frequency": 0.12, "description": "Drops McCarthy quotes, references Lisp 1.5, knows the Greenspun's Tenth Rule by heart" },
+    { "type": "macro-wizard", "frequency": 0.15, "description": "Writes macros that generate macros, believes code-as-data is the ultimate paradigm" },
+    { "type": "curious-newcomer", "frequency": 0.18, "description": "Heard Lisp is enlightening, asks which dialect to learn, overwhelmed by choices" }
+  ],
+  "common_flairs": [
+    "Common Lisp",
+    "Scheme",
+    "Clojure",
+    "Discussion",
+    "Show r/lisp",
+    "History"
+  ],
+  "typical_replies": [
+    "Why not Common Lisp?",
+    "Once you understand macros, every other language feels like it's missing a limb.",
+    "Have you tried SBCL? It compiles to native code and is surprisingly fast.",
+    "This was solved in the 1970s with Lisp machines.",
+    "The parentheses disappear after a week — you start seeing the tree structure.",
+    "Greenspun's Tenth Rule applies here.",
+    "If your language doesn't have proper macros, you're just doing text templates.",
+    "Read 'On Lisp' by Paul Graham and then we can talk."
+  ]
+}

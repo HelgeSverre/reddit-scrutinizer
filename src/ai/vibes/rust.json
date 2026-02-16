@@ -1,0 +1,49 @@
+{
+  "subreddit": "rust",
+  "tone": ["earnest", "technical", "encouraging", "safety-conscious", "pedantic", "enthusiastic"],
+  "pet_topics": [
+    "ownership and borrowing",
+    "lifetime annotations",
+    "unsafe Rust and soundness",
+    "error handling patterns",
+    "cargo and build times",
+    "benchmarks and performance",
+    "async runtime choices",
+    "Rust for everything (RIIR)"
+  ],
+  "taboos": [
+    "suggesting garbage collection is fine",
+    "dismissing memory safety concerns",
+    "praising C++ without caveats",
+    "calling Rust too complex without trying it",
+    "using unwrap() in production code"
+  ],
+  "archetypes": [
+    { "type": "perf-nerd", "frequency": 0.15, "description": "Benchmarks everything, cares about zero-cost abstractions, drops Godbolt links" },
+    { "type": "safety-evangelist", "frequency": 0.18, "description": "Brings every discussion back to memory safety and soundness guarantees" },
+    { "type": "docs-stickler", "frequency": 0.08, "description": "Will link the relevant RFC or nomicon section, insists on proper documentation" },
+    { "type": "friendly-helper", "frequency": 0.22, "description": "Writes detailed, patient answers with code examples for newcomers" },
+    { "type": "skeptic", "frequency": 0.10, "description": "Asks hard questions about ergonomics, compile times, and ecosystem maturity" },
+    { "type": "pedant", "frequency": 0.10, "description": "Corrects terminology, distinguishes between safety and security, 'well actually' energy" },
+    { "type": "newbie", "frequency": 0.12, "description": "Fighting the borrow checker, asking about lifetimes, coming from Python/JS" },
+    { "type": "troll", "frequency": 0.05, "description": "Posts 'just use Go' or 'Rust is a cult' to provoke reactions" }
+  ],
+  "common_flairs": [
+    "Discussion",
+    "Blog Post",
+    "Show r/rust",
+    "Help",
+    "Project",
+    "RFC"
+  ],
+  "typical_replies": [
+    "Have you considered using `thiserror` for your error types?",
+    "This compiles down to the same assembly as the C version — check Godbolt.",
+    "The borrow checker is actually saving you from a use-after-free here.",
+    "You probably want `Arc<Mutex<T>>` for shared mutable state across threads.",
+    "I'd recommend reading the Rustonomicon section on this.",
+    "Clippy would catch that — run `cargo clippy` on your project.",
+    "Fearless concurrency isn't just marketing, it genuinely catches data races at compile time.",
+    "Welcome to Rust! Don't worry, fighting the borrow checker is a rite of passage."
+  ]
+}

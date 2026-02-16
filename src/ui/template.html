@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>reddit-scrutinizer</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #030303;
+  --surface: #1a1a1b;
+  --surface-hover: #252526;
+  --border: #343536;
+  --text: #d7dadc;
+  --text-muted: #818384;
+  --text-link: #4fbcff;
+  --accent: #ff4500;
+  --upvote: #ff4500;
+  --downvote: #7193ff;
+  --op-badge: #0079d3;
+  --comment-line: #343536;
+  --comment-line-hover: #818384;
+  --flair-bg: #272729;
+  --flair-text: #d7dadc;
+  --award-bg: #1a1a1b;
+  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+a { color: var(--text-link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Top nav */
+.topnav {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  height: 48px;
+  display: flex; align-items: center; padding: 0 20px;
+}
+.topnav-logo {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 18px; font-weight: 700; color: var(--text);
+}
+.topnav-logo svg { width: 32px; height: 32px; }
+.topnav-search {
+  margin-left: 24px; flex: 1; max-width: 600px;
+  background: var(--bg); border: 1px solid var(--border); border-radius: 20px;
+  padding: 6px 16px; color: var(--text-muted); font-size: 14px;
+}
+.topnav-badge {
+  margin-left: auto; background: var(--accent); color: #fff;
+  font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 4px;
+}
+
+/* Subreddit header */
+.sub-header {
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  padding: 12px 0;
+}
+.sub-header-inner {
+  max-width: 740px; margin: 0 auto; padding: 0 16px;
+  display: flex; align-items: center; gap: 12px;
+}
+.sub-icon {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: var(--accent); display: flex; align-items: center; justify-content: center;
+  font-size: 24px; font-weight: 700; color: #fff;
+}
+.sub-info h1 { font-size: 22px; font-weight: 700; }
+.sub-info .sub-meta { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.sub-join {
+  margin-left: auto; background: #fff; color: #1a1a1b;
+  border: none; border-radius: 20px; padding: 6px 16px;
+  font-weight: 700; font-size: 14px; cursor: pointer;
+}
+.sub-join:hover { opacity: 0.9; }
+
+/* Main container */
+.main { max-width: 740px; margin: 16px auto; padding: 0 16px; }
+
+/* Post card */
+.post {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 4px;
+  display: flex; overflow: hidden;
+}
+.post-votes {
+  width: 40px; background: #161617; display: flex; flex-direction: column;
+  align-items: center; padding: 8px 4px; gap: 4px; flex-shrink: 0;
+}
+.vote-btn {
+  background: none; border: none; cursor: pointer; padding: 2px;
+  color: var(--text-muted); display: flex; align-items: center; justify-content: center;
+  border-radius: 2px; width: 24px; height: 24px;
+}
+.vote-btn:hover { background: var(--surface-hover); }
+.vote-btn.upvoted { color: var(--upvote); }
+.vote-btn.downvoted { color: var(--downvote); }
+.vote-btn svg { width: 20px; height: 20px; }
+.post-score {
+  font-size: 12px; font-weight: 700; line-height: 1;
+}
+
+.post-content { flex: 1; padding: 8px 12px; }
+.post-meta { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
+.post-meta .op-name { color: var(--text-link); }
+
+.post-flair {
+  display: inline-block; background: var(--flair-bg); color: var(--flair-text);
+  font-size: 12px; padding: 1px 8px; border-radius: 12px; margin-right: 6px;
+  border: 1px solid var(--border);
+}
+
+.post-title { font-size: 18px; font-weight: 600; margin-bottom: 8px; color: var(--text); }
+
+.post-awards { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
+.award {
+  display: inline-flex; align-items: center; gap: 3px;
+  background: var(--award-bg); border: 1px solid var(--border);
+  border-radius: 4px; padding: 1px 6px; font-size: 12px;
+}
+.award-count { color: var(--text-muted); }
+
+.post-body { font-size: 14px; line-height: 1.6; margin-bottom: 12px; }
+.post-body p { margin-bottom: 8px; }
+.post-body code {
+  background: var(--bg); padding: 1px 4px; border-radius: 3px;
+  font-family: 'SF Mono', Monaco, monospace; font-size: 13px;
+}
+.post-body pre {
+  background: var(--bg); padding: 12px; border-radius: 4px;
+  overflow-x: auto; margin: 8px 0;
+}
+.post-body pre code { padding: 0; background: none; }
+.post-body blockquote {
+  border-left: 3px solid var(--border); padding-left: 12px;
+  color: var(--text-muted); margin: 8px 0;
+}
+.post-body ul, .post-body ol { padding-left: 24px; margin: 8px 0; }
+.post-body h1, .post-body h2, .post-body h3 { margin: 12px 0 6px; }
+
+.post-actions {
+  display: flex; gap: 4px; padding: 4px 0;
+  border-top: 1px solid var(--border); margin-top: 4px;
+}
+.action-btn {
+  background: none; border: none; color: var(--text-muted);
+  font-size: 12px; font-weight: 700; padding: 6px 8px;
+  border-radius: 2px; cursor: pointer; display: flex; align-items: center; gap: 4px;
+}
+.action-btn:hover { background: var(--surface-hover); }
+.action-btn svg { width: 16px; height: 16px; }
+
+/* Comments section */
+.comments-header {
+  padding: 16px 0 8px; display: flex; align-items: center; gap: 8px;
+}
+.comments-sort {
+  background: none; border: none; color: var(--text-link);
+  font-size: 12px; font-weight: 700; cursor: pointer; padding: 4px 8px;
+}
+
+.comment-tree { padding-bottom: 40px; }
+
+.comment {
+  display: flex; padding-top: 8px; position: relative;
+}
+.comment.collapsed > .comment-main > .comment-body,
+.comment.collapsed > .comment-main > .comment-actions,
+.comment.collapsed > .comment-main > .comment-children { display: none; }
+.comment.collapsed > .comment-main > .comment-header .collapse-hint { display: inline; }
+
+.comment-thread-line {
+  width: 22px; flex-shrink: 0; display: flex; justify-content: center;
+  cursor: pointer; position: relative;
+}
+.comment-thread-line::after {
+  content: ''; position: absolute; top: 0; bottom: 0; left: 50%;
+  width: 2px; background: var(--comment-line); transform: translateX(-50%);
+}
+.comment-thread-line:hover::after { background: var(--comment-line-hover); }
+
+.comment-main { flex: 1; min-width: 0; }
+
+.comment-header {
+  font-size: 12px; color: var(--text-muted); margin-bottom: 4px;
+  display: flex; align-items: center; gap: 4px; flex-wrap: wrap;
+}
+.comment-author { font-weight: 700; color: var(--text); }
+.comment-author.is-op { color: var(--op-badge); }
+.op-badge {
+  background: var(--op-badge); color: #fff; font-size: 10px;
+  padding: 0 4px; border-radius: 2px; font-weight: 700;
+}
+.comment-flair {
+  background: var(--flair-bg); color: var(--flair-text);
+  font-size: 11px; padding: 0 6px; border-radius: 10px;
+  border: 1px solid var(--border);
+}
+.collapse-hint { display: none; color: var(--text-muted); font-style: italic; }
+
+.comment-body { font-size: 14px; line-height: 1.5; margin-bottom: 4px; }
+.comment-body p { margin-bottom: 6px; }
+.comment-body code {
+  background: var(--bg); padding: 1px 4px; border-radius: 3px;
+  font-family: 'SF Mono', Monaco, monospace; font-size: 13px;
+}
+.comment-body pre {
+  background: var(--bg); padding: 8px; border-radius: 4px;
+  overflow-x: auto; margin: 6px 0;
+}
+.comment-body pre code { padding: 0; background: none; }
+.comment-body blockquote {
+  border-left: 3px solid var(--border); padding-left: 12px;
+  color: var(--text-muted); margin: 6px 0;
+}
+
+.comment.deleted .comment-author { color: var(--text-muted); }
+.comment.deleted .comment-body { color: var(--text-muted); font-style: italic; }
+.comment.negative .comment-body { opacity: 0.7; }
+
+.comment-actions {
+  display: flex; gap: 2px; padding: 2px 0;
+}
+.comment-actions .action-btn { font-size: 12px; padding: 4px 6px; }
+.comment-actions .c-score { font-weight: 700; font-size: 12px; }
+.comment-actions .c-score.upvoted { color: var(--upvote); }
+.comment-actions .c-score.downvoted { color: var(--downvote); }
+.controversial::after { content: ' †'; color: var(--text-muted); }
+
+.comment-children { }
+
+/* Disclaimer */
+.disclaimer {
+  max-width: 740px; margin: 20px auto; padding: 12px 16px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 4px;
+  font-size: 12px; color: var(--text-muted); text-align: center;
+}
+
+/* Loading */
+.loading {
+  text-align: center; padding: 60px 20px; color: var(--text-muted);
+  font-size: 16px;
+}
+.loading-spinner {
+  width: 32px; height: 32px; border: 3px solid var(--border);
+  border-top-color: var(--accent); border-radius: 50%;
+  animation: spin 0.8s linear infinite; margin: 0 auto 16px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Error */
+.error {
+  max-width: 740px; margin: 60px auto; padding: 20px;
+  background: var(--surface); border: 1px solid #ff4444; border-radius: 4px;
+  text-align: center; color: #ff6666;
+}
+
+@media (max-width: 600px) {
+  .main { padding: 0 8px; }
+  .post-title { font-size: 16px; }
+  .topnav-search { display: none; }
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-logo">
+    <svg viewBox="0 0 20 20" fill="var(--accent)">
+      <circle cx="10" cy="10" r="10"/>
+      <circle cx="6.5" cy="9" r="1.5" fill="#fff"/>
+      <circle cx="13.5" cy="9" r="1.5" fill="#fff"/>
+      <path d="M6 13 Q10 16 14 13" stroke="#fff" stroke-width="1.2" fill="none"/>
+      <ellipse cx="3" cy="8" rx="2" ry="2.5" fill="var(--accent)"/>
+      <ellipse cx="17" cy="8" rx="2" ry="2.5" fill="var(--accent)"/>
+      <line x1="14" y1="2" x2="17" y2="2" stroke="var(--accent)" stroke-width="2.5"/>
+      <line x1="17" y1="2" x2="17" y2="5" stroke="var(--accent)" stroke-width="2.5"/>
+      <circle cx="17" cy="2" r="1.5" fill="var(--accent)"/>
+    </svg>
+    <span>reddit</span>
+  </div>
+  <div class="topnav-search">Search Reddit</div>
+  <div class="topnav-badge">SIMULATED</div>
+</nav>
+
+<div id="app">
+  <div class="loading">
+    <div class="loading-spinner"></div>
+    Loading simulation...
+  </div>
+</div>
+
+<script>
+const UP_SVG = `<svg viewBox="0 0 20 20"><path d="M10 3 L3 11 H7 V17 H13 V11 H17 Z" fill="currentColor"/></svg>`;
+const DOWN_SVG = `<svg viewBox="0 0 20 20"><path d="M10 17 L3 9 H7 V3 H13 V9 H17 Z" fill="currentColor"/></svg>`;
+const COMMENT_SVG = `<svg viewBox="0 0 20 20"><path d="M2 4 H18 V14 H8 L4 18 V14 H2 Z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>`;
+
+let DATA = null;
+
+async function init() {
+  try {
+    const res = await fetch('/api/data');
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    DATA = await res.json();
+    render();
+  } catch (e) {
+    document.getElementById('app').innerHTML =
+      `<div class="error"><h3>Failed to load</h3><p>${e.message}</p></div>`;
+  }
+}
+
+function render() {
+  const sim = DATA.simulation;
+  const project = DATA.project;
+  const app = document.getElementById('app');
+
+  app.innerHTML = `
+    <div class="sub-header">
+      <div class="sub-header-inner">
+        <div class="sub-icon">${sim.subreddit.name[0].toUpperCase()}</div>
+        <div class="sub-info">
+          <h1>${sim.subreddit.display}</h1>
+          <div class="sub-meta">${fakeMembers(sim.subreddit.name)} members · ${fakeOnline()} online</div>
+        </div>
+        <button class="sub-join" onclick="this.textContent=this.textContent==='Join'?'Joined':'Join'">Join</button>
+      </div>
+    </div>
+    <div class="main">
+      ${renderPost(sim.post, sim.comments.length)}
+      <div class="comments-header">
+        <span style="font-size:12px;color:var(--text-muted)">${sim.comments.length} Comments</span>
+        <button class="comments-sort">Sort by: Best ▾</button>
+      </div>
+      <div class="comment-tree">
+        ${renderCommentTree(sim.comments, sim.post.id)}
+      </div>
+    </div>
+    <div class="disclaimer">
+      ⚠️ This is a simulated Reddit thread generated by reddit-scrutinizer using ${DATA.input.model}.
+      No real users were involved. Generated ${new Date(DATA.generated_at).toLocaleDateString()}.
+    </div>
+  `;
+}
+
+function renderPost(post, commentCount) {
+  return `
+    <div class="post">
+      <div class="post-votes">
+        <button class="vote-btn" onclick="postVote(this,1)" title="Upvote">${UP_SVG}</button>
+        <span class="post-score" data-base="${post.score}">${formatScore(post.score)}</span>
+        <button class="vote-btn" onclick="postVote(this,-1)" title="Downvote">${DOWN_SVG}</button>
+      </div>
+      <div class="post-content">
+        <div class="post-meta">
+          ${post.post_flair ? `<span class="post-flair">${esc(post.post_flair)}</span>` : ''}
+          Posted by <span class="op-name">u/${esc(post.author)}</span>
+          ${post.author_flair ? `<span class="comment-flair">${esc(post.author_flair)}</span>` : ''}
+          · ${formatTime(post.created_utc)}
+        </div>
+        <h2 class="post-title">${esc(post.title)}</h2>
+        ${post.awards.length ? `<div class="post-awards">${post.awards.map(a =>
+          `<span class="award">${a.icon}<span class="award-count">${a.count > 1 ? a.count : ''}</span></span>`
+        ).join('')}</div>` : ''}
+        <div class="post-body">${post.body_html}</div>
+        <div class="post-actions">
+          <button class="action-btn">${COMMENT_SVG} ${commentCount} Comments</button>
+          <button class="action-btn">↗ Share</button>
+          <button class="action-btn">⚑ Save</button>
+          <button class="action-btn">⋯</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderCommentTree(comments, postId) {
+  const byParent = {};
+  for (const c of comments) {
+    const pid = c.parent_id;
+    if (!byParent[pid]) byParent[pid] = [];
+    byParent[pid].push(c);
+  }
+  // Sort children by score descending
+  for (const k in byParent) {
+    byParent[k].sort((a, b) => b.score - a.score);
+  }
+
+  function renderChildren(parentId) {
+    const kids = byParent[parentId];
+    if (!kids || !kids.length) return '';
+    return kids.map(c => renderComment(c, byParent)).join('');
+  }
+
+  return renderChildren(postId);
+}
+
+function renderComment(comment, byParent) {
+  const classes = ['comment'];
+  if (comment.is_deleted) classes.push('deleted');
+  if (comment.score < 0) classes.push('negative');
+
+  const children = byParent[comment.id];
+  const hasChildren = children && children.length > 0;
+
+  return `
+    <div class="${classes.join(' ')}" data-id="${comment.id}">
+      <div class="comment-thread-line" onclick="toggleCollapse(this)" title="Collapse thread"></div>
+      <div class="comment-main">
+        <div class="comment-header">
+          <span class="comment-author ${comment.is_op ? 'is-op' : ''}">${comment.is_deleted ? '[deleted]' : 'u/' + esc(comment.author)}</span>
+          ${comment.is_op ? '<span class="op-badge">OP</span>' : ''}
+          ${comment.author_flair && !comment.is_deleted ? `<span class="comment-flair">${esc(comment.author_flair)}</span>` : ''}
+          <span>· ${formatTime(comment.created_utc)}</span>
+          <span class="collapse-hint">(collapsed)</span>
+        </div>
+        <div class="comment-body">${comment.body_html}</div>
+        <div class="comment-actions">
+          <button class="vote-btn" onclick="commentVote(this,1)" title="Upvote">${UP_SVG}</button>
+          <span class="c-score${comment.controversiality ? ' controversial' : ''}" data-base="${comment.score}">${formatScore(comment.score)}</span>
+          <button class="vote-btn" onclick="commentVote(this,-1)" title="Downvote">${DOWN_SVG}</button>
+          <button class="action-btn" style="margin-left:8px">Reply</button>
+          <button class="action-btn">Share</button>
+          <button class="action-btn">⋯</button>
+        </div>
+        <div class="comment-children">
+          ${hasChildren ? children.sort((a,b) => b.score - a.score).map(c => renderComment(c, byParent)).join('') : ''}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function toggleCollapse(el) {
+  el.closest('.comment').classList.toggle('collapsed');
+}
+
+function postVote(btn, dir) {
+  const parent = btn.closest('.post-votes');
+  const scoreEl = parent.querySelector('.post-score');
+  doVote(btn, scoreEl, dir, parent);
+}
+
+function commentVote(btn, dir) {
+  const actions = btn.closest('.comment-actions');
+  const scoreEl = actions.querySelector('.c-score');
+  doVote(btn, scoreEl, dir, actions);
+}
+
+function doVote(btn, scoreEl, dir, container) {
+  const base = parseInt(scoreEl.dataset.base);
+  const upBtn = container.querySelector('.vote-btn:first-of-type') || container.querySelectorAll('.vote-btn')[0];
+  const downBtn = container.querySelectorAll('.vote-btn')[1];
+
+  if (dir === 1) {
+    if (upBtn.classList.contains('upvoted')) {
+      upBtn.classList.remove('upvoted');
+      scoreEl.classList.remove('upvoted');
+      scoreEl.textContent = formatScore(base);
+    } else {
+      upBtn.classList.add('upvoted');
+      downBtn.classList.remove('downvoted');
+      scoreEl.classList.add('upvoted');
+      scoreEl.classList.remove('downvoted');
+      scoreEl.textContent = formatScore(base + 1);
+    }
+  } else {
+    if (downBtn.classList.contains('downvoted')) {
+      downBtn.classList.remove('downvoted');
+      scoreEl.classList.remove('downvoted');
+      scoreEl.textContent = formatScore(base);
+    } else {
+      downBtn.classList.add('downvoted');
+      upBtn.classList.remove('upvoted');
+      scoreEl.classList.add('downvoted');
+      scoreEl.classList.remove('upvoted');
+      scoreEl.textContent = formatScore(base - 1);
+    }
+  }
+}
+
+function formatScore(n) {
+  if (n >= 10000) return (n / 1000).toFixed(1) + 'k';
+  if (n >= 1000) return (n / 1000).toFixed(1) + 'k';
+  return String(n);
+}
+
+function formatTime(utc) {
+  const now = Date.now() / 1000;
+  // Use time relative to the post time if data is simulated
+  const diff = Math.max(0, now - utc);
+  if (diff < 60) return 'just now';
+  if (diff < 3600) return Math.floor(diff / 60) + 'm';
+  if (diff < 86400) return Math.floor(diff / 3600) + 'h';
+  if (diff < 604800) return Math.floor(diff / 86400) + 'd';
+  return Math.floor(diff / 604800) + 'w';
+}
+
+function fakeMembers(sub) {
+  const hash = sub.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
+  const n = 50000 + (hash * 7919) % 450000;
+  return n.toLocaleString();
+}
+
+function fakeOnline() {
+  return (200 + Math.floor(Math.random() * 800)).toLocaleString();
+}
+
+function esc(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+init();
+</script>
+</body>
+</html>

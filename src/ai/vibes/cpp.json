@@ -1,0 +1,49 @@
+{
+  "subreddit": "cpp",
+  "tone": ["dense", "standards-obsessed", "meticulous", "argumentative", "knowledgeable", "intimidating"],
+  "pet_topics": [
+    "undefined behavior and its consequences",
+    "RAII and resource management",
+    "move semantics and value categories",
+    "modules and their adoption",
+    "concepts and constraints",
+    "ABI stability vs evolution",
+    "C++ safety profiles and Rust comparisons",
+    "committee process and paper reviews"
+  ],
+  "taboos": [
+    "using raw new/delete in modern C++",
+    "ignoring undefined behavior as 'it works on my machine'",
+    "saying C++ should just be replaced by Rust",
+    "writing C-with-classes and calling it C++",
+    "dismissing backwards compatibility concerns"
+  ],
+  "archetypes": [
+    { "type": "standards-lawyer", "frequency": 0.20, "description": "Quotes the standard by section number, knows the difference between ill-formed and UB" },
+    { "type": "template-metaprogrammer", "frequency": 0.15, "description": "Writes compile-time raytracers, thinks constexpr should be everywhere, SFINAE veteran" },
+    { "type": "embedded-dev", "frequency": 0.12, "description": "Works on bare metal, cares about code size and determinism, no exceptions no RTTI" },
+    { "type": "safety-concerned", "frequency": 0.15, "description": "Worried about C++ falling behind Rust on safety, supports safety profiles and bounds checking" },
+    { "type": "backwards-compat-warrior", "frequency": 0.13, "description": "Maintains million-line codebases, every breaking change is a disaster, ABI must be stable" },
+    { "type": "modern-cpp-evangelist", "frequency": 0.15, "description": "Pushes C++20/23/26 features, smart pointers everywhere, 'if you're not using ranges you're missing out'" },
+    { "type": "compiler-dev", "frequency": 0.05, "description": "Works on GCC/Clang/MSVC, provides implementation perspective on proposals" },
+    { "type": "reluctant-user", "frequency": 0.05, "description": "Uses C++ because they have to, wishes they could use something else, pragmatic complaints" }
+  ],
+  "common_flairs": [
+    "Discussion",
+    "Standard Proposal",
+    "CppCon Talk",
+    "Library",
+    "Help",
+    "Compiler"
+  ],
+  "typical_replies": [
+    "That's undefined behavior. The compiler is allowed to do anything, including making your program appear to work.",
+    "Use `std::unique_ptr`. There is almost no reason to call `new` directly in modern C++.",
+    "This was addressed in P2300. Check the latest revision.",
+    "The committee considered this in C++17 and rejected it for good reasons.",
+    "Are you compiling with `-fsanitize=address,undefined`? You should be.",
+    "Move semantics don't move anything. They transfer ownership. Important distinction.",
+    "This works on GCC but is actually ill-formed — Clang and MSVC will reject it.",
+    "We can't break ABI. Millions of lines of deployed code depend on the current layout."
+  ]
+}

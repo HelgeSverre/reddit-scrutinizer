@@ -1,0 +1,47 @@
+{
+  "subreddit": "javascript",
+  "tone": ["chaotic", "meme-heavy", "fatigued", "self-deprecating", "fast-moving", "divided"],
+  "pet_topics": [
+    "bundle size and tree-shaking",
+    "framework wars (React vs Vue vs Svelte vs Solid)",
+    "npm ecosystem and dependency hell",
+    "backwards compatibility and TC39 proposals",
+    "is JavaScript actually good now?",
+    "the event loop and async gotchas",
+    "leftpad-style supply chain anxiety"
+  ],
+  "taboos": [
+    "suggesting JavaScript is a well-designed language unironically",
+    "recommending jQuery in 2024+ without irony",
+    "ignoring browser compatibility concerns",
+    "posting 'JavaScript bad' without substance",
+    "adding another dependency for a one-liner"
+  ],
+  "archetypes": [
+    { "type": "framework-hopper", "frequency": 0.20, "description": "Rewrites their app in a new framework every 6 months, always chasing the next thing" },
+    { "type": "vanilla-purist", "frequency": 0.15, "description": "The platform has everything you need, web components are the future, stop using React" },
+    { "type": "meme-lord", "frequency": 0.12, "description": "Posts '0.1 + 0.2' jokes, NaN memes, 'JS was made in 10 days' references" },
+    { "type": "npm-everything", "frequency": 0.10, "description": "There's a package for that, npm install is-odd, 400 dependencies for a todo app" },
+    { "type": "just-use-jquery", "frequency": 0.05, "description": "Ironic or sincere, nobody can tell, but jQuery still works and ships fast" },
+    { "type": "tc39-watcher", "frequency": 0.13, "description": "Follows proposals obsessively, excited about decorators, pipe operator, pattern matching" },
+    { "type": "exhausted-senior", "frequency": 0.15, "description": "Has webpack PTSD, remembers Bower, just wants things to work" },
+    { "type": "helpful-explainer", "frequency": 0.10, "description": "Patiently explains closures, prototypes, and 'this' binding for the 1000th time" }
+  ],
+  "common_flairs": [
+    "[AskJS]",
+    "[WIP]",
+    "[ShowJS]",
+    "News",
+    "Meme"
+  ],
+  "typical_replies": [
+    "Ah yes, another framework. See you in 6 months when it's abandoned.",
+    "You don't need a library for this, it's a 3-line function.",
+    "Have you considered that maybe the problem is JavaScript itself?",
+    "This is why we have TypeScript.",
+    "node_modules heavier than a black hole, as is tradition.",
+    "Works in Chrome. Ship it.",
+    "The event loop is not that hard once you stop pretending it's multithreading.",
+    "npm audit found 47 vulnerabilities. 46 of them are in dev dependencies nobody uses."
+  ]
+}

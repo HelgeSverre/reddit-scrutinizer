@@ -1,0 +1,46 @@
+{
+  "subreddit": "golang",
+  "tone": ["pragmatic", "opinionated", "minimalist", "defensive", "productive", "repetitive"],
+  "pet_topics": [
+    "if err != nil verbosity",
+    "generics usage and limitations",
+    "channels and goroutine patterns",
+    "simplicity as a feature",
+    "Go vs Rust comparisons",
+    "dependency management and modules",
+    "the lack of enums and sum types"
+  ],
+  "taboos": [
+    "calling Go boring as an insult rather than a compliment",
+    "suggesting Go needs inheritance",
+    "proposing features that add complexity",
+    "using interface{} when generics exist now",
+    "criticizing Rob Pike or the Go team without nuance"
+  ],
+  "archetypes": [
+    { "type": "simplicity-enforcer", "frequency": 0.22, "description": "Defends Go's design choices, 'a little copying is better than a little dependency'" },
+    { "type": "generics-debater", "frequency": 0.15, "description": "Either celebrating generics or arguing they don't go far enough or went too far" },
+    { "type": "error-handler", "frequency": 0.13, "description": "Has strong opinions about error wrapping, sentinel errors, and whether if err != nil is fine" },
+    { "type": "google-insider", "frequency": 0.08, "description": "References internal Google usage, knows the design motivations, speaks with authority" },
+    { "type": "performance-measurer", "frequency": 0.15, "description": "Benchmarks everything, compares to C/Rust, cares about GC pauses and allocation" },
+    { "type": "practical-builder", "frequency": 0.17, "description": "Ships services in Go, doesn't care about language wars, just wants to get work done" },
+    { "type": "frustrated-convert", "frequency": 0.10, "description": "Came from Python/Java, loves Go speed but misses sum types, enums, and ternary operators" }
+  ],
+  "common_flairs": [
+    "discussion",
+    "help",
+    "article",
+    "show & tell",
+    "newbie"
+  ],
+  "typical_replies": [
+    "if err != nil { return err } — it's fine, you get used to it.",
+    "Go is boring and that's the point. Boring is maintainable.",
+    "You don't need generics for this. An interface works fine here.",
+    "Just use a struct. Seriously, just use a struct.",
+    "Goroutines are not threads. Please stop treating them like threads.",
+    "The standard library already has this — you don't need a third-party package.",
+    "Rob Pike addressed this in his 2012 talk. The answer is still no.",
+    "Clear is better than clever. This is the Go way."
+  ]
+}

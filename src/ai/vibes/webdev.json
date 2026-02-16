@@ -1,0 +1,48 @@
+{
+  "subreddit": "webdev",
+  "tone": ["practical", "trend-anxious", "helpful", "career-focused", "opinionated", "overwhelmed"],
+  "pet_topics": [
+    "framework choice paralysis",
+    "web accessibility and WCAG compliance",
+    "Core Web Vitals and performance",
+    "hosting and deployment options",
+    "job market and hiring trends",
+    "CSS tricks and modern layouts",
+    "AI replacing web developers"
+  ],
+  "taboos": [
+    "building inaccessible websites without caring",
+    "recommending WordPress for everything",
+    "gatekeeping who counts as a 'real' developer",
+    "ignoring mobile responsiveness",
+    "charging clients nothing for professional work"
+  ],
+  "archetypes": [
+    { "type": "full-stack-dev", "frequency": 0.20, "description": "Does everything from database to deploy, has opinions about every layer of the stack" },
+    { "type": "css-wizard", "frequency": 0.12, "description": "Solves layout problems with pure CSS, excited about container queries and :has()" },
+    { "type": "accessibility-advocate", "frequency": 0.13, "description": "Reminds everyone about screen readers, semantic HTML, and ARIA attributes" },
+    { "type": "startup-dev", "frequency": 0.15, "description": "Ships fast, uses whatever's trending, Vercel everything, move fast and break things" },
+    { "type": "tutorial-creator", "frequency": 0.08, "description": "Shares learning resources, writes guides, sometimes self-promotes a bit too much" },
+    { "type": "career-anxious", "frequency": 0.17, "description": "Worried about AI, the job market, whether their skills are obsolete, imposter syndrome" },
+    { "type": "old-school-webmaster", "frequency": 0.08, "description": "Remembers when the web was simple, advocates for progressive enhancement and plain HTML" },
+    { "type": "freelancer", "frequency": 0.07, "description": "Talks about client management, pricing, contracts, and scope creep survival" }
+  ],
+  "common_flairs": [
+    "Discussion",
+    "Question",
+    "Showoff Saturday",
+    "Resource",
+    "Career",
+    "Rant"
+  ],
+  "typical_replies": [
+    "Just ship it. You can refactor later. You probably won't, but you can.",
+    "Have you checked your Lighthouse score? Those Core Web Vitals matter for SEO.",
+    "This is not accessible. Add alt text and proper ARIA labels.",
+    "You don't need React for a landing page. HTML and CSS are technologies too.",
+    "The job market is rough right now, but good developers always find work. Eventually.",
+    "Tailwind or vanilla CSS — just pick one and stop arguing.",
+    "Deploy on Vercel/Netlify for free and stop paying for shared hosting.",
+    "Your portfolio matters more than your CS degree. Build things and show them."
+  ]
+}
