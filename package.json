@@ -1,14 +1,47 @@
 {
   "name": "reddit-scrutinizer",
   "version": "0.1.0",
+  "description": "Simulate Reddit reactions to your codebase before you post. Uses Claude to generate realistic community feedback in the voice of any subreddit.",
   "type": "module",
+  "license": "MIT",
+  "author": {
+    "name": "Helge Sverre",
+    "email": "helge.sverre@gmail.com",
+    "url": "https://helgesver.re"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/helgesverre/reddit-scrutinizer.git"
+  },
+  "homepage": "https://github.com/helgesverre/reddit-scrutinizer",
+  "bugs": {
+    "url": "https://github.com/helgesverre/reddit-scrutinizer/issues"
+  },
+  "keywords": [
+    "reddit",
+    "cli",
+    "ai",
+    "claude",
+    "anthropic",
+    "feedback",
+    "code-review",
+    "simulation",
+    "bun"
+  ],
   "bin": {
     "reddit-scrutinizer": "./src/index.ts"
   },
+  "files": [
+    "src/**/*"
+  ],
   "scripts": {
     "dev": "bun run src/index.ts",
     "build": "bun build ./src/index.ts --outfile dist/index.js --target bun",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "tsc --noEmit"
+  },
+  "engines": {
+    "bun": ">=1.0.0"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",
