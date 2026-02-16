@@ -11,17 +11,17 @@ A CLI tool that scans any codebase and uses Claude to generate a realistic simul
 
 ## Tech Stack
 
-| Component | Choice | Rationale |
-|-----------|--------|-----------|
-| Runtime | Bun | Fast, native TS, built-in HTTP server |
-| Language | TypeScript | Type safety, good DX |
-| CLI parsing | commander | Lightweight, clap-like |
-| AI provider | Anthropic Claude (MVP) | Best structured output quality |
-| AI SDK | @anthropic-ai/sdk | Official client |
-| Validation | zod | Validate model JSON output |
-| Markdown | marked | Convert comment markdown to HTML |
-| UI | Single HTML file | No build step, no framework |
-| Distribution | npm package | `bin` entry for global install |
+| Component    | Choice                 | Rationale                             |
+| ------------ | ---------------------- | ------------------------------------- |
+| Runtime      | Bun                    | Fast, native TS, built-in HTTP server |
+| Language     | TypeScript             | Type safety, good DX                  |
+| CLI parsing  | commander              | Lightweight, clap-like                |
+| AI provider  | Anthropic Claude (MVP) | Best structured output quality        |
+| AI SDK       | @anthropic-ai/sdk      | Official client                       |
+| Validation   | zod                    | Validate model JSON output            |
+| Markdown     | marked                 | Convert comment markdown to HTML      |
+| UI           | Single HTML file       | No build step, no framework           |
+| Distribution | npm package            | `bin` entry for global install        |
 
 ## CLI Interface
 
@@ -33,20 +33,20 @@ reddit-scrutinizer <path> [options]
 
 ### Options
 
-| Flag | Type | Default | Description |
-|------|------|---------|-------------|
-| `--subreddit` | string | `"programming"` | Target subreddit voice (rust, lisp, programming, etc.) |
-| `--comments` | number | `40` | Target number of community comments |
-| `--max-depth` | number | `4` | Maximum reply nesting depth |
-| `--max-replies` | number | `3` | Number of OP (author) replies to generate |
-| `--style` | enum | `"balanced"` | balanced \| snarky \| supportive \| hostile |
-| `--model` | string | `"claude-sonnet-4-20250514"` | Anthropic model to use |
-| `--out` | string | `"./reddit-scrutiny.json"` | Output JSON path |
-| `--open` | boolean | `false` | Auto-open browser after generation |
-| `--port` | number | `3000` | Web UI server port |
-| `--no-ui` | boolean | `false` | Skip serving the web UI |
-| `--temperature` | number | `0.8` | Generation temperature |
-| `--seed` | number | auto | Seed for deterministic usernames/scores |
+| Flag            | Type    | Default                      | Description                                            |
+| --------------- | ------- | ---------------------------- | ------------------------------------------------------ |
+| `--subreddit`   | string  | `"programming"`              | Target subreddit voice (rust, lisp, programming, etc.) |
+| `--comments`    | number  | `40`                         | Target number of community comments                    |
+| `--max-depth`   | number  | `4`                          | Maximum reply nesting depth                            |
+| `--max-replies` | number  | `3`                          | Number of OP (author) replies to generate              |
+| `--style`       | enum    | `"balanced"`                 | balanced \| snarky \| supportive \| hostile            |
+| `--model`       | string  | `"claude-sonnet-4-20250514"` | Anthropic model to use                                 |
+| `--out`         | string  | `"./reddit-scrutiny.json"`   | Output JSON path                                       |
+| `--open`        | boolean | `false`                      | Auto-open browser after generation                     |
+| `--port`        | number  | `3000`                       | Web UI server port                                     |
+| `--no-ui`       | boolean | `false`                      | Skip serving the web UI                                |
+| `--temperature` | number  | `0.8`                        | Generation temperature                                 |
+| `--seed`        | number  | auto                         | Seed for deterministic usernames/scores                |
 
 ### Serve command (view previously generated files)
 
@@ -82,7 +82,7 @@ Comments use a **flat list with `parent_id` pointers** (easier for Claude to gen
 ```typescript
 interface ScrutinyOutput {
   schema_version: "1.0";
-  generated_at: string;                // ISO timestamp
+  generated_at: string; // ISO timestamp
   tool: { name: "reddit-scrutinizer"; version: string };
 
   input: {
@@ -112,16 +112,16 @@ interface ScrutinyOutput {
 
   simulation: {
     subreddit: {
-      name: string;                    // "rust"
-      display: string;                 // "r/rust"
+      name: string; // "rust"
+      display: string; // "r/rust"
     };
     post: Post;
-    comments: Comment[];               // flat list
+    comments: Comment[]; // flat list
   };
 }
 
 interface Post {
-  id: string;                          // "t3_abc123"
+  id: string; // "t3_abc123"
   title: string;
   body_md: string;
   body_html: string;
@@ -135,15 +135,15 @@ interface Post {
 }
 
 interface Comment {
-  id: string;                          // "t1_cmt001"
-  parent_id: string;                   // "t3_abc123" or "t1_cmt00X"
+  id: string; // "t1_cmt001"
+  parent_id: string; // "t3_abc123" or "t1_cmt00X"
   author: string;
   author_flair: string | null;
   is_op: boolean;
   body_md: string;
   body_html: string;
   score: number;
-  controversiality: number;            // 0 or 1
+  controversiality: number; // 0 or 1
   created_utc: number;
   depth: number;
   is_deleted: boolean;
@@ -190,13 +190,13 @@ interface ProjectDossier {
   languages: { name: string; pct: number; lines: number }[];
   build_system: string | null;
   framework: string | null;
-  dependencies: string[];              // top 20 by importance
+  dependencies: string[]; // top 20 by importance
   has_tests: boolean;
   has_ci: boolean;
   has_docs: boolean;
   license: string | null;
-  readme: string;                      // truncated
-  file_tree: string;                   // abbreviated directory listing
+  readme: string; // truncated
+  file_tree: string; // abbreviated directory listing
   excerpts: { path: string; content: string; why: string }[];
 }
 ```
@@ -209,16 +209,23 @@ Ship ~10 built-in packs as JSON files. Unknown subreddits: Claude infers the vib
 {
   "subreddit": "rust",
   "tone": ["technical", "direct", "earnest", "occasionally snarky"],
-  "pet_topics": ["safety", "performance", "error handling", "docs", "benchmarks", "unsafe"],
+  "pet_topics": [
+    "safety",
+    "performance",
+    "error handling",
+    "docs",
+    "benchmarks",
+    "unsafe"
+  ],
   "taboos": ["don't invent unstable features", "avoid excessive memes"],
   "archetypes": [
     { "type": "perf-nerd", "frequency": 0.15 },
     { "type": "safety-evangelist", "frequency": 0.15 },
-    { "type": "docs-stickler", "frequency": 0.10 },
-    { "type": "friendly-helper", "frequency": 0.20 },
+    { "type": "docs-stickler", "frequency": 0.1 },
+    { "type": "friendly-helper", "frequency": 0.2 },
     { "type": "skeptic", "frequency": 0.15 },
-    { "type": "pedant", "frequency": 0.10 },
-    { "type": "newbie", "frequency": 0.10 },
+    { "type": "pedant", "frequency": 0.1 },
+    { "type": "newbie", "frequency": 0.1 },
     { "type": "troll", "frequency": 0.05 }
   ],
   "common_flairs": ["Project", "Discussion", "Help", "Blog Post"],
@@ -387,6 +394,7 @@ reddit-scrutinizer/
 ## MVP Scope
 
 ### In scope
+
 - Single subreddit per invocation
 - Claude-only provider
 - 10 built-in vibe packs
@@ -397,6 +405,7 @@ reddit-scrutinizer/
 - `serve` command for viewing old results
 
 ### Out of scope (future)
+
 - Multiple providers (OpenAI, etc.)
 - Multiple subreddits per run
 - Caching/incremental generation
