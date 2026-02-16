@@ -113,12 +113,8 @@ async function run(path: string, options: RunOptions) {
   // 7. Optionally start UI server
   if (options.ui) {
     const { startServer } = await import("./ui/server");
-    await startServer(outPath, options.port, options.open);
-    console.log(chalk.cyan(`UI available at http://localhost:${options.port}`));
-
-    if (options.open) {
-      Bun.spawn(["open", `http://localhost:${options.port}`]);
-    }
+    const actualPort = await startServer(outPath, options.port, options.open);
+    console.log(chalk.cyan(`UI available at http://localhost:${actualPort}`));
 
     // Keep process alive
     await new Promise(() => {});

@@ -1,12 +1,15 @@
 import { readFile } from "node:fs/promises";
 import { resolve, join } from "node:path";
+import getPort from "get-port";
 
-export async function startServer(jsonPath: string, port: number, autoOpen: boolean): Promise<void> {
+export async function startServer(jsonPath: string, preferredPort: number, autoOpen: boolean): Promise<number> {
   const dataPath = resolve(jsonPath);
   const jsonData = await readFile(dataPath, "utf-8");
 
   const templatePath = join(import.meta.dir, "template.html");
   const template = await readFile(templatePath, "utf-8");
+
+  const port = await getPort({ port: preferredPort });
 
   const server = Bun.serve({
     port,
@@ -36,4 +39,6 @@ export async function startServer(jsonPath: string, port: number, autoOpen: bool
     const openCmd = process.platform === "darwin" ? "open" : "xdg-open";
     Bun.spawn([openCmd, `http://localhost:${server.port}`]);
   }
+
+  return server.port ?? port;
 }
