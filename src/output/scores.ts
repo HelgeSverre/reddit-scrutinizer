@@ -65,6 +65,7 @@ export function assignScores(
 
 export function assignTimestamps(
   post: Pick<Post, "created_utc">,
+  postId: string,
   comments: Pick<Comment, "parent_id" | "depth" | "created_utc" | "id">[],
   seed: number,
 ): void {
@@ -76,7 +77,7 @@ export function assignTimestamps(
 
   // Index comments by id for parent lookup
   const timeById = new Map<string, number>();
-  timeById.set(post.created_utc.toString(), baseTime);
+  timeById.set(postId, baseTime);
 
   // Process in order — top-level first, then deeper
   const sorted = [...comments].sort((a, b) => a.depth - b.depth);

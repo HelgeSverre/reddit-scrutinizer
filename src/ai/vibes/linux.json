@@ -1,0 +1,73 @@
+{
+  "subreddit": "linux",
+  "tone": ["opinionated", "technical", "cynical", "pedantic", "passionate", "news-driven", "tribal", "gatekeeping"],
+  "pet_topics": [
+    "Snap vs Flatpak vs AppImage packaging wars",
+    "Wayland vs X11 transition (niche DEs lagging, NVIDIA pain points)",
+    "systemd: scope creep vs modern necessity",
+    "GNOME vs KDE Plasma desktop environment wars",
+    "distro recommendations and comparisons (Arch, Fedora, Mint, NixOS)",
+    "Red Hat / IBM corporate behavior (RHEL source restrictions, CentOS Stream)",
+    "NVIDIA driver drama and gradual open-sourcing",
+    "immutable and atomic distros (Fedora Silverblue, NixOS, Universal Blue)",
+    "'Year of the Linux Desktop' (sincere and ironic usage)",
+    "kernel release notes and performance improvements",
+    "open-source supply chain security (xz Utils backdoor, maintainer burnout)",
+    "privacy, telemetry, and user tracking concerns",
+    "'Rewrite It In Rust' (ripgrep, fd, bat, Rust in the kernel)",
+    "GNU/Linux naming and FSF philosophy",
+    "suckless / minimalism philosophy and tiling window managers"
+  ],
+  "taboos": [
+    "posting support questions (redirected to r/linuxquestions or r/linux4noobs)",
+    "recommending Windows or macOS as viable alternatives",
+    "defending Snap or Canonical's closed-source store backend",
+    "dismissing privacy or freedom concerns as paranoia",
+    "posting memes or low-effort content (r/linuxmemes exists for that)",
+    "uninformed distro-bashing without technical grounding",
+    "corporate astroturfing or blog spam",
+    "telling someone to 'just Google it' or 'RTFM' rudely",
+    "dismissing systemd criticism as mere nostalgia",
+    "calling Linux 'just a hobby OS' or 'not ready for the desktop'"
+  ],
+  "archetypes": [
+    { "type": "greybeard-sysadmin", "frequency": 0.14, "description": "Used Linux since the 90s, references Slackware and Gentoo, prefers terminal to any GUI, skeptical of abstraction" },
+    { "type": "distro-hopper", "frequency": 0.12, "description": "Perpetually switching distros, currently on NixOS or Fedora Silverblue, was on Arch last month" },
+    { "type": "news-commentator", "frequency": 0.13, "description": "Reacts to Phoronix/LWN links with informed takes, adds context the article missed" },
+    { "type": "freedom-purist", "frequency": 0.09, "description": "Cares about GPL compliance and FSF principles, corrects 'open source' to 'free software', distrusts any CLA" },
+    { "type": "pragmatic-engineer", "frequency": 0.11, "description": "Uses Linux professionally in production, cares about stability and real-world tradeoffs over ideology" },
+    { "type": "arch-btw", "frequency": 0.07, "description": "Mentions Arch, AUR, or minimal install in most threads, derives identity from running a hands-on distro" },
+    { "type": "desktop-enthusiast", "frequency": 0.08, "description": "Passionate about DE/WM choice, theming, and workflow; overlaps with r/unixporn" },
+    { "type": "privacy-advocate", "frequency": 0.06, "description": "Brings up telemetry, tracking, and data sovereignty in most threads; recommends hardened Firefox" },
+    { "type": "helpful-corrector", "frequency": 0.07, "description": "Politely or pedantically corrects technical inaccuracies: 'Actually, Linux is just the kernel...'" },
+    { "type": "corporate-skeptic", "frequency": 0.05, "description": "Watches Red Hat/IBM, Canonical, and NVIDIA with deep suspicion; 'embrace, extend, extinguish' is in vocabulary" },
+    { "type": "lurker-reactor", "frequency": 0.05, "description": "Short low-effort comments, high volume low depth, links to Arch Wiki" },
+    { "type": "troll-provocateur", "frequency": 0.03, "description": "Posts 'just use Windows' or 'Linux will never be ready' to provoke" }
+  ],
+  "common_flairs": [
+    "News",
+    "Discussion",
+    "Software Release",
+    "Privacy/Security",
+    "Kernel",
+    "Hardware",
+    "Meta"
+  ],
+  "typical_replies": [
+    "This is why I use Flatpak instead of Snap.",
+    "Works on my machine. Have you checked the Arch Wiki?",
+    "Wayland isn't ready yet — come back in another 5 years.",
+    "This is what happens when you let IBM buy your company.",
+    "I've been running this on Arch with zero issues for three years.",
+    "Friendly reminder that Linux is just the kernel. The OS is GNU/Linux.",
+    "The real year of the Linux desktop was the friends we made along the way.",
+    "Just use Fedora. It just works and you get the latest packages.",
+    "Tell me you haven't read the man page without telling me you haven't read the man page.",
+    "Another day, another NVIDIA driver regression.",
+    "Imagine using a closed-source package manager in 2025.",
+    "NixOS solves this, but the learning curve is... something.",
+    "This thread again? See you all next week for the same debate.",
+    "Systemd: because your init system should also be your DNS resolver, your boot loader, and your home directory manager.",
+    "The xz incident proved we can't keep relying on unpaid volunteers to maintain critical infrastructure."
+  ]
+}

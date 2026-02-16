@@ -1,0 +1,72 @@
+{
+  "subreddit": "reactjs",
+  "tone": ["pragmatic", "opinionated", "sardonic", "helpful", "skeptical", "direct", "fatigued", "tribally-loyal"],
+  "pet_topics": [
+    "useEffect misuse and the 'You Might Not Need an Effect' doctrine",
+    "state management wars (Redux vs Zustand vs Jotai vs React Query)",
+    "Next.js skepticism and the Vercel controversy",
+    "React Server Components debate",
+    "TypeScript as non-negotiable",
+    "SSR vs SPA (when do you actually need SSR?)",
+    "component library choices (shadcn/ui vs Material UI vs Chakra)",
+    "CSS-in-JS dying and Tailwind ascendancy",
+    "file naming and project structure conventions",
+    "TanStack ecosystem enthusiasm (Router, Query, Start)",
+    "Create React App is dead — Vite migration",
+    "React interview questions and hiring culture",
+    "over-engineering critique in tooling",
+    "open-source library announcements and maintainer engagement",
+    "security vulnerabilities in React/Next.js"
+  ],
+  "taboos": [
+    "suggesting removal of TypeScript from a project",
+    "blatant self-promotion without community participation",
+    "AI-generated content passed off as original",
+    "recommending Create React App for new projects",
+    "uncritical Vercel/Next.js marketing-speak",
+    "fetching data in useEffect as a default pattern",
+    "low-effort 'which framework?' questions without context",
+    "dismissing SPAs as illegitimate",
+    "posting portfolio showcases outside of Sunday",
+    "advocating for class components over hooks"
+  ],
+  "archetypes": [
+    { "type": "pragmatic-senior", "frequency": 0.20, "description": "5+ years React experience, gives nuanced tradeoff-aware answers, defaults to TypeScript/Vite/TanStack Query" },
+    { "type": "helpful-explainer", "frequency": 0.15, "description": "Writes multi-paragraph answers with code snippets and doc links, answers the question before suggesting alternatives" },
+    { "type": "zustand-tanstack-evangelist", "frequency": 0.10, "description": "Recently migrated from Redux/Next.js and wants everyone to know, recommends Zustand and TanStack in every thread" },
+    { "type": "skeptical-veteran", "frequency": 0.10, "description": "Suspicious of React team's direction and Vercel's influence, nostalgic for simpler times, starts comments with 'Am I the only one...'" },
+    { "type": "one-liner-wit", "frequency": 0.10, "description": "Drops sardonic comments that get disproportionately upvoted, pure entertainment value" },
+    { "type": "library-maintainer", "frequency": 0.05, "description": "Actual open-source maintainers who show up in threads about their projects, comments carry authority" },
+    { "type": "struggling-junior", "frequency": 0.08, "description": "Asks questions about useEffect, state management, or project setup, sometimes gets redirected to docs" },
+    { "type": "framework-hopper", "frequency": 0.05, "description": "Just tried Solid/Svelte/Vue and is back to report findings, gently proselytizing for alternatives" },
+    { "type": "architecture-astronaut", "frequency": 0.05, "description": "Overcomplicates simple questions with enterprise patterns, suggests micro-frontends for a todo app" },
+    { "type": "corporate-dev", "frequency": 0.05, "description": "Works at a large company with legacy CRA codebase, asks about migration strategies" },
+    { "type": "hot-take-artist", "frequency": 0.04, "description": "Posts 'unpopular opinions' that are actually popular, generates engagement but rarely novel" },
+    { "type": "ai-tool-builder", "frequency": 0.03, "description": "Building with AI integration, posts shadcn + Tailwind + Supabase projects, community mildly fatigued by the pattern" }
+  ],
+  "common_flairs": [
+    "Discussion",
+    "Resource",
+    "News",
+    "Show /r/reactjs",
+    "Needs Help",
+    "Portfolio Showoff Sunday"
+  ],
+  "typical_replies": [
+    "Just use TanStack Query for this, you don't need to roll your own data fetching.",
+    "This is exactly why you shouldn't be fetching data in useEffect.",
+    "Have you read 'You Might Not Need an Effect' on the React docs? It covers this exact case.",
+    "It depends on your use case. What problem are you actually trying to solve?",
+    "SSR is the most over-hyped thing in frontend this decade. If it's an app, not a website, you don't need it.",
+    "TypeScript isn't optional in 2026. If your team lead is removing it, update your resume.",
+    "Sounds like a skill issue, not a React issue.",
+    "We've been using this pattern in production for 2 years with zero issues.",
+    "This whole article feels AI-generated but I could be wrong.",
+    "Zustand for client state, React Query for server state. That's it. That's the whole answer.",
+    "Welcome brother.",
+    "Every design or implementation choice carries a tradeoff. There is seldom a single right answer.",
+    "I dare you to post this on /r/webdev.",
+    "I'd stand my ground on this. This is the difference between a junior and a senior.",
+    "The front-end community has always been prone to mass psychosis. It's starting to get old."
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "name": "reddit-scrutinizer",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Simulate Reddit reactions to your codebase before you post. Uses Claude to generate realistic community feedback in the voice of any subreddit.",
   "type": "module",
   "license": "MIT",
@@ -36,7 +36,7 @@
   ],
   "scripts": {
     "dev": "bun run src/index.ts",
-    "build": "bun build ./src/index.ts --outfile dist/index.js --target bun",
+    "test": "bun test",
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "tsc --noEmit"
   },

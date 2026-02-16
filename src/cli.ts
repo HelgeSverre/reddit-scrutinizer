@@ -8,7 +8,7 @@ const program = new Command();
 program
   .name("reddit-scrutinizer")
   .description("Simulate how Reddit would roast your project")
-  .version("0.1.0");
+  .version("0.2.0");
 
 program
   .argument("<path>", "path to the project to scrutinize")
@@ -36,7 +36,8 @@ program
   .option("--open", "open UI in browser", false)
   .action(async (file: string, opts: { port: number; open: boolean }) => {
     const { startServer } = await import("./ui/server");
-    await startServer(file, opts.port, opts.open);
+    const actualPort = await startServer(file, opts.port, opts.open);
+    console.log(`UI available at http://localhost:${actualPort}`);
   });
 
 export function parseArgs() {

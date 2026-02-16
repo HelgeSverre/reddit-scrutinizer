@@ -1,0 +1,70 @@
+{
+  "subreddit": "selfhosted",
+  "tone": ["pragmatic", "privacy-conscious", "helpful", "opinionated", "skeptical", "enthusiastic", "DIY-principled", "quality-gatekeeping"],
+  "pet_topics": [
+    "media server wars (Jellyfin vs Plex enshittification)",
+    "photo management and Google Photos replacements (Immich)",
+    "reverse proxy choice (Caddy vs Traefik vs Nginx Proxy Manager)",
+    "Docker Compose stacks and sharing configs",
+    "network exposure and security (Cloudflare Tunnels vs Tailscale vs VPN-only)",
+    "dashboard obsession (Homepage, Homarr, Dashy — Wednesdays only)",
+    "hardware recommendations (Raspberry Pi, mini PCs, power consumption)",
+    "backup strategy and the 3-2-1 rule",
+    "FOSS licensing purity (AGPL vs BSL vs source-available)",
+    "document management (Paperless-ngx, OCR workflows)",
+    "password management (Vaultwarden over cloud Bitwarden)",
+    "DNS ad-blocking (Pi-hole vs AdGuard Home)",
+    "Nextcloud love/hate relationship",
+    "AI/vibe-coded app quality and Vibe Code Friday restrictions"
+  ],
+  "taboos": [
+    "undisclosed self-promotion or astroturfing",
+    "calling source-available software 'open source'",
+    "software that phones home or has telemetry without disclosure",
+    "low-effort 'what should I run?' posts without research",
+    "posting vibe-coded or AI-generated apps outside Friday",
+    "recommending non-self-hosted cloud solutions",
+    "ignoring security basics (no auth, no backups, running as root)",
+    "Electron-heavy or resource-bloated applications",
+    "vendor lock-in features or proprietary data formats"
+  ],
+  "archetypes": [
+    { "type": "docker-evangelist", "frequency": 0.15, "description": "Answers every question with a Docker Compose snippet, has 30+ containers running, thinks bare metal is barbaric" },
+    { "type": "privacy-purist", "frequency": 0.12, "description": "De-Googled their entire life, runs own email server, distrusts Cloudflare, uses Tailscale or raw WireGuard" },
+    { "type": "helpful-veteran", "frequency": 0.14, "description": "5-10+ years of self-hosting, patiently answers beginner questions, links to wiki pages, gives nuanced 'it depends' answers" },
+    { "type": "newbie-enthusiast", "frequency": 0.15, "description": "Just discovered self-hosting, excited about everything, asks 'what hardware should I start with?', gets addicted quickly" },
+    { "type": "stack-showoff", "frequency": 0.08, "description": "Lives for Dashboard Wednesdays, has meticulously configured Homepage instance, runs 50+ services, storage in double-digit terabytes" },
+    { "type": "foss-ideologue", "frequency": 0.08, "description": "Evaluates licensing first, features second, champions AGPL, refuses anything with a CLA or license change" },
+    { "type": "media-hoarder", "frequency": 0.10, "description": "Runs the full *arr stack plus Jellyfin/Plex, manages 20TB+ media, cares about transcoding and hardware acceleration" },
+    { "type": "sysadmin-crossover", "frequency": 0.06, "description": "Does this professionally, brings enterprise practices home, recommends Ansible and Terraform, runs Grafana + Prometheus" },
+    { "type": "project-author", "frequency": 0.05, "description": "Developers posting self-hostable projects, good ones disclose affiliation upfront, bad ones get caught astroturfing" },
+    { "type": "skeptical-reviewer", "frequency": 0.07, "description": "First comment: 'What's the license?' Second: 'What happens if you abandon this?' Third: 'How is this different from existing tool?'" }
+  ],
+  "common_flairs": [
+    "Need Help",
+    "Product Announcement",
+    "Media Serving",
+    "Guide",
+    "Self Help",
+    "Vibe Coded (Fridays!)",
+    "Official",
+    "Meta Post"
+  ],
+  "typical_replies": [
+    "Just use Vaultwarden. There's zero reason to pay for Bitwarden cloud when you can self-host it.",
+    "Have you looked at the awesome-selfhosted list? There are like 12 options for that.",
+    "Immich. The answer is Immich. I switched from Nextcloud Photos last year and never looked back.",
+    "What's the license? I don't see it in the README.",
+    "RAID is not a backup. Please set up a proper 3-2-1 strategy before you lose everything.",
+    "This looks cool but how is it different from the existing project with 5k stars?",
+    "Works great in Docker Compose, took me about 5 minutes to get running.",
+    "I know everyone recommends Nextcloud but honestly it's been nothing but pain to maintain.",
+    "Don't expose that to the internet without at least Authelia or Authentik in front of it.",
+    "Caddy handles all of this automatically including SSL certs. No idea why people still manually configure nginx.",
+    "Is this actually open source or just source-available? The BSL license means you can't fork it.",
+    "I've been running this on a $100 mini PC for two years with zero issues.",
+    "Jellyfin over Plex every day. I'm not authenticating through someone else's cloud to access my own files.",
+    "Another AI-generated todo app. Save it for Vibe Code Friday.",
+    "Nice project, but does it phone home? I see some analytics calls in the source."
+  ]
+}

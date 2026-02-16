@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 
-import { program, parseArgs } from "./cli";
+import { program } from "./cli";
 import chalk from "chalk";
 import { resolve } from "node:path";
 import { buildDossier } from "./scan/dossier";
@@ -110,14 +110,11 @@ async function run(path: string, options: RunOptions) {
   await writeOutput(output, outPath);
   console.log(chalk.green(`Written to ${outPath}`));
 
-  // 7. Optionally start UI server
+  // 7. Start UI server (unless --no-ui)
   if (options.ui) {
     const { startServer } = await import("./ui/server");
     const actualPort = await startServer(outPath, options.port, options.open);
     console.log(chalk.cyan(`UI available at http://localhost:${actualPort}`));
-
-    // Keep process alive
-    await new Promise(() => {});
   }
 }
 

@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
+import type { z } from "zod";
 
 export interface GenerateOptions {
   model: string;
@@ -15,6 +16,7 @@ export async function generateJSON<T>(
   system: string,
   userPrompt: string,
   options: GenerateOptions,
+  schema?: z.ZodType<T>,
 ): Promise<T> {
   const response = await client.messages.create({
     model: options.model,
@@ -29,14 +31,21 @@ export async function generateJSON<T>(
     .map((block) => block.text)
     .join("");
 
+  const validate = (parsed: unknown): T => {
+    if (schema) {
+      return schema.parse(parsed);
+    }
+    return parsed as T;
+  };
+
   // Try parsing as raw JSON first
   try {
-    return JSON.parse(text) as T;
+    return validate(JSON.parse(text));
   } catch {
     // Try extracting from markdown fences
     const fenceMatch = text.match(/```(?:json)?\s*\n([\s\S]*?)\n```/);
     if (fenceMatch) {
-      return JSON.parse(fenceMatch[1]) as T;
+      return validate(JSON.parse(fenceMatch[1]));
     }
     throw new Error(`Failed to parse JSON from response:\n${text.slice(0, 500)}`);
   }

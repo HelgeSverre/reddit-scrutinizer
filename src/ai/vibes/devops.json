@@ -1,0 +1,72 @@
+{
+  "subreddit": "devops",
+  "tone": ["pragmatic", "weary", "opinionated", "helpful-but-blunt", "anti-hype", "self-deprecating", "gatekeeping-adjacent"],
+  "pet_topics": [
+    "Kubernetes: overkill or essential?",
+    "Infrastructure-as-Code tooling wars (Terraform vs OpenTofu vs Pulumi vs CDK)",
+    "Platform Engineering vs DevOps (evolution or rebrand?)",
+    "CI/CD pipeline architecture (GitHub Actions vs GitLab CI vs Jenkins vs ArgoCD)",
+    "cloud cost optimization and FinOps (DHH's 37signals cloud exit)",
+    "observability stack debates (Datadog pricing vs Prometheus + Grafana + Loki)",
+    "'getting into DevOps' career questions",
+    "on-call burnout, alert fatigue, and toil",
+    "secrets management (Vault, SOPS, AWS Secrets Manager)",
+    "'DevOps is a culture, not a job title'",
+    "AI/LLM skepticism in ops (can ChatGPT write reliable Terraform?)",
+    "security shifting left (supply chain, container scanning, policy-as-code)",
+    "cloud repatriation and bare metal (the pendulum swinging back)",
+    "postmortems, incident culture, and blameless retrospectives",
+    "HashiCorp licensing drama (BSL, OpenTofu fork, cease-and-desist)"
+  ],
+  "taboos": [
+    "vendor self-promotion or thinly disguised product pitches",
+    "ClickOps without shame (manually clicking AWS Console for production)",
+    "'just use Kubernetes' for a 10-user app (resume-driven development)",
+    "treating DevOps as purely a tooling concern, ignoring culture",
+    "uncritical AI/LLM hype for infrastructure management",
+    "certifications as proof of competence over hands-on experience",
+    "posting career questions outside the monthly megathread",
+    "snowflake infrastructure and pet servers without acknowledging debt",
+    "blog spam and generic 'Top 10 DevOps Tools' SEO listicles"
+  ],
+  "archetypes": [
+    { "type": "battle-scarred-sre", "frequency": 0.15, "description": "8+ years on-call, answers with production war stories, says 'it depends' a lot, references the Google SRE book" },
+    { "type": "infrastructure-purist", "frequency": 0.12, "description": "Everything must be IaC, immutable, and reproducible, hates ClickOps, asks 'is that in version control?'" },
+    { "type": "kubernetes-pragmatist", "frequency": 0.11, "description": "Uses K8s daily but acknowledges complexity, pushes back on both 'K8s for everything' and 'K8s is dead'" },
+    { "type": "career-questioner", "frequency": 0.10, "description": "Junior or aspiring DevOps engineer asking about roadmaps and certifications, frequently redirected to megathread" },
+    { "type": "grumpy-sysadmin", "frequency": 0.10, "description": "Was a sysadmin before DevOps existed, resents title inflation, insists 'we were doing this 15 years ago'" },
+    { "type": "tool-evangelist", "frequency": 0.09, "description": "Strong opinion on one tool (Pulumi, Nix, ArgoCD, Tailscale), recommends it in every tangentially related thread" },
+    { "type": "cloud-cost-hawk", "frequency": 0.08, "description": "Obsessed with FinOps, posts about right-sizing and reserved instances, cites DHH's cloud exit in every cost discussion" },
+    { "type": "helpful-mentor", "frequency": 0.07, "description": "Provides thorough patient answers with documentation links, genuinely wants newcomers to succeed" },
+    { "type": "anti-hype-skeptic", "frequency": 0.06, "description": "'Platform Engineering is just DevOps renamed', 'AI won't replace your on-call', 'that startup tool will get rug-pulled'" },
+    { "type": "vendor-shill-detector", "frequency": 0.05, "description": "First to check poster's account history, calls out self-promotion, serves as community immune system" },
+    { "type": "drive-by-philosopher", "frequency": 0.04, "description": "Drops 'DevOps is a culture, not a role' and leaves, occasionally posts about Conway's Law and Team Topologies" },
+    { "type": "meme-contributor", "frequency": 0.03, "description": "YAML jokes, 'works on my machine' references, on-call suffering memes" }
+  ],
+  "common_flairs": [
+    "Discussion",
+    "Article/Blog",
+    "Help",
+    "Career Questions",
+    "Showcase",
+    "Rant",
+    "News"
+  ],
+  "typical_replies": [
+    "It depends on your scale, but honestly, you probably don't need Kubernetes for this.",
+    "If it's not in version control, it doesn't exist.",
+    "Sounds like a resume-driven architecture decision.",
+    "Have you looked at your AWS bill lately? That's the real incident.",
+    "DevOps is a culture, not a job title. Your company just wants a sysadmin who also writes YAML.",
+    "We tried that. It worked great until the on-call engineer quit.",
+    "This is just platform engineering with extra steps.",
+    "Terraform state file go brrrr.",
+    "Every tool is great until you have to debug it at 3 AM.",
+    "Docker Compose on a single VM would solve 90% of the problems people use K8s for.",
+    "This reads like a vendor blog post. Do you work for them?",
+    "That's a ClickOps confession. Put it in Terraform and never touch the console again.",
+    "Please post career questions in the monthly megathread.",
+    "We moved off Datadog and our observability budget dropped 80%. Just use Grafana.",
+    "Another day, another HashiCorp licensing controversy."
+  ]
+}

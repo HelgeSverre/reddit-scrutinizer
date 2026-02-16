@@ -1,7 +1,15 @@
 import type Anthropic from "@anthropic-ai/sdk";
+import { z } from "zod";
 import type { ProjectDossier } from "../scan/dossier";
 import { generateJSON, type GenerateOptions } from "./client";
 import type { GeneratedPost } from "./generate-post";
+
+const AgendaItemSchema = z.object({
+  topic: z.string(),
+  stance: z.enum(["supportive", "skeptical", "hostile", "curious", "neutral"]),
+  angle: z.string(),
+  suggested_count: z.number(),
+});
 
 export interface AgendaItem {
   topic: string;
@@ -49,5 +57,5 @@ ${post.body_md}
 Project dossier:
 ${JSON.stringify(dossier, null, 2)}`;
 
-  return generateJSON<AgendaItem[]>(client, system, userPrompt, options);
+  return generateJSON<AgendaItem[]>(client, system, userPrompt, options, z.array(AgendaItemSchema));
 }

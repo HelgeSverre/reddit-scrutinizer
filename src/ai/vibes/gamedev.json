@@ -1,0 +1,71 @@
+{
+  "subreddit": "gamedev",
+  "tone": ["pragmatic", "cautionary", "earnest", "gatekeepy-but-helpful", "weary", "opinionated", "self-deprecating", "skeptical-of-hype"],
+  "pet_topics": [
+    "engine wars (Unity vs Godot vs Unreal, post-Unity pricing fiasco)",
+    "scope creep and finishing games ('just finish it' mantra)",
+    "Steam wishlists, sales numbers, and postmortems with real revenue data",
+    "AI in game development (broadly skeptical for art/writing, mixed for code)",
+    "industry layoffs and job market viability (~45K jobs lost 2022-2025)",
+    "solo dev life, burnout, and mental health",
+    "marketing and discoverability (Steam Next Fest, building a following)",
+    "'how do I get started?' beginner questions (FAQ fatigue)",
+    "game feel, juice, and polish (screen shake, particles, hit-pause)",
+    "custom engine vs existing engine ('make games, not engines')",
+    "monetization ethics (loot boxes, predatory F2P mechanics)",
+    "game jams (Ludum Dare, Global Game Jam, itch.io)",
+    "postmortems and honest failure/success stories",
+    "the 'idea guy' problem (revenue-share with no skills)"
+  ],
+  "taboos": [
+    "naked self-promotion outside weekly threads (Screenshot Saturday, Feedback Friday)",
+    "NFTs, crypto, or blockchain games",
+    "AI-generated art presented as original work without disclosure",
+    "'I have an idea, I just need a team to build it' (the idea guy)",
+    "announcing an MMO or open-world RPG as a first project",
+    "asset flips (games made entirely from store-bought assets)",
+    "glorifying crunch as 'passion'",
+    "asking questions easily answered by the FAQ or search",
+    "defending predatory monetization mechanics"
+  ],
+  "archetypes": [
+    { "type": "scope-police", "frequency": 0.15, "description": "Tells every poster their project is too ambitious, suggests making Pong first, quotes 'make games, not engines'" },
+    { "type": "shipping-veteran", "frequency": 0.12, "description": "Has released games on Steam, gives grounded advice with real numbers, commands community respect" },
+    { "type": "eternal-beginner", "frequency": 0.14, "description": "Asks 'how do I get started?' despite the FAQ, has been learning for months without shipping, switches engines frequently" },
+    { "type": "engine-evangelist", "frequency": 0.10, "description": "Passionately advocates for their engine (increasingly Godot), treats engine choice as identity" },
+    { "type": "grizzled-industry-dev", "frequency": 0.08, "description": "Works or worked at a studio, provides insider perspective on pipelines and hiring, sometimes bitter about layoffs" },
+    { "type": "helpful-explainer", "frequency": 0.12, "description": "Writes detailed responses to technical questions, links to resources, explains concepts clearly" },
+    { "type": "postmortem-poster", "frequency": 0.06, "description": "Shares detailed breakdowns of development and commercial performance, valued whether the game succeeded or failed" },
+    { "type": "marketing-skeptic", "frequency": 0.05, "description": "Questions every promotional post's motives, quick to spot disguised marketing" },
+    { "type": "solo-dev-diarist", "frequency": 0.07, "description": "Shares progress updates and struggles: 'Month 14, finally got pathfinding working', oscillates between excitement and burnout" },
+    { "type": "contrarian", "frequency": 0.05, "description": "Takes opposing positions: 'Actually, making your own engine IS the right call', generates discussion and friction" },
+    { "type": "lurker-turned-poster", "frequency": 0.04, "description": "Finally posts after months of lurking, usually a specific question or first prototype, apologizes for 'dumb' questions" },
+    { "type": "ai-debater", "frequency": 0.02, "description": "Shows up in AI threads, either cautiously exploring tools or firmly anti-AI, these threads generate the most heat" }
+  ],
+  "common_flairs": [
+    "Discussion",
+    "Question",
+    "Article",
+    "Postmortem",
+    "Meta",
+    "Feedback Request",
+    "Resource / Tool"
+  ],
+  "typical_replies": [
+    "Your scope is way too big. Make a game jam game first, then think about your dream project.",
+    "Just use Godot. Seriously, after the Unity pricing fiasco there's no reason not to.",
+    "Finish. The. Game. You can always add features after release.",
+    "I shipped a game with 2,000 wishlists and made about $800 in the first month. AMA.",
+    "This looks like it uses AI-generated art. If it does, you should disclose that.",
+    "Have you actually playtested this with people who aren't your friends?",
+    "Nobody cares about your idea. Ideas are worthless. Execution is everything.",
+    "Scope creep killed my last two projects. Now I set a hard deadline and cut features ruthlessly.",
+    "The game industry laid off 10,000 people last year and you're asking if you should go to school for game dev? Think carefully.",
+    "This is a marketing post disguised as a discussion. At least be honest about it.",
+    "Join a game jam. You'll learn more in 48 hours than 6 months of tutorials.",
+    "Revenue share means 'I want free work.' Pay your artists.",
+    "The best engine is the one you actually ship a game with.",
+    "I've been solo dev for 3 years now. Take care of your mental health. This grind is not sustainable.",
+    "Steam Next Fest is basically mandatory for indie visibility now. Plan your demo around it."
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "subreddit": "ExperiencedDevs",
+  "tone": ["pragmatic", "world-weary", "direct", "measured", "collegial", "dry-humored", "gatekept", "anti-hype"],
+  "pet_topics": [
+    "IC vs Management track (Staff/Principal vs EM)",
+    "dealing with underperformers and non-technical managers",
+    "microservices vs monolith (community leans toward 'you probably don't need microservices')",
+    "AI/LLM tools and their limits (Copilot producing slop, code review guardrails)",
+    "interview process dysfunction (LeetCode resentment, system design prep)",
+    "Agile/Scrum theater and cargo cult implementations",
+    "technical debt and legacy systems (the big rewrite cautioned against)",
+    "return-to-office mandates and remote work debates",
+    "promotion politics and visibility in opaque leveling systems",
+    "code review culture (PR size, review turnaround, nitpicking vs substantive)",
+    "burnout and sustainability at senior+ levels",
+    "layoffs and market conditions post-2022",
+    "overengineering and YAGNI (Kubernetes for a CRUD app)",
+    "mentoring and growing others vs doing your own work"
+  ],
+  "taboos": [
+    "posting without 3+ years of experience (the cardinal sin)",
+    "generic 'should I switch companies' or compensation comparison posts",
+    "treating the sub like r/cscareerquestions",
+    "DEI or culture war bait posts",
+    "uncritical technology evangelism without acknowledging tradeoffs",
+    "LeetCode worship or grinding culture",
+    "hustle culture or 'just work harder' advice",
+    "self-promotion and blog spam without community engagement",
+    "absolute or dogmatic technical statements ('you should ALWAYS use X')",
+    "elitist dismissal of bootcamp or self-taught developers"
+  ],
+  "archetypes": [
+    { "type": "pragmatic-staff-engineer", "frequency": 0.20, "description": "8-15 years experience, gives measured context-rich advice, frequently says 'it depends' with the variables that matter" },
+    { "type": "battle-scarred-veteran", "frequency": 0.12, "description": "15-25+ years, drops wisdom like 'we called that SOA in 2005', occasionally writes drunk-post-style manifestos" },
+    { "type": "frustrated-mid-senior", "frequency": 0.15, "description": "5-8 years in, dealing with dysfunctional team or promotion that didn't happen, looking for validation and tactical advice" },
+    { "type": "process-skeptic", "frequency": 0.10, "description": "Allergic to Agile theater, unnecessary meetings, and corporate process overhead" },
+    { "type": "architecture-astronaut-spotter", "frequency": 0.08, "description": "Identifies overengineering, replies with 'YAGNI' and 'have you considered just using PostgreSQL?'" },
+    { "type": "reluctant-manager", "frequency": 0.08, "description": "Recently moved to management, misses coding, posts about IC-to-EM transition and people problems" },
+    { "type": "faang-insider", "frequency": 0.07, "description": "Provides insight into big-company leveling and promo cycles, sometimes tone-deaf about non-FAANG reality" },
+    { "type": "startup-survivor", "frequency": 0.06, "description": "Lived through early-stage chaos, shares war stories about tech debt and equity compensation reality" },
+    { "type": "ai-skeptic-realist", "frequency": 0.05, "description": "Pushes back on AI hype while acknowledging utility: 'It's a fancy autocomplete that occasionally writes correct code'" },
+    { "type": "career-optimizer", "frequency": 0.04, "description": "Focused on compensation and job hopping strategy, knows Levels.fyi numbers by heart" },
+    { "type": "lurking-junior", "frequency": 0.03, "description": "Less than 3 years but reads voraciously, occasionally slips into threads and gets redirected to weekly Ask thread" },
+    { "type": "documentation-evangelist", "frequency": 0.02, "description": "Appears in knowledge management threads, believes documentation is undervalued, cites Drunk Post wisdom" }
+  ],
+  "common_flairs": [
+    "General Discussion",
+    "Career",
+    "Ask Experienced Devs",
+    "Rant/Vent",
+    "Technical",
+    "Leadership/Management",
+    "Article/Resource"
+  ],
+  "typical_replies": [
+    "It depends. What's your team size and how often do you deploy?",
+    "Sounds like a people problem, not a technology problem.",
+    "You don't need microservices. You need better module boundaries.",
+    "The best code is the code you don't have to write.",
+    "Have you talked to your manager about this directly? Like, with actual words?",
+    "I've been doing this for 15 years and the answer hasn't changed: leave.",
+    "That's not Agile, that's just meetings with extra steps.",
+    "We tried this at my previous company. It ended exactly how you'd expect.",
+    "If your on-call is that bad, your system has a reliability problem, not a staffing problem.",
+    "This is a solved problem. Use Postgres.",
+    "Senior engineering is 80% communication and 20% code. The sooner you accept that, the better.",
+    "Your company doesn't have a tech debt problem. It has a prioritization problem.",
+    "The rewrite is never as easy as the pitch deck makes it look.",
+    "Nobody who's ever been on-call for a distributed monolith would recommend microservices as a default.",
+    "Document your decisions. Future you will thank present you."
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "subreddit": "kotlin",
+  "tone": ["pragmatic", "technically-grounded", "constructive", "cautiously-optimistic", "opinionated", "identity-defensive", "Android-skewed"],
+  "pet_topics": [
+    "Kotlin vs Java feature parity (every Java release sparks 'are Kotlin's advantages eroding?')",
+    "Kotlin Multiplatform (KMP) adoption and readiness",
+    "Compose Multiplatform vs native UI (Flutter, React Native comparisons)",
+    "Gradle build system frustrations (build times, cryptic errors, Kotlin DSL complexity)",
+    "coroutines patterns and structured concurrency (Flow, StateFlow, SharedFlow)",
+    "KAPT to KSP migration for faster builds",
+    "Ktor vs Spring Boot for Kotlin backend",
+    "Kotlin 2.0 and K2 compiler improvements",
+    "JetBrains IDE dependency and VS Code support",
+    "scope function usage debates (let, apply, also, run, with)",
+    "idiomatic Kotlin style (extension functions, sealed classes, DSL design)",
+    "functional programming with Arrow library (Raise DSL, typed error handling)",
+    "KotlinConf announcements and language roadmap",
+    "'Should I learn Kotlin?' career advice"
+  ],
+  "taboos": [
+    "writing Java-style code in Kotlin (verbose getters/setters, ignoring null safety)",
+    "dismissing Kotlin without benchmarks or experience",
+    "overusing scope functions until code is unreadable (deeply nested .let{}.also{}.apply{})",
+    "self-promotion without community participation",
+    "suggesting Kotlin is just a JetBrains marketing tool",
+    "claiming 'just use Java, it has everything now' without nuance",
+    "posting basic beginner Android questions (belongs on r/androiddev)",
+    "using !! (non-null assertion) liberally"
+  ],
+  "archetypes": [
+    { "type": "android-veteran", "frequency": 0.18, "description": "Migrated multiple apps from Java, strong opinions on Jetpack Compose vs XML, knows Android lifecycle inside out" },
+    { "type": "kotlin-enthusiast", "frequency": 0.14, "description": "Follows KotlinConf, shares blog posts, evangelizes features to colleagues; optimistic but informed" },
+    { "type": "idiomatic-purist", "frequency": 0.12, "description": "Reviews code for non-idiomatic patterns, suggests sealed classes over enums, quotes official style guides" },
+    { "type": "server-side-advocate", "frequency": 0.10, "description": "Uses Kotlin for backend (Spring Boot or Ktor), pushes back on 'Kotlin is just for Android' narrative" },
+    { "type": "kmp-pioneer", "frequency": 0.09, "description": "Early KMP adopter, shares war stories about iOS interop and Gradle config, cautiously positive but honest" },
+    { "type": "java-refugee", "frequency": 0.08, "description": "Recently switched from Java, asks about idioms and equivalents, sometimes writes 'Java in Kotlin syntax'" },
+    { "type": "gradle-sufferer", "frequency": 0.07, "description": "Comments in build system threads; burned by version conflicts and migration nightmares; therapeutic venting" },
+    { "type": "helpful-mentor", "frequency": 0.07, "description": "Patiently answers beginner questions, links to official docs, provides code snippets" },
+    { "type": "pragmatic-skeptic", "frequency": 0.06, "description": "Asks 'does this actually improve over the existing solution?' when new libraries or patterns are shared" },
+    { "type": "fp-adventurer", "frequency": 0.05, "description": "Uses Arrow, advocates for functional error handling with Raise/Either; sometimes intimidates newcomers" },
+    { "type": "drive-by-commenter", "frequency": 0.04, "description": "Short reactions ('nice!', 'been looking for this', 'Gradle strikes again'), low-effort but contributes engagement" }
+  ],
+  "common_flairs": [
+    "Discussion",
+    "Question",
+    "Article",
+    "Show & Tell",
+    "News",
+    "Meta",
+    "Resource"
+  ],
+  "typical_replies": [
+    "Use a sealed interface for this. Sealed classes are so 2020.",
+    "You're writing Java with Kotlin syntax. Let the language help you.",
+    "Have you migrated from KAPT to KSP yet? Your build times will thank you.",
+    "Coroutines + Flow already handle this. No need for RxJava anymore.",
+    "Gradle is the real enemy here, not Kotlin.",
+    "This is exactly why null safety matters. Try doing this in Java without 14 null checks.",
+    "Don't use !! — if you need it, your architecture is wrong.",
+    "Have you looked at Ktor for this? Spring Boot is overkill if you're already all-Kotlin.",
+    "Works great, but have you tested it with Kotlin 2.0 and the K2 compiler?",
+    "KMP is amazing in theory. In practice, prepare to fight Gradle for 3 days.",
+    "Extension functions are not the same as prototype pollution. They're scoped and typed.",
+    "This is what let is for. Stop writing if-not-null blocks manually.",
+    "Cool project! Any plans to add Compose Multiplatform support?",
+    "The scope functions are great until you chain five of them and nobody can read your code.",
+    "Java is catching up, sure. But I'll switch back when it gets coroutines and extension functions."
+  ]
+}

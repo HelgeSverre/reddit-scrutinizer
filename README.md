@@ -6,6 +6,12 @@
 
 Simulate Reddit reactions to your codebase before you post. Uses Claude to generate realistic community feedback in the voice of any subreddit.
 
+<p align="center">
+  <img src="assets/meta.png" alt="reddit-scrutinizer scrutinizing itself" width="700">
+  <br>
+  <em>Yes, we ran it on itself. Yes, it roasted us.</em>
+</p>
+
 ## How it works
 
 1. **Scan** — walks your project, detects languages/stack, reads key files
@@ -14,10 +20,19 @@ Simulate Reddit reactions to your codebase before you post. Uses Claude to gener
 4. **Comments** — generates a threaded comment tree with votes, flairs, awards, and OP replies
 5. **Output** — writes structured JSON and optionally opens a browser UI
 
+## Prerequisites
+
+- [Bun](https://bun.sh) v1.0 or later — this tool uses Bun-specific APIs (`Bun.serve`, `Bun.spawn`) and runs TypeScript directly
+- An [Anthropic API key](https://console.anthropic.com/)
+
 ## Install
 
 ```bash
-bun install
+# Install globally
+bun add -g reddit-scrutinizer
+
+# Or run directly without installing
+bunx reddit-scrutinizer ./my-project --subreddit rust
 ```
 
 ## Usage
@@ -27,16 +42,16 @@ bun install
 export ANTHROPIC_API_KEY=sk-ant-...
 
 # Scan a project and simulate r/rust feedback
-bunx reddit-scrutinizer ./my-project --subreddit rust
+reddit-scrutinizer ./my-project --subreddit rust
 
 # Snarky r/programming with 60 comments, auto-open browser
-bunx reddit-scrutinizer ./my-project --subreddit programming --comments 60 --style snarky --open
+reddit-scrutinizer ./my-project --subreddit programming --comments 60 --style snarky --open
 
 # Reproducible run with a fixed seed
-bunx reddit-scrutinizer ./my-project --subreddit typescript --seed 42
+reddit-scrutinizer ./my-project --subreddit typescript --seed 42
 
 # View a previous result
-bunx reddit-scrutinizer serve ./reddit-scrutiny.json --open
+reddit-scrutinizer serve ./reddit-scrutiny.json --open
 ```
 
 ## Options
@@ -67,5 +82,5 @@ Each subreddit has its own vibe pack defining tone, pet topics, taboos, commente
 View results from a previous run without re-generating:
 
 ```bash
-bunx reddit-scrutinizer serve ./reddit-scrutiny.json --port 3000 --open
+reddit-scrutinizer serve ./reddit-scrutiny.json --port 3000 --open
 ```

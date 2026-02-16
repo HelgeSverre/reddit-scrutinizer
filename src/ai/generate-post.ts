@@ -1,6 +1,15 @@
 import type Anthropic from "@anthropic-ai/sdk";
+import { z } from "zod";
 import type { ProjectDossier } from "../scan/dossier";
 import { generateJSON, type GenerateOptions } from "./client";
+
+const GeneratedPostSchema = z.object({
+  title: z.string(),
+  body_md: z.string(),
+  author: z.string(),
+  author_flair: z.string().nullable(),
+  post_flair: z.string().nullable(),
+});
 
 export interface GeneratedPost {
   title: string;
@@ -41,5 +50,5 @@ Return ONLY valid JSON with this exact shape:
 
   const userPrompt = `Here is the project dossier:\n\n${JSON.stringify(dossier, null, 2)}`;
 
-  return generateJSON<GeneratedPost>(client, system, userPrompt, options);
+  return generateJSON<GeneratedPost>(client, system, userPrompt, options, GeneratedPostSchema);
 }

@@ -1,0 +1,68 @@
+{
+  "subreddit": "MachineLearning",
+  "tone": ["critical-yet-curious", "academic", "sardonic", "rigorous", "stratified", "anti-hype", "exasperated"],
+  "pet_topics": [
+    "scaling laws and the Bitter Lesson",
+    "conference peer review dysfunction (Reviewer 2, ICLR AI-generated reviews scandal)",
+    "LLM capabilities and limitations (reasoning vs pattern matching)",
+    "open weights vs closed models (DeepSeek vs OpenAI, Llama vs GPT)",
+    "reproducibility crisis (50-75% of papers not reproducible)",
+    "Transformer alternatives (SSMs, Mamba, mixture-of-experts, hybrid architectures)",
+    "compute divide and GPU inequality between big labs and academia",
+    "test-time compute and reasoning models (o1/o3-style chain-of-thought)",
+    "benchmark gaming and contamination (Goodhart's Law in ML evaluation)",
+    "AI safety and alignment discourse (doomer vs e/acc, measured technical focus)",
+    "PhD value and career paths (academic job market vs industry salaries)",
+    "ethics of AI research practices (Reddit bot scandal, data scraping, dual-use)",
+    "conference culture burnout (71% negative sentiment in conference threads)",
+    "diffusion models, video generation, and multimodal AI"
+  ],
+  "taboos": [
+    "posting beginner questions (redirected to r/MLQuestions or r/LearnMachineLearning)",
+    "AGI speculation without technical substance (redirected to r/singularity)",
+    "self-promotion disguised as discussion (outside monthly self-promotion thread)",
+    "hype without evidence or sensational language without a paper link",
+    "SOTA claims without proper ablations or baselines",
+    "memes and low-effort content",
+    "career advice and salary questions (redirected to r/cscareerquestions)",
+    "claiming novel contributions that are just incremental modifications",
+    "dismissing reproducibility concerns or not releasing code"
+  ],
+  "archetypes": [
+    { "type": "paper-critic", "frequency": 0.15, "description": "Reads the actual paper, identifies methodological issues, asks about ablations, baselines, and statistical significance" },
+    { "type": "phd-student", "frequency": 0.14, "description": "Working on own research, comments from deep-but-narrow expertise, commiserates about reviews and compute access" },
+    { "type": "industry-practitioner", "frequency": 0.13, "description": "Works at a tech company, asks 'but does it scale?' and 'what's the latency?', skeptical of MNIST-only papers" },
+    { "type": "hype-deflator", "frequency": 0.12, "description": "Shows up whenever a post has a grandiose title: 'This is just existing technique with minor modification'" },
+    { "type": "helpful-explainer", "frequency": 0.10, "description": "Provides accessible paper breakdowns, links to blog posts and tutorials, explains notation" },
+    { "type": "big-lab-insider", "frequency": 0.07, "description": "Works at Google DeepMind, Meta FAIR, or OpenAI; sometimes the actual paper author doing informal AMA" },
+    { "type": "open-source-advocate", "frequency": 0.07, "description": "Champions reproducibility and code release, celebrates open weight releases, suspicious of closed-source results" },
+    { "type": "career-anxious", "frequency": 0.06, "description": "Worried about job market, whether PhD topic is still relevant, or if LLMs made their subfield obsolete" },
+    { "type": "safety-alignment-voice", "frequency": 0.05, "description": "Brings up alignment, dual-use concerns, and societal impact; gets pushback if too speculative" },
+    { "type": "bitter-reviewer", "frequency": 0.05, "description": "Channels conference reviewing frustrations into comments: 'Reviewer 2 would reject this'" },
+    { "type": "lurker-voter", "frequency": 0.06, "description": "Rarely comments but shapes what rises through upvotes; when they comment, it's brief" }
+  ],
+  "common_flairs": [
+    "[R] Research",
+    "[D] Discussion",
+    "[P] Project",
+    "[N] News",
+    "[R][D] Research + Discussion"
+  ],
+  "typical_replies": [
+    "Interesting work, but where are the ablations?",
+    "So this is basically the 2021 paper with a different loss function?",
+    "Cool, now try it on something other than MNIST/CIFAR-10.",
+    "No code release, no reproducibility, no credibility.",
+    "This wouldn't survive Reviewer 2 at a workshop, let alone NeurIPS.",
+    "The results look cherry-picked. Show me the variance across seeds.",
+    "This belongs on r/LearnMachineLearning, not here.",
+    "Author here — happy to answer questions about the paper.",
+    "Great results, but good luck reproducing this without 256 A100s.",
+    "We've been doing this in our field for a decade. Welcome to the party.",
+    "Another day, another Transformer variant claiming SOTA on three benchmarks.",
+    "The Bitter Lesson strikes again.",
+    "Impressive engineering, but I'm not sure what the scientific contribution is.",
+    "Table 1 numbers look suspiciously good. Is there test set contamination?",
+    "The paper is fine but the Twitter thread makes it sound like AGI. Classic."
+  ]
+}

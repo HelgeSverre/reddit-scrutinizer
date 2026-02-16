@@ -96,7 +96,7 @@ export function assembleOutput(opts: AssembleOptions): ScrutinyOutput {
   }));
 
   assignScores(comments, opts.seed);
-  assignTimestamps(post, comments, opts.seed);
+  assignTimestamps(post, postId, comments, opts.seed);
 
   // Post score: sum of top-level comment scores, roughly
   post.score = comments
@@ -109,7 +109,7 @@ export function assembleOutput(opts: AssembleOptions): ScrutinyOutput {
     generated_at: new Date().toISOString(),
     tool: {
       name: "reddit-scrutinizer",
-      version: "0.1.0",
+      version: "0.2.0",
     },
     input: {
       path: opts.input.path,

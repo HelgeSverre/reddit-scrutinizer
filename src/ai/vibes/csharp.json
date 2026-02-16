@@ -1,0 +1,68 @@
+{
+  "subreddit": "csharp",
+  "tone": ["technically-proud", "helpful-but-gatekeepy", "enterprise-minded", "opinionated", "defensive", "career-anxious", "meme-friendly"],
+  "pet_topics": [
+    "EF Core vs Dapper and ORM debates",
+    "Clean Architecture, Repository Pattern, and MediatR controversies",
+    "nullable reference types: love/hate relationship",
+    "new language features (primary constructors, collection expressions, records)",
+    "'Is C# dead?' and career viability anxiety",
+    "desktop UI framework wars (WPF vs MAUI vs Avalonia vs WinForms)",
+    "dependency injection patterns and service lifetimes",
+    "LINQ performance vs readability tradeoffs",
+    "Microsoft trust and .NET open source governance",
+    "async/await pitfalls (async void, ConfigureAwait, deadlocks)",
+    "AI/Copilot code quality debates",
+    "overengineering vs SOLID principles tension",
+    "Nick Chapsas and YouTube influencer reactions",
+    "Unity/Godot game development with C#"
+  ],
+  "taboos": [
+    "posting homework or zero-effort debug requests without trying first",
+    "saying C# is dead or irrelevant",
+    "recommending enterprise patterns (Clean Architecture + MediatR + CQRS) for a CRUD todo app",
+    "using Helper/Utility classes as a design strategy",
+    "uncritical self-promotion and blog spam",
+    "recommending WinForms for new greenfield projects",
+    "massive God-class files (2000+ lines)",
+    "dismissing .NET as 'Microsoft-only' or 'Windows-only'"
+  ],
+  "archetypes": [
+    { "type": "enterprise-architect", "frequency": 0.15, "description": "Recommends Clean Architecture and SOLID for everything, has strong opinions on service lifetimes and repository patterns" },
+    { "type": "language-enthusiast", "frequency": 0.14, "description": "Excited about new C# features, follows every .NET release, watches Nick Chapsas, writes love letters to the language" },
+    { "type": "pragmatic-senior", "frequency": 0.13, "description": "Pushes back on overengineering, prefers simple solutions, recommends Dapper when EF feels heavy" },
+    { "type": "helpful-mentor", "frequency": 0.12, "description": "Reviews code, suggests improvements, links to Microsoft docs, provides working examples" },
+    { "type": "career-worrier", "frequency": 0.10, "description": "Worries about job market, asks if .NET is still viable, reflects broader tech industry anxiety" },
+    { "type": "pattern-police", "frequency": 0.09, "description": "Points out code smells and SOLID violations, corrects naming conventions, suggests refactoring" },
+    { "type": "framework-debater", "frequency": 0.08, "description": "Strong opinions on WPF vs MAUI vs Avalonia, EF Core vs Dapper, Blazor vs React" },
+    { "type": "unity-dev", "frequency": 0.07, "description": "Comes from game development, different coding conventions, asks about features not in Unity's older runtime" },
+    { "type": "microsoft-watcher", "frequency": 0.05, "description": "Tracks .NET roadmap and Foundation drama, cautiously optimistic but remembers Silverlight and Windows Phone" },
+    { "type": "drive-by-snark", "frequency": 0.07, "description": "Short witty comments: 'Just use Dapper.' References memes and shared community frustrations" }
+  ],
+  "common_flairs": [
+    "Help",
+    "Discussion",
+    "News",
+    "Showcase",
+    "Article",
+    "Fun",
+    "Tool/Library"
+  ],
+  "typical_replies": [
+    "Just use Dapper if EF Core is too heavy for your use case.",
+    "This is a lot of abstractions for what's essentially a CRUD app.",
+    "Have you considered using records instead of writing all that boilerplate?",
+    "C# is not dead. It's one of the top 5 languages by every metric that matters.",
+    "That belongs on r/learncsharp, not here.",
+    "You don't need MediatR for this. Just inject your services directly.",
+    "Please, for the love of all that is holy, don't use async void.",
+    "Nullable reference types aren't perfect, but they're better than nothing.",
+    "Nick Chapsas just did a video on this exact topic.",
+    "Why are you still using WinForms for a new project in 2025?",
+    "This is why we have dependency injection. Stop newing up services manually.",
+    "MAUI is still not ready. Look at Avalonia if you need cross-platform desktop.",
+    "Helper classes are where code goes to die. Break that up into proper services.",
+    "Have you tried actually reading the Microsoft docs? They're surprisingly good.",
+    "Clean Architecture is great until you realize you've written 47 files for a todo app."
+  ]
+}

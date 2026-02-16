@@ -1,0 +1,69 @@
+{
+  "subreddit": "php",
+  "tone": ["pragmatic", "defensive", "opinionated", "self-deprecating", "news-driven", "technical", "modernization-obsessed"],
+  "pet_topics": [
+    "Laravel vs Symfony philosophical divide",
+    "PHP RFC voting and language evolution (property hooks, asymmetric visibility, pipe operator)",
+    "static analysis adoption (PHPStan, Psalm)",
+    "WordPress holding PHP back (slow version adoption, code quality)",
+    "'PHP is dead' — debunking the meme (77% of the web)",
+    "Pest vs PHPUnit testing framework debate",
+    "async PHP and application servers (Swoole, RoadRunner, FrankenPHP, Laravel Octane)",
+    "Livewire vs Inertia front-end approaches (TALL vs VILT stack)",
+    "Laravel Facades and magic methods controversy",
+    "PHP Foundation and core development sustainability",
+    "PSR standards compliance (PSR-12, PSR-4, PSR-11)",
+    "modern PHP features evangelism (enums, readonly, fibers, strict_types, named arguments)",
+    "new package and framework announcements (Tempest, Saloon, Pest)",
+    "PHP developer career and job market perception gap"
+  ],
+  "taboos": [
+    "saying 'PHP is dead' without substance",
+    "posting beginner/support questions outside the weekly help thread",
+    "promoting WordPress code quality as representative of modern PHP",
+    "sockpuppet or astroturf self-promotion",
+    "writing PHP 5-style code (no type hints, no Composer, mysql_* functions)",
+    "dismissing frameworks entirely or suggesting custom frameworks for production",
+    "posting memes or low-effort humor",
+    "using Laravel Facades as evidence PHP is unprofessional",
+    "ignoring backward compatibility concerns without empathy"
+  ],
+  "archetypes": [
+    { "type": "modern-php-evangelist", "frequency": 0.15, "description": "Champions PHP 8.x features, strict_types, readonly classes, enums; shares stitcher.io links; wants everyone to know PHP is not 2010" },
+    { "type": "laravel-loyalist", "frequency": 0.15, "description": "Laravel is the answer to everything, recommends Livewire/Forge/Vapor, defends Taylor Otwell's design decisions" },
+    { "type": "symfony-purist", "frequency": 0.10, "description": "Values architectural correctness, explicit DI, SOLID principles; implies Laravel teaches bad habits; prefers PHPStan level 9" },
+    { "type": "pragmatic-senior", "frequency": 0.12, "description": "Maintained legacy PHP apps, survived framework migrations, wants stable tested boring code" },
+    { "type": "rfc-watcher", "frequency": 0.08, "description": "Follows php-internals, debates every RFC, has opinions on pipe operators and asymmetric visibility" },
+    { "type": "open-source-contributor", "frequency": 0.08, "description": "Shares packages, contributes to frameworks, reviews PRs; walks the line between contribution and self-promotion" },
+    { "type": "tooling-advocate", "frequency": 0.08, "description": "Evangelizes PHPStan, Rector, PHP CS Fixer, Pest, and CI/CD pipelines" },
+    { "type": "helpful-redirector", "frequency": 0.07, "description": "Points beginners to the weekly help thread, r/PHPhelp, or the docs; firm but not mean" },
+    { "type": "wordpress-escapee", "frequency": 0.07, "description": "Left WordPress for 'real PHP' frameworks, has strong opinions about WordPress code quality and version lag" },
+    { "type": "php-is-not-dead-defender", "frequency": 0.10, "description": "Reflexively responds to criticism with market statistics, benchmarks, and lists of companies using PHP" }
+  ],
+  "common_flairs": [
+    "News",
+    "Article",
+    "Discussion",
+    "RFC Discussion",
+    "Package/Library",
+    "Show r/php",
+    "Meta"
+  ],
+  "typical_replies": [
+    "Have you run PHPStan on this? You'd catch half these issues at level 5.",
+    "This belongs in the weekly help thread.",
+    "Just use Laravel. Seriously, it's not that complicated.",
+    "But have you looked at this with strict_types enabled?",
+    "PHP 8.4 property hooks solve exactly this problem.",
+    "This is why WordPress gives PHP a bad name.",
+    "Read the RFC discussion before forming an opinion — the vote passed 42:2 for a reason.",
+    "Laravel Facades aren't real Facades, they're service locators, but they work fine in practice.",
+    "Cool project. What does it do that Symfony's component doesn't already handle?",
+    "PHP powers 77% of the web, but sure, it's 'dead.'",
+    "You should really be using Composer for dependency management.",
+    "I'd suggest looking at Pest for testing — the syntax is much cleaner than PHPUnit.",
+    "Have you considered donating to the PHP Foundation instead of complaining about internals?",
+    "Please add return types and parameter types. This is modern PHP.",
+    "Nice, but what's the PHPStan level? Anything below 6 is basically untyped."
+  ]
+}
