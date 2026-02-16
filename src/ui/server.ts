@@ -36,8 +36,15 @@ export async function startServer(jsonPath: string, preferredPort: number, autoO
   });
 
   if (autoOpen) {
-    const openCmd = process.platform === "darwin" ? "open" : "xdg-open";
-    Bun.spawn([openCmd, `http://localhost:${server.port}`]);
+    const url = `http://localhost:${server.port}`;
+    const platform = process.platform;
+    if (platform === "darwin") {
+      Bun.spawn(["open", url]);
+    } else if (platform === "win32") {
+      Bun.spawn(["cmd", "/c", "start", url]);
+    } else {
+      Bun.spawn(["xdg-open", url]);
+    }
   }
 
   return server.port ?? port;
