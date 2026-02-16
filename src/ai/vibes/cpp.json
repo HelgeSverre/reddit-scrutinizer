@@ -1,40 +1,54 @@
 {
   "subreddit": "cpp",
-  "tone": ["dense", "standards-obsessed", "meticulous", "argumentative", "knowledgeable", "intimidating"],
+  "tone": ["dense", "standards-obsessed", "meticulous", "argumentative", "knowledgeable", "defensive", "world-weary", "expert-oriented"],
   "pet_topics": [
     "undefined behavior and its consequences",
     "RAII and resource management",
     "move semantics and value categories",
-    "modules and their adoption",
+    "modules and their painfully slow adoption",
     "concepts and constraints",
     "ABI stability vs evolution",
-    "C++ safety profiles and Rust comparisons",
-    "committee process and paper reviews"
+    "Rust comparisons and the safety debate",
+    "Stroustrup's Profiles vs Safe C++ borrow checker",
+    "committee process and paper reviews",
+    "compile-time reflection (P2996) for C++26",
+    "White House/NSA memory-safety pressure",
+    "build systems, CMake, and package management (vcpkg/Conan)",
+    "coroutines usability and missing standard library support",
+    "compile times and header-only library tradeoffs"
   ],
   "taboos": [
     "using raw new/delete in modern C++",
     "ignoring undefined behavior as 'it works on my machine'",
     "saying C++ should just be replaced by Rust",
     "writing C-with-classes and calling it C++",
-    "dismissing backwards compatibility concerns"
+    "dismissing backwards compatibility concerns",
+    "posting beginner questions (belongs on r/cpp_questions)",
+    "promoting non-standard C++ extensions as if they are C++",
+    "saying 'just use exceptions' in embedded or performance-critical contexts"
   ],
   "archetypes": [
-    { "type": "standards-lawyer", "frequency": 0.20, "description": "Quotes the standard by section number, knows the difference between ill-formed and UB" },
-    { "type": "template-metaprogrammer", "frequency": 0.15, "description": "Writes compile-time raytracers, thinks constexpr should be everywhere, SFINAE veteran" },
-    { "type": "embedded-dev", "frequency": 0.12, "description": "Works on bare metal, cares about code size and determinism, no exceptions no RTTI" },
-    { "type": "safety-concerned", "frequency": 0.15, "description": "Worried about C++ falling behind Rust on safety, supports safety profiles and bounds checking" },
-    { "type": "backwards-compat-warrior", "frequency": 0.13, "description": "Maintains million-line codebases, every breaking change is a disaster, ABI must be stable" },
-    { "type": "modern-cpp-evangelist", "frequency": 0.15, "description": "Pushes C++20/23/26 features, smart pointers everywhere, 'if you're not using ranges you're missing out'" },
+    { "type": "standards-lawyer", "frequency": 0.17, "description": "Quotes the standard by section number, knows the difference between ill-formed and UB" },
+    { "type": "modern-cpp-evangelist", "frequency": 0.14, "description": "Pushes C++20/23/26 features, smart pointers everywhere, excited about ranges and std::expected" },
+    { "type": "safety-concerned", "frequency": 0.12, "description": "Worried about C++ falling behind Rust on safety, follows Profiles vs Safe C++ debates closely" },
+    { "type": "template-metaprogrammer", "frequency": 0.12, "description": "Writes compile-time everything, pushes constexpr boundaries, migrating from SFINAE to concepts, excited about P2996 reflection" },
+    { "type": "embedded-dev", "frequency": 0.10, "description": "Works on bare metal, cares about code size and determinism, -fno-exceptions -fno-rtti" },
+    { "type": "backwards-compat-warrior", "frequency": 0.10, "description": "Maintains million-line codebases, every breaking change is a disaster, ABI must be stable" },
+    { "type": "build-system-sufferer", "frequency": 0.08, "description": "Fights CMake daily, debates vcpkg vs Conan, knows FetchContent workarounds, dreams of better tooling" },
     { "type": "compiler-dev", "frequency": 0.05, "description": "Works on GCC/Clang/MSVC, provides implementation perspective on proposals" },
-    { "type": "reluctant-user", "frequency": 0.05, "description": "Uses C++ because they have to, wishes they could use something else, pragmatic complaints" }
+    { "type": "reluctant-user", "frequency": 0.05, "description": "Uses C++ because their domain demands it, pragmatic complaints about complexity" },
+    { "type": "gamedev-practitioner", "frequency": 0.04, "description": "Unreal Engine or custom engines, cares about compile times, virtual function overhead, data-oriented design" },
+    { "type": "committee-insider", "frequency": 0.03, "description": "Posts trip reports, provides insider perspective on proposal progress, carries outsized authority" }
   ],
   "common_flairs": [
     "Discussion",
     "Standard Proposal",
     "CppCon Talk",
+    "Meeting C++",
     "Library",
-    "Help",
-    "Compiler"
+    "Compiler",
+    "Blog Post",
+    "News"
   ],
   "typical_replies": [
     "That's undefined behavior. The compiler is allowed to do anything, including making your program appear to work.",
@@ -44,6 +58,13 @@
     "Are you compiling with `-fsanitize=address,undefined`? You should be.",
     "Move semantics don't move anything. They transfer ownership. Important distinction.",
     "This works on GCC but is actually ill-formed — Clang and MSVC will reject it.",
-    "We can't break ABI. Millions of lines of deployed code depend on the current layout."
+    "We can't break ABI. Millions of lines of deployed code depend on the current layout.",
+    "Have you tried it on Compiler Explorer? Here's a Godbolt link.",
+    "Modules should fix this, but nobody has a working implementation yet.",
+    "This is exactly why we need reflection in C++26.",
+    "Your CMakeLists.txt is the real problem here.",
+    "`constexpr` all the things.",
+    "Please post this in r/cpp_questions.",
+    "If you need this level of safety, maybe Rust is the right tool for this particular job."
   ]
 }

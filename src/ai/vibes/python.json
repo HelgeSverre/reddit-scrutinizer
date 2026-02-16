@@ -1,37 +1,50 @@
 {
   "subreddit": "python",
-  "tone": ["accessible", "pedantic-about-style", "welcoming", "practical", "opinionated", "diverse"],
+  "tone": ["collegial", "pedantic-about-style", "intermediate-focused", "practical", "opinionated", "diverse", "news-driven"],
   "pet_topics": [
     "PEP compliance and Pythonic idioms",
-    "type hints and mypy adoption",
-    "async/await and its complexity",
-    "packaging nightmares (pip, poetry, uv, conda)",
-    "the GIL and its future removal",
-    "Python's speed and optimization",
-    "data science vs web dev divide"
+    "type hints and mypy/pyright adoption",
+    "async/await complexity and when to use it",
+    "packaging nightmares (pip vs poetry vs uv vs conda)",
+    "free-threaded Python and the GIL removal journey",
+    "Python's speed and Rust-powered tooling (ruff, uv, pyo3)",
+    "data science vs web dev divide",
+    "FastAPI vs Django vs Flask framework wars",
+    "Polars vs pandas for data processing",
+    "AI/LLM tooling and Python's role in the AI ecosystem",
+    "Ruff as the one true linter/formatter",
+    "pyproject.toml and modern project structure"
   ],
   "taboos": [
     "using camelCase variable names",
     "ignoring PEP 8 without reason",
     "saying Python is too slow without benchmarks",
     "suggesting Python 2 for anything",
-    "writing Java-style classes with getters and setters"
+    "writing Java-style classes with getters and setters",
+    "posting beginner questions (belongs on r/learnpython)",
+    "bare except clauses without specifying exception type",
+    "using os.path instead of pathlib",
+    "using % formatting or .format() instead of f-strings",
+    "pip install without a virtual environment",
+    "self-promoting without community participation"
   ],
   "archetypes": [
-    { "type": "pythonista", "frequency": 0.18, "description": "Writes idiomatic code, quotes the Zen of Python, refactors everything to be 'Pythonic'" },
-    { "type": "data-scientist", "frequency": 0.17, "description": "Lives in Jupyter notebooks, pandas/numpy/sklearn stack, may not know what a virtualenv is" },
-    { "type": "django-dev", "frequency": 0.12, "description": "Django is the answer, the ORM is fine, don't @ them about FastAPI" },
-    { "type": "type-hint-advocate", "frequency": 0.13, "description": "Wants strict typing everywhere, uses mypy/pyright religiously, thinks Python needs more types" },
-    { "type": "gil-complainer", "frequency": 0.10, "description": "Brings up the GIL in every performance thread, excited about free-threaded Python" },
-    { "type": "automation-scripter", "frequency": 0.15, "description": "Uses Python to automate everything, 50-line scripts that save hours, practical to the bone" },
-    { "type": "packaging-sufferer", "frequency": 0.08, "description": "Has been burned by pip, setuptools, poetry, and conda — now just uses uv and prays" },
-    { "type": "helpful-mentor", "frequency": 0.07, "description": "Reviews code, suggests improvements, links to docs, genuinely wants beginners to succeed" }
+    { "type": "pythonista", "frequency": 0.15, "description": "Writes idiomatic code, quotes the Zen of Python, refactors everything to be Pythonic, recommends pathlib and dataclasses" },
+    { "type": "data-scientist", "frequency": 0.14, "description": "Lives in Jupyter notebooks, pandas/numpy/sklearn stack, increasingly exploring Polars and Marimo" },
+    { "type": "ml-engineer", "frequency": 0.12, "description": "PyTorch/transformers stack, discusses model training, CUDA issues, deployment, and LLM integration" },
+    { "type": "automation-scripter", "frequency": 0.12, "description": "Uses Python to automate everything, 50-line scripts that save hours, practical to the bone" },
+    { "type": "type-hint-advocate", "frequency": 0.10, "description": "Wants strict typing everywhere, uses mypy/pyright religiously, excited about Rust-based type checkers" },
+    { "type": "web-framework-partisan", "frequency": 0.10, "description": "Has strong opinions on FastAPI vs Django vs Flask, will recommend their framework for every use case" },
+    { "type": "toolchain-optimizer", "frequency": 0.08, "description": "Evangelizes ruff, uv, pyproject.toml, and pre-commit hooks; has strong opinions on CI/CD setup" },
+    { "type": "helpful-mentor", "frequency": 0.07, "description": "Reviews code, suggests improvements, links to docs, genuinely wants others to succeed" },
+    { "type": "packaging-sufferer", "frequency": 0.06, "description": "Has been burned by pip, setuptools, poetry, and conda — now uses uv and prays" },
+    { "type": "ai-skeptic", "frequency": 0.06, "description": "Pushes back on AI/LLM hype, questions Copilot code quality, worries about the profession's future" }
   ],
   "common_flairs": [
     "Discussion",
-    "Help",
     "News",
-    "Beginner Showcase",
+    "Showcase",
+    "Help",
     "Resource",
     "Tutorial"
   ],
@@ -43,6 +56,13 @@
     "Type hints don't make Python slower — they're ignored at runtime.",
     "If you need speed, try Polars instead of pandas.",
     "Beautiful is better than ugly. Readability counts.",
-    "Use `uv` for package management. Trust me, your life will improve."
+    "Use `uv` for package management. Trust me, your life will improve.",
+    "Just use `ruff`. It replaces Black, Flake8, and isort in one tool.",
+    "This belongs on r/learnpython, not r/python.",
+    "Use `dataclasses` — you don't need to write that `__init__` by hand.",
+    "Use f-strings. It's not 2015 anymore.",
+    "Have you looked at FastAPI for this? Much cleaner than Flask for APIs.",
+    "Use `pytest`. There's no reason to use `unittest` in new code.",
+    "Use Pydantic for that. Runtime validation is what it's built for."
   ]
 }

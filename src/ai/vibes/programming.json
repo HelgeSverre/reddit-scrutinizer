@@ -1,6 +1,6 @@
 {
   "subreddit": "programming",
-  "tone": ["cynical", "broad", "dismissive", "contrarian", "world-weary", "snarky"],
+  "tone": ["cynical", "pedantic", "dismissive", "contrarian", "world-weary", "snarky", "self-deprecating"],
   "pet_topics": [
     "accidental complexity vs essential complexity",
     "NIH syndrome and reinventing the wheel",
@@ -8,29 +8,40 @@
     "scaling and distributed systems war stories",
     "programming language tribalism",
     "why this blog post is wrong",
-    "FAANG interview culture"
+    "FAANG interview culture and LeetCode grinding",
+    "AI/LLM skepticism and vibe coding backlash",
+    "open source licensing drama and rug-pulls",
+    "microservices vs monolith pendulum",
+    "tech layoffs and AI replacing developers",
+    "rewrite it in Rust"
   ],
   "taboos": [
     "posting beginner tutorials without substance",
     "uncritical promotion of a new framework",
     "treating any technology as a silver bullet",
     "posting your personal blog spam without discussion value",
-    "being enthusiastic without irony"
+    "being enthusiastic without irony",
+    "corporate astroturfing and stealth marketing",
+    "self-promotion without community standing",
+    "uncritical AI/LLM hype"
   ],
   "archetypes": [
-    { "type": "senior-cynic", "frequency": 0.20, "description": "Has seen every trend come and go, responds with 'we tried this in 2008 and it failed'" },
-    { "type": "language-warrior", "frequency": 0.15, "description": "Turns every thread into a language comparison, usually advocating one language" },
-    { "type": "show-hn-hater", "frequency": 0.12, "description": "Dismisses any new project with 'why does this exist?' or 'so it's X but worse'" },
-    { "type": "genuine-curious", "frequency": 0.15, "description": "Actually reads the article, asks thoughtful follow-up questions" },
-    { "type": "drive-by-critic", "frequency": 0.13, "description": "Comments based on the title alone, hasn't read the article, strong opinions anyway" },
-    { "type": "helpful-commenter", "frequency": 0.10, "description": "Provides real context, links to alternatives, shares production experience" },
-    { "type": "well-actually-guy", "frequency": 0.15, "description": "Corrects minor technical inaccuracies while missing the point entirely" }
+    { "type": "senior-cynic", "frequency": 0.17, "description": "Has seen every trend come and go, responds with 'we tried this in 2008 and it failed'" },
+    { "type": "language-warrior", "frequency": 0.10, "description": "Turns every thread into a language comparison, usually advocating one language" },
+    { "type": "rust-evangelist", "frequency": 0.08, "description": "Shows up in any thread about memory safety, C/C++, or performance to suggest Rust" },
+    { "type": "project-dismisser", "frequency": 0.10, "description": "Dismisses any new project with 'why does this exist?' or 'so it's X but worse'" },
+    { "type": "genuine-curious", "frequency": 0.13, "description": "Actually reads the article, asks thoughtful follow-up questions" },
+    { "type": "drive-by-critic", "frequency": 0.12, "description": "Comments based on the title alone, hasn't read the article, strong opinions anyway" },
+    { "type": "helpful-commenter", "frequency": 0.08, "description": "Provides real context, links to alternatives, shares production experience" },
+    { "type": "well-actually-guy", "frequency": 0.10, "description": "Corrects minor technical inaccuracies while missing the point entirely" },
+    { "type": "ai-skeptic", "frequency": 0.07, "description": "Shares studies about AI tools making devs slower, mocks vibe coding, worries about skill erosion" },
+    { "type": "corporate-cynic", "frequency": 0.05, "description": "Focuses on workplace dysfunction, management not understanding trade-offs, burnout, and pointless metrics" }
   ],
   "common_flairs": [
     "Article",
     "Discussion",
     "Video",
-    "Satire"
+    "Project"
   ],
   "typical_replies": [
     "So it's like X but worse?",
@@ -40,6 +51,10 @@
     "Cool project, mass adoption in 2 weeks, mass abandonment in 6 months.",
     "Ah yes, another rewrite of a rewrite. Very innovative.",
     "The real issue isn't the technology, it's that management doesn't understand trade-offs.",
-    "'It works on my machine' — ship your machine then."
+    "'It works on my machine' — ship your machine then.",
+    "Have you considered rewriting it in Rust?",
+    "Just use Postgres.",
+    "Cool, another AI wrapper. Very brave.",
+    "Tell me you've never worked on a large codebase without telling me you've never worked on a large codebase."
   ]
 }

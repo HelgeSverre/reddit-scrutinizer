@@ -1,6 +1,6 @@
 {
   "subreddit": "golang",
-  "tone": ["pragmatic", "opinionated", "minimalist", "defensive", "productive", "repetitive"],
+  "tone": ["pragmatic", "opinionated", "minimalist", "defensive", "proverbial", "didactic", "ship-it-oriented"],
   "pet_topics": [
     "if err != nil verbosity",
     "generics usage and limitations",
@@ -8,30 +8,43 @@
     "simplicity as a feature",
     "Go vs Rust comparisons",
     "dependency management and modules",
-    "the lack of enums and sum types"
+    "the lack of enums and sum types",
+    "standard library vs frameworks (just use net/http)",
+    "ORM vs raw SQL (sqlc vs GORM vs sqlx)",
+    "project structure and architecture patterns",
+    "HTMX + Templ GOTH stack",
+    "range-over-func iterators",
+    "context.Context usage and misuse"
   ],
   "taboos": [
     "calling Go boring as an insult rather than a compliment",
     "suggesting Go needs inheritance",
-    "proposing features that add complexity",
-    "using interface{} when generics exist now",
-    "criticizing Rob Pike or the Go team without nuance"
+    "proposing features that feel un-Go-like (exceptions, ternary, map/filter/reduce)",
+    "telling people to 'just use Rust instead'",
+    "criticizing Rob Pike or the Go team without nuance",
+    "suggesting Go should have try-catch exception handling",
+    "advocating heavy use of external dependencies",
+    "over-engineering with Java-style design patterns"
   ],
   "archetypes": [
-    { "type": "simplicity-enforcer", "frequency": 0.22, "description": "Defends Go's design choices, 'a little copying is better than a little dependency'" },
-    { "type": "generics-debater", "frequency": 0.15, "description": "Either celebrating generics or arguing they don't go far enough or went too far" },
-    { "type": "error-handler", "frequency": 0.13, "description": "Has strong opinions about error wrapping, sentinel errors, and whether if err != nil is fine" },
-    { "type": "google-insider", "frequency": 0.08, "description": "References internal Google usage, knows the design motivations, speaks with authority" },
-    { "type": "performance-measurer", "frequency": 0.15, "description": "Benchmarks everything, compares to C/Rust, cares about GC pauses and allocation" },
-    { "type": "practical-builder", "frequency": 0.17, "description": "Ships services in Go, doesn't care about language wars, just wants to get work done" },
-    { "type": "frustrated-convert", "frequency": 0.10, "description": "Came from Python/Java, loves Go speed but misses sum types, enums, and ternary operators" }
+    { "type": "simplicity-enforcer", "frequency": 0.18, "description": "Defends Go's design choices, quotes proverbs like 'a little copying is better than a little dependency'" },
+    { "type": "practical-builder", "frequency": 0.15, "description": "Ships services in Go, doesn't care about language wars, just wants to get work done" },
+    { "type": "performance-measurer", "frequency": 0.12, "description": "Benchmarks everything, compares to C/Rust, cares about GC pauses and allocation" },
+    { "type": "stdlib-purist", "frequency": 0.10, "description": "The standard library already does this, you don't need Gin, use net/http, it's gotten better since 1.22" },
+    { "type": "generics-debater", "frequency": 0.10, "description": "Either celebrating generics or arguing they don't go far enough or went too far" },
+    { "type": "error-handler", "frequency": 0.10, "description": "Has strong opinions about error wrapping, sentinel errors, and whether if err != nil is fine" },
+    { "type": "frustrated-convert", "frequency": 0.08, "description": "Came from Python/Java, loves Go speed but misses sum types, enums, and ternary operators" },
+    { "type": "newcomer-helper", "frequency": 0.07, "description": "Answers beginner questions patiently, posts learning resources, guides newcomers through Go idioms" },
+    { "type": "authority-citer", "frequency": 0.05, "description": "References Go team talks, proposals, and design documents to settle debates authoritatively" },
+    { "type": "goth-stack-evangelist", "frequency": 0.05, "description": "Go + HTMX + Templ is the ideal full-stack setup and wants everyone to know about it" }
   ],
   "common_flairs": [
     "discussion",
     "help",
     "article",
     "show & tell",
-    "newbie"
+    "newbie",
+    "news"
   ],
   "typical_replies": [
     "if err != nil { return err } — it's fine, you get used to it.",
@@ -40,7 +53,15 @@
     "Just use a struct. Seriously, just use a struct.",
     "Goroutines are not threads. Please stop treating them like threads.",
     "The standard library already has this — you don't need a third-party package.",
-    "Rob Pike addressed this in his 2012 talk. The answer is still no.",
-    "Clear is better than clever. This is the Go way."
+    "Clear is better than clever. This is the Go way.",
+    "A little copying is better than a little dependency.",
+    "Errors are values.",
+    "Make the zero value useful.",
+    "Have you actually benchmarked this?",
+    "Why not just use net/http? It's gotten a lot better since 1.22.",
+    "This isn't Java. You don't need an interface for everything.",
+    "Concurrency is not parallelism.",
+    "Read Effective Go. Then read it again.",
+    "You're thinking about this like a Java developer. Go is different."
   ]
 }

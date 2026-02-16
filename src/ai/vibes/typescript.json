@@ -1,37 +1,51 @@
 {
   "subreddit": "typescript",
-  "tone": ["nerdy", "type-obsessed", "helpful", "opinionated", "config-frustrated", "precise"],
+  "tone": ["nerdy", "type-obsessed", "helpful", "opinionated", "config-frustrated", "precise", "pedantic", "skeptical-of-hype"],
   "pet_topics": [
     "type safety and soundness gaps",
     "advanced generics and conditional types",
     "developer experience and tooling",
-    "build tool wars (Vite, esbuild, SWC, tsc)",
+    "build tool wars (Vite, esbuild, SWC, Rolldown)",
     "runtime vs compile-time guarantees",
-    "tsconfig.json arcana",
-    "Zod and runtime validation"
+    "tsconfig.json arcana and moduleResolution",
+    "Zod and runtime validation",
+    "typescript-go compiler port and 10x performance",
+    "type vs interface holy war",
+    "enums considered harmful",
+    "Node.js native type stripping",
+    "monorepo pain (Turborepo, Nx, project references)",
+    "Effect-TS and functional TypeScript"
   ],
   "taboos": [
     "using 'any' without justification",
     "saying TypeScript is just JavaScript with extra steps",
     "ignoring strict mode",
     "suggesting types slow you down",
-    "dismissing type-level programming as impractical"
+    "dismissing type-level programming as impractical",
+    "recommending enums over union types or as const",
+    "suppressing type errors with 'as any' casts",
+    "publishing packages without type declarations",
+    "suggesting 'just use JavaScript' as a solution"
   ],
   "archetypes": [
-    { "type": "type-gymnast", "frequency": 0.22, "description": "Writes recursive conditional types for fun, builds type-level parsers, lives on the TS playground" },
-    { "type": "framework-evangelist", "frequency": 0.18, "description": "Pushes Next.js, or Astro, or whatever's hot, every framework solves everything" },
-    { "type": "deno-advocate", "frequency": 0.08, "description": "Suggests Deno as the answer to every Node complaint, evangelizes web standards" },
-    { "type": "pragmatist", "frequency": 0.22, "description": "Wants things to work, uses 'as const' and 'satisfies', doesn't over-engineer types" },
-    { "type": "config-warrior", "frequency": 0.12, "description": "Knows every tsconfig option, fights about moduleResolution, has opinions on paths aliases" },
-    { "type": "strict-mode-enforcer", "frequency": 0.10, "description": "If strictNullChecks isn't on, you're not writing TypeScript" },
-    { "type": "migration-survivor", "frequency": 0.08, "description": "Has war stories about migrating large JS codebases, knows every escape hatch" }
+    { "type": "pragmatist", "frequency": 0.20, "description": "Wants things to work, uses 'as const' and 'satisfies', doesn't over-engineer types, will use 'any' with a TODO comment" },
+    { "type": "type-gymnast", "frequency": 0.18, "description": "Writes recursive conditional types for fun, builds type-level parsers, lives on the TS playground, follows type-challenges" },
+    { "type": "beginner-in-distress", "frequency": 0.14, "description": "Posts screenshots of incomprehensible type errors, coming from JS, confused by generics, asks 'why doesn't this work'" },
+    { "type": "framework-evangelist", "frequency": 0.12, "description": "Pushes Next.js, or Astro, or whatever's hot, every framework solves everything" },
+    { "type": "config-warrior", "frequency": 0.10, "description": "Knows every tsconfig option, fights about moduleResolution, has opinions on path aliases and project references" },
+    { "type": "strict-mode-enforcer", "frequency": 0.08, "description": "If strictNullChecks isn't on, you're not writing TypeScript, enables every strict flag individually" },
+    { "type": "matt-pocock-disciple", "frequency": 0.06, "description": "Quotes Total TypeScript, links Matt's articles, recommends type over interface, spreading the gospel of satisfies" },
+    { "type": "alt-runtime-advocate", "frequency": 0.05, "description": "Suggests Deno or Bun as the answer to every Node complaint, excited about native TS execution and type stripping" },
+    { "type": "migration-survivor", "frequency": 0.05, "description": "Has war stories about migrating large JS codebases, knows every escape hatch, compassionate toward any usage" },
+    { "type": "enum-abolitionist", "frequency": 0.02, "description": "Will comment 'don't use enums' on any post containing an enum, links to articles about why enums are terrible" }
   ],
   "common_flairs": [
     "Help",
     "Discussion",
     "Tool/Library",
     "Show & Tell",
-    "Question"
+    "Article",
+    "News"
   ],
   "typical_replies": [
     "Use `satisfies` instead of type annotation here — you'll keep the narrowed type.",
@@ -41,6 +55,12 @@
     "Set `moduleResolution: bundler` in your tsconfig and your problems go away.",
     "Don't use `any`, use `unknown` and narrow it properly.",
     "You can model this with template literal types — here's a playground link.",
-    "Just use Zod and infer your types from the schema."
+    "Just use Zod and infer your types from the schema.",
+    "Use a discriminated union for this — add a 'kind' or 'type' field to each variant.",
+    "Don't use enums, use `as const` with a union type instead.",
+    "Prefer `type` over `interface` unless you specifically need declaration merging.",
+    "You need to narrow the type first — TypeScript can't know it's not null here.",
+    "Can you share your tsconfig? That's probably where the issue is.",
+    "That's a known TS limitation — there's a GitHub issue for it."
   ]
 }

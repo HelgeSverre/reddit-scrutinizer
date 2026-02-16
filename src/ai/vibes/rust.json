@@ -1,32 +1,42 @@
 {
   "subreddit": "rust",
-  "tone": ["earnest", "technical", "encouraging", "safety-conscious", "pedantic", "enthusiastic"],
+  "tone": ["earnest", "technical", "encouraging", "safety-conscious", "pedantic", "enthusiastic", "evangelical", "inclusive"],
   "pet_topics": [
     "ownership and borrowing",
     "lifetime annotations",
     "unsafe Rust and soundness",
-    "error handling patterns",
+    "error handling patterns (thiserror vs anyhow)",
     "cargo and build times",
+    "compile times and proc macro cost",
     "benchmarks and performance",
-    "async runtime choices",
-    "Rust for everything (RIIR)"
+    "async runtime choices and async Rust ergonomics",
+    "Rust for everything (RIIR)",
+    "Rust in the Linux kernel",
+    "Rust job market and industry adoption worries",
+    "learning curve and onboarding debates",
+    "crate ecosystem maturity"
   ],
   "taboos": [
     "suggesting garbage collection is fine",
     "dismissing memory safety concerns",
     "praising C++ without caveats",
     "calling Rust too complex without trying it",
-    "using unwrap() in production code"
+    "using unwrap() in production without justification",
+    "dismissively saying 'just use Go'",
+    "pushing back against community inclusivity norms",
+    "crate/blog spam without substantive discussion"
   ],
   "archetypes": [
-    { "type": "perf-nerd", "frequency": 0.15, "description": "Benchmarks everything, cares about zero-cost abstractions, drops Godbolt links" },
-    { "type": "safety-evangelist", "frequency": 0.18, "description": "Brings every discussion back to memory safety and soundness guarantees" },
-    { "type": "docs-stickler", "frequency": 0.08, "description": "Will link the relevant RFC or nomicon section, insists on proper documentation" },
-    { "type": "friendly-helper", "frequency": 0.22, "description": "Writes detailed, patient answers with code examples for newcomers" },
-    { "type": "skeptic", "frequency": 0.10, "description": "Asks hard questions about ergonomics, compile times, and ecosystem maturity" },
-    { "type": "pedant", "frequency": 0.10, "description": "Corrects terminology, distinguishes between safety and security, 'well actually' energy" },
-    { "type": "newbie", "frequency": 0.12, "description": "Fighting the borrow checker, asking about lifetimes, coming from Python/JS" },
-    { "type": "troll", "frequency": 0.05, "description": "Posts 'just use Go' or 'Rust is a cult' to provoke reactions" }
+    { "type": "friendly-helper", "frequency": 0.20, "description": "Writes detailed, patient answers with code examples for newcomers, the community's self-image" },
+    { "type": "safety-evangelist", "frequency": 0.15, "description": "Brings every discussion back to memory safety and soundness guarantees" },
+    { "type": "newbie", "frequency": 0.16, "description": "Fighting the borrow checker, asking about lifetimes, coming from Python/JS/C++, grateful for help" },
+    { "type": "perf-nerd", "frequency": 0.12, "description": "Benchmarks everything, cares about zero-cost abstractions, drops Godbolt links" },
+    { "type": "riir-evangelist", "frequency": 0.08, "description": "Shares 'X rewritten in Rust' projects, celebrates every new Rust adoption story, blazingly fast" },
+    { "type": "skeptic", "frequency": 0.08, "description": "Asks hard questions about ergonomics, compile times, async complexity, and ecosystem maturity" },
+    { "type": "pedant", "frequency": 0.07, "description": "Corrects terminology, distinguishes between safety and security, 'well actually' energy" },
+    { "type": "crate-author", "frequency": 0.06, "description": "Maintains open source crates, discusses API design decisions, shares Show r/rust content" },
+    { "type": "docs-stickler", "frequency": 0.05, "description": "Will link the relevant RFC or nomicon section, insists on proper documentation" },
+    { "type": "troll", "frequency": 0.03, "description": "Posts 'just use Go' or 'Rust is a cult' to provoke reactions" }
   ],
   "common_flairs": [
     "Discussion",
@@ -34,16 +44,23 @@
     "Show r/rust",
     "Help",
     "Project",
-    "RFC"
+    "Announcement"
   ],
   "typical_replies": [
     "Have you considered using `thiserror` for your error types?",
+    "Use `anyhow` for applications, `thiserror` for libraries.",
     "This compiles down to the same assembly as the C version — check Godbolt.",
     "The borrow checker is actually saving you from a use-after-free here.",
     "You probably want `Arc<Mutex<T>>` for shared mutable state across threads.",
     "I'd recommend reading the Rustonomicon section on this.",
     "Clippy would catch that — run `cargo clippy` on your project.",
     "Fearless concurrency isn't just marketing, it genuinely catches data races at compile time.",
-    "Welcome to Rust! Don't worry, fighting the borrow checker is a rite of passage."
+    "Welcome to Rust! Don't worry, fighting the borrow checker is a rite of passage.",
+    "Just `.clone()` it for now and optimize later.",
+    "If it compiles, it probably works.",
+    "The compiler error message is actually telling you exactly what to do.",
+    "Sounds like you want interior mutability — look at `RefCell` or `Cell`.",
+    "This is an XY problem — what are you actually trying to do?",
+    "`#[derive(Debug, Clone)]` should be on basically everything."
   ]
 }

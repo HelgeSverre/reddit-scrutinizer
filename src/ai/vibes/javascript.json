@@ -1,38 +1,50 @@
 {
   "subreddit": "javascript",
-  "tone": ["chaotic", "meme-heavy", "fatigued", "self-deprecating", "fast-moving", "divided"],
+  "tone": ["news-driven", "opinionated", "fatigued", "skeptical", "fast-moving", "divided", "self-deprecating"],
   "pet_topics": [
     "bundle size and tree-shaking",
-    "framework wars (React vs Vue vs Svelte vs Solid)",
+    "meta-framework wars (Next.js vs SvelteKit vs Nuxt vs Astro)",
     "npm ecosystem and dependency hell",
-    "backwards compatibility and TC39 proposals",
-    "is JavaScript actually good now?",
+    "TypeScript hegemony and holdouts",
+    "TC39 proposals (signals, decorators, pipe operator)",
     "the event loop and async gotchas",
-    "leftpad-style supply chain anxiety"
+    "npm supply chain security",
+    "runtime wars (Node vs Deno vs Bun)",
+    "Vercel/Next.js criticism and lock-in concerns",
+    "React Server Components controversy",
+    "Vite vs Webpack build tooling",
+    "AI-generated code quality and vibe coding skepticism"
   ],
   "taboos": [
     "suggesting JavaScript is a well-designed language unironically",
-    "recommending jQuery in 2024+ without irony",
+    "recommending jQuery unironically in the current year",
     "ignoring browser compatibility concerns",
     "posting 'JavaScript bad' without substance",
-    "adding another dependency for a one-liner"
+    "adding another dependency for a one-liner",
+    "posting beginner questions (belongs on r/LearnJavaScript)",
+    "dismissing TypeScript without justification",
+    "unattributed self-promotion and blog spam"
   ],
   "archetypes": [
-    { "type": "framework-hopper", "frequency": 0.20, "description": "Rewrites their app in a new framework every 6 months, always chasing the next thing" },
-    { "type": "vanilla-purist", "frequency": 0.15, "description": "The platform has everything you need, web components are the future, stop using React" },
-    { "type": "meme-lord", "frequency": 0.12, "description": "Posts '0.1 + 0.2' jokes, NaN memes, 'JS was made in 10 days' references" },
-    { "type": "npm-everything", "frequency": 0.10, "description": "There's a package for that, npm install is-odd, 400 dependencies for a todo app" },
-    { "type": "just-use-jquery", "frequency": 0.05, "description": "Ironic or sincere, nobody can tell, but jQuery still works and ships fast" },
-    { "type": "tc39-watcher", "frequency": 0.13, "description": "Follows proposals obsessively, excited about decorators, pipe operator, pattern matching" },
-    { "type": "exhausted-senior", "frequency": 0.15, "description": "Has webpack PTSD, remembers Bower, just wants things to work" },
-    { "type": "helpful-explainer", "frequency": 0.10, "description": "Patiently explains closures, prototypes, and 'this' binding for the 1000th time" }
+    { "type": "exhausted-senior", "frequency": 0.15, "description": "Has webpack PTSD, remembers Bower, just wants stability and things that work" },
+    { "type": "typescript-evangelist", "frequency": 0.13, "description": "'Just use TypeScript' is the answer to everything, can't believe people still write plain JS" },
+    { "type": "framework-hopper", "frequency": 0.12, "description": "Rewrites their app in a new framework every 6 months, always chasing the next thing" },
+    { "type": "vanilla-purist", "frequency": 0.10, "description": "The platform has everything you need, web components are the future, stop using React" },
+    { "type": "tc39-watcher", "frequency": 0.10, "description": "Follows proposals obsessively, excited about signals, decorators, and pattern matching" },
+    { "type": "nextjs-critic", "frequency": 0.08, "description": "Everything is a Vercel lock-in, RSC is overengineered, suspicious of corporate open source" },
+    { "type": "helpful-explainer", "frequency": 0.08, "description": "Patiently explains closures, prototypes, and 'this' binding for the 1000th time" },
+    { "type": "blog-poster", "frequency": 0.07, "description": "Shares their own articles, libraries, and projects; walks the line between contribution and self-promotion" },
+    { "type": "runtime-debater", "frequency": 0.05, "description": "Bun is faster, Node is stable, Deno is the future — posts benchmarks, argues about startup times" },
+    { "type": "npm-everything", "frequency": 0.05, "description": "There's a package for that, npm install is-odd, 400 dependencies for a todo app" },
+    { "type": "snarky-commenter", "frequency": 0.04, "description": "One-liner jokes, deadpan cynicism, node_modules black hole references" },
+    { "type": "just-use-jquery", "frequency": 0.03, "description": "Ironic or sincere, nobody can tell, but jQuery still works and ships fast" }
   ],
   "common_flairs": [
     "[AskJS]",
-    "[WIP]",
     "[ShowJS]",
     "News",
-    "Meme"
+    "Discussion",
+    "Article"
   ],
   "typical_replies": [
     "Ah yes, another framework. See you in 6 months when it's abandoned.",
@@ -42,6 +54,13 @@
     "node_modules heavier than a black hole, as is tradition.",
     "Works in Chrome. Ship it.",
     "The event loop is not that hard once you stop pretending it's multithreading.",
-    "npm audit found 47 vulnerabilities. 46 of them are in dev dependencies nobody uses."
+    "npm audit found 47 vulnerabilities. 46 of them are in dev dependencies nobody uses.",
+    "Just use TypeScript.",
+    "This is just a Vercel ad.",
+    "Cool, but what problem does this actually solve?",
+    "Have you tried Vite? Webpack is the real problem here.",
+    "I'll wait for the 1.0 before even looking at it.",
+    "Ask in r/LearnJavaScript.",
+    "Did an LLM write this?"
   ]
 }
