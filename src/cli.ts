@@ -42,7 +42,8 @@ program
   .option("--temperature <n>", "LLM temperature", toFloat, 0.8)
   .option("--seed <n>", "random seed for reproducibility", toInt)
   .option("--max-tokens <n>", "max output tokens per API call (default: auto-scaled, max 64000)", toInt)
-  .option("--batch-size <n>", "comments per batch when generating large counts", toInt, 50);
+  .option("--batch-size <n>", "comments per batch when generating large counts", toInt, 50)
+  .option("--api-key <key>", "Anthropic API key (overrides ANTHROPIC_API_KEY env var)");
 
 program
   .command("serve <file>")

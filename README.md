@@ -87,6 +87,7 @@ reddit-scrutinizer serve ./reddit-scrutiny.json --theme hackernews --open
 
 | Flag                 | Default                          | Description                                                              |
 | -------------------- | -------------------------------- | ------------------------------------------------------------------------ |
+| `--api-key <key>`    | —                                | Anthropic API key (overrides `ANTHROPIC_API_KEY` env var)                |
 | `--subreddit <name>` | `programming`                    | Target subreddit voice                                                   |
 | `--comments <n>`     | `40`                             | Number of comments to generate                                           |
 | `--max-depth <n>`    | `4`                              | Max reply nesting depth                                                  |

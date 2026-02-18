@@ -30,15 +30,31 @@ interface RunOptions {
   seed?: number;
   maxTokens?: number;
   batchSize: number;
+  apiKey?: string;
 }
 
 async function run(path: string, options: RunOptions) {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) {
-    console.error(chalk.red("Error: ANTHROPIC_API_KEY environment variable required"));
+  let apiKey: string | undefined;
+  let apiKeySource: string;
+
+  if (options.apiKey) {
+    apiKey = options.apiKey;
+    apiKeySource = "--api-key flag";
+    if (process.stderr.isTTY && !process.env.CI) {
+      console.error(chalk.yellow("⚠ API key passed via CLI flag — it may appear in shell history and process listings."));
+      console.error(chalk.yellow("  Prefer: export ANTHROPIC_API_KEY=sk-ant-..."));
+    }
+  } else if (process.env.ANTHROPIC_API_KEY) {
+    apiKey = process.env.ANTHROPIC_API_KEY;
+    apiKeySource = "ANTHROPIC_API_KEY env var";
+  } else {
+    console.error(chalk.red("Error: No API key provided"));
     console.error(chalk.dim("Set it: export ANTHROPIC_API_KEY=sk-ant-..."));
+    console.error(chalk.dim("Or pass: --api-key sk-ant-..."));
     process.exit(1);
   }
+
+  console.log(chalk.dim(`Using API key from ${apiKeySource}`));
 
   const seed = options.seed ?? Date.now();
   const rootPath = resolve(path);

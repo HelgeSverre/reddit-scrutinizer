@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reddit Scrutinizer — Let Reddit roast your code before Reddit does</title>
+<meta name="description" content="Simulate Reddit reactions to your codebase. AI-generated community feedback in the voice of any subreddit. Get roasted before you ship.">
+<link rel="icon" type="image/png" href="favicon.png">
+<meta property="og:title" content="Reddit Scrutinizer — Let Reddit roast your code before Reddit does">
+<meta property="og:description" content="AI-simulated Reddit threads that tear apart your codebase before real humans do. Pick a subreddit. Get the full experience.">
+<meta property="og:image" content="og.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Reddit Scrutinizer — r/oast your code">
+<meta name="twitter:description" content="AI-simulated Reddit threads that tear apart your codebase before real humans do.">
+<meta name="twitter:image" content="og.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a0a0a;
+    --surface: #141414;
+    --surface-2: #1c1c1c;
+    --border: #2a2a2a;
+    --text: #e8e6e3;
+    --text-dim: #7a7a7a;
+    --accent: #ff4500;
+    --accent-glow: #ff450044;
+    --upvote: #ff4500;
+    --downvote: #7193ff;
+    --green: #4ade80;
+    --mono: 'Space Mono', monospace;
+    --sans: 'Instrument Sans', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* ─── GRAIN OVERLAY ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    position: relative;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .hero > * { position: relative; z-index: 1; }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 0.4rem 1rem;
+    border-radius: 100px;
+    margin-bottom: 2rem;
+    animation: fadeDown 0.8s ease both;
+  }
+
+  .badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  h1 {
+    font-family: var(--mono);
+    font-size: clamp(2.5rem, 7vw, 5.5rem);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    max-width: 900px;
+    animation: fadeDown 0.8s 0.1s ease both;
+  }
+
+  h1 .slash { color: var(--accent); }
+
+  .tagline {
+    font-size: clamp(1.05rem, 2.5vw, 1.35rem);
+    color: var(--text-dim);
+    max-width: 560px;
+    margin-top: 1.5rem;
+    animation: fadeDown 0.8s 0.2s ease both;
+  }
+
+  .cta-group {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: fadeDown 0.8s 0.3s ease both;
+  }
+
+  .cta {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    padding: 0.85rem 2rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+  }
+
+  .cta-primary {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 0 30px var(--accent-glow);
+  }
+  .cta-primary:hover {
+    background: #e63e00;
+    box-shadow: 0 0 50px var(--accent-glow);
+    transform: translateY(-1px);
+  }
+
+  .cta-ghost {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .cta-ghost:hover {
+    border-color: var(--text-dim);
+    background: var(--surface);
+  }
+
+  .install-cmd {
+    font-family: var(--mono);
+    font-size: 0.9rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    margin-top: 2.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    animation: fadeDown 0.8s 0.4s ease both;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    position: relative;
+  }
+  .install-cmd:hover { border-color: var(--accent); }
+  .install-cmd code { color: var(--green); }
+  .install-cmd .copy-hint {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+    padding: 0.2rem 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+  }
+
+  /* ─── SCROLL ARROW ─── */
+  .scroll-arrow {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: bob 2s ease-in-out infinite;
+    color: var(--text-dim);
+    text-decoration: none;
+    z-index: 1;
+  }
+  .scroll-arrow svg { width: 24px; height: 24px; }
+
+  /* ─── COMMAND BUILDER ─── */
+  .builder-section {
+    padding: 0 2rem 6rem;
+    display: flex;
+    justify-content: center;
+  }
+
+  .builder-wrap {
+    max-width: 700px;
+    width: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: 0 40px 100px -20px rgba(0,0,0,0.6), 0 0 60px var(--accent-glow);
+    background: var(--surface);
+  }
+
+  .builder-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-2);
+  }
+  .builder-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .builder-dot:nth-child(1) { background: #ff5f57; }
+  .builder-dot:nth-child(2) { background: #febc2e; }
+  .builder-dot:nth-child(3) { background: #28c840; }
+  .builder-label {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    margin-left: auto;
+  }
+
+  .builder-body { padding: 1.5rem; }
+
+  .builder-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .builder-field { flex: 1; min-width: 140px; }
+  .builder-field label {
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+    margin-bottom: 0.35rem;
+  }
+  .builder-field select,
+  .builder-field input {
+    width: 100%;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    padding: 0.5rem 0.65rem;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.2s;
+    appearance: auto;
+  }
+  .builder-field select:focus,
+  .builder-field input:focus { border-color: var(--accent); }
+
+  .builder-output {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    color: var(--green);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  .builder-output:hover { border-color: var(--accent); }
+  .builder-output .copy-hint {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+    padding: 0.2rem 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  .builder-caption {
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    margin-top: 1.25rem;
+  }
+
+  /* ─── SECTIONS ─── */
+  section { padding: 6rem 2rem; }
+  section:nth-child(even) { background: var(--surface); }
+
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+  }
+
+  .section-title {
+    font-family: var(--mono);
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 1rem;
+  }
+
+  .section-sub {
+    color: var(--text-dim);
+    max-width: 600px;
+    margin-bottom: 3rem;
+  }
+
+  /* ─── PIPELINE ─── */
+  .pipeline {
+    display: grid;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .step {
+    display: grid;
+    grid-template-columns: 3.5rem 1fr;
+    background: var(--bg);
+    padding: 1.25rem 1.5rem;
+    align-items: start;
+    gap: 1rem;
+    transition: background 0.2s;
+  }
+  .step:hover { background: var(--surface-2); }
+
+  .step-num {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--accent);
+    padding-top: 0.15rem;
+  }
+
+  .step-title {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+
+  .step-desc {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+  }
+
+  .step-ai {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    margin-left: 0.5rem;
+  }
+
+  /* ─── SUBREDDITS ─── */
+  .sub-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .sub-chip {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    padding: 0.45rem 0.9rem;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    color: var(--text);
+    transition: all 0.2s;
+    cursor: default;
+  }
+  .sub-chip:hover, .sub-chip.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(255, 69, 0, 0.06);
+    cursor: pointer;
+  }
+  .sub-chip.active {
+    background: rgba(255, 69, 0, 0.12);
+    box-shadow: 0 0 12px var(--accent-glow);
+  }
+  .sub-chip::before {
+    content: 'r/';
+    color: var(--text-dim);
+  }
+  .sub-chip.active::before { color: var(--accent); opacity: 0.6; }
+
+  /* ─── SUBREDDIT HEADER ─── */
+  .sub-thread-header {
+    margin-top: 2rem;
+    padding: 1rem 1.25rem;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 12px 12px 0 0;
+    border-bottom: none;
+  }
+  .sub-thread-name {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .sub-thread-tone {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    margin-top: 0.25rem;
+  }
+
+  /* ─── FAKE COMMENT ─── */
+  .demo-comments {
+    border: 1px solid var(--border);
+    border-radius: 0 0 12px 12px;
+    padding: 1rem 1.25rem 0.5rem;
+    background: var(--bg);
+    min-height: 280px;
+    transition: opacity 0.25s;
+  }
+  .demo-comments.fading { opacity: 0; }
+
+  .fake-comment {
+    border-left: 2px solid var(--border);
+    padding: 0.75rem 0 0.75rem 1.25rem;
+    margin-bottom: 0.5rem;
+    transition: border-color 0.2s;
+  }
+  .fake-comment:hover { border-color: var(--accent); }
+
+  .fc-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    margin-bottom: 0.4rem;
+    flex-wrap: wrap;
+  }
+  .fc-user { font-weight: 600; color: var(--downvote); }
+  .fc-meta { color: var(--text-dim); }
+  .fc-flair {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    color: var(--text-dim);
+  }
+  .fc-body { font-size: 0.95rem; line-height: 1.55; }
+  .fc-score {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .fc-up { color: var(--upvote); }
+  .fc-reply { margin-left: 2rem; }
+  .fc-op {
+    font-family: var(--mono);
+    font-size: 0.55rem;
+    background: var(--downvote);
+    color: #fff;
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* ─── STYLES SECTION ─── */
+  .styles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .style-card {
+    background: var(--bg);
+    padding: 1.5rem;
+    transition: background 0.2s;
+  }
+  .style-card:hover { background: var(--surface-2); }
+
+  .style-name {
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 0.4rem;
+  }
+  .style-desc {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+  }
+
+  /* ─── USAGE ─── */
+  .usage-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .usage-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .usage-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+  .usage-dot:nth-child(1) { background: #ff5f57; }
+  .usage-dot:nth-child(2) { background: #febc2e; }
+  .usage-dot:nth-child(3) { background: #28c840; }
+  .usage-label {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    margin-left: auto;
+  }
+
+  .usage-code {
+    padding: 1.5rem;
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+  }
+  .usage-code .comment { color: var(--text-dim); }
+  .usage-code .cmd { color: var(--green); }
+  .usage-code .flag { color: var(--downvote); }
+  .usage-code .val { color: var(--accent); }
+
+  /* ─── FOOTER ─── */
+  footer {
+    padding: 4rem 2rem;
+    text-align: center;
+    border-top: 1px solid var(--border);
+  }
+
+  .footer-cta {
+    font-family: var(--mono);
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    line-height: 1.3;
+  }
+
+  .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+  .footer-links a {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--accent); }
+
+  .footer-copy {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    margin-top: 2rem;
+  }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  @keyframes bob {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(6px); }
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 640px) {
+    .step { grid-template-columns: 2.5rem 1fr; padding: 1rem; }
+    .fc-reply { margin-left: 1rem; }
+    .styles-grid { grid-template-columns: 1fr 1fr; }
+    .footer-links { flex-direction: column; gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════ HERO ════════════════════════ -->
+<div class="hero">
+  <div class="badge">v0.4.1 — now with Hacker News & Product Hunt themes</div>
+
+  <h1>Let <span class="slash">r/</span>eddit<br>roast your code</h1>
+
+  <p class="tagline">
+    AI-simulated Reddit threads that tear apart your codebase before real humans do. Pick a subreddit. Get the full experience — threaded comments, OP replies, flairs, upvotes, and all the unsolicited advice.
+  </p>
+
+  <div class="cta-group">
+    <a href="#install" class="cta cta-primary">Get roasted</a>
+    <a href="https://github.com/helgesverre/reddit-scrutinizer" class="cta cta-ghost" target="_blank">GitHub ↗</a>
+  </div>
+
+  <div class="install-cmd" onclick="navigator.clipboard.writeText('npx reddit-scrutinizer ./my-project --subreddit programming --open'); this.querySelector('.copy-hint').textContent = 'copied!';">
+    <code>npx reddit-scrutinizer ./my-project --subreddit programming --open</code>
+    <span class="copy-hint">copy</span>
+  </div>
+
+  <a href="#how" class="scroll-arrow">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg>
+  </a>
+</div>
+
+<!-- ════════════════════════ COMMAND BUILDER ════════════════════════ -->
+<div class="builder-section">
+  <div>
+    <div class="builder-wrap">
+      <div class="builder-bar">
+        <span class="builder-dot"></span>
+        <span class="builder-dot"></span>
+        <span class="builder-dot"></span>
+        <span class="builder-label">command builder</span>
+      </div>
+      <div class="builder-body">
+        <div class="builder-controls">
+          <div class="builder-field">
+            <label>Subreddit</label>
+            <select id="b-sub">
+              <option>programming</option><option>rust</option><option>typescript</option>
+              <option>javascript</option><option>python</option><option>golang</option>
+              <option>java</option><option>csharp</option><option>cpp</option>
+              <option>haskell</option><option>kotlin</option><option>php</option>
+              <option>lisp</option><option>reactjs</option><option>webdev</option>
+              <option>devops</option><option>linux</option><option>selfhosted</option>
+              <option>gamedev</option><option>experienceddevs</option>
+              <option>localllama</option><option>machinelearning</option>
+            </select>
+          </div>
+          <div class="builder-field">
+            <label>Style</label>
+            <select id="b-style">
+              <option>balanced</option><option>snarky</option><option>supportive</option><option>hostile</option>
+            </select>
+          </div>
+          <div class="builder-field">
+            <label>Comments</label>
+            <input type="number" id="b-comments" value="40" min="5" max="200" step="5">
+          </div>
+          <div class="builder-field">
+            <label>Theme</label>
+            <select id="b-theme">
+              <option>reddit</option><option>hackernews</option><option>producthunt</option>
+            </select>
+          </div>
+        </div>
+        <div class="builder-output" id="b-output" onclick="copyBuilderCmd()">
+          <span id="b-cmd"></span>
+          <span class="copy-hint" id="b-copy">copy</span>
+        </div>
+      </div>
+    </div>
+    <p class="builder-caption">Pick your options, copy the command, run it on your project.</p>
+  </div>
+</div>
+
+<!-- ════════════════════════ HOW IT WORKS ════════════════════════ -->
+<section id="how">
+  <div class="container">
+    <div class="section-label">How it works</div>
+    <h2 class="section-title">8 steps. 5 AI calls.<br>One brutal thread.</h2>
+    <p class="section-sub">Your code goes in. A fully realized Reddit thread comes out — with the pedantry, snark, and occasional genuine insight you'd expect from the real thing.</p>
+
+    <div class="pipeline">
+      <div class="step">
+        <span class="step-num">01</span>
+        <div>
+          <div class="step-title">Scan</div>
+          <div class="step-desc">Walks your project. Detects languages, stack, license, reads key files into a dossier.</div>
+        </div>
+      </div>
+      <div class="step">
+        <span class="step-num">02</span>
+        <div>
+          <div class="step-title">Discover</div>
+          <div class="step-desc">Builds a file index, scans for risk patterns — eval, innerHTML, TODO/FIXME, <code>as any</code>, the good stuff.</div>
+        </div>
+      </div>
+      <div class="step">
+        <span class="step-num">03</span>
+        <div>
+          <div class="step-title">Plan <span class="step-ai">🤖 AI</span></div>
+          <div class="step-desc">Claude picks up to 12 high-leverage code regions to read based on dossier + risk signals.</div>
+        </div>
+      </div>
+      <div class="step">
+        <span class="step-num">04</span>
+        <div>
+          <div class="step-title">Synthesize <span class="step-ai">🤖 AI</span></div>
+          <div class="step-desc">Reads the snippets. Produces an evidence pack — strengths, risks, citations, and comment ammo.</div>
+        </div>
+      </div>
+      <div class="step">
+        <span class="step-num">05</span>
+        <div>
+          <div class="step-title">Post <span class="step-ai">🤖 AI</span></div>
+          <div class="step-desc">Generates a realistic Reddit submission as if you posted your project.</div>
+        </div>
+      </div>
+      <div class="step">
+        <span class="step-num">06</span>
+        <div>
+          <div class="step-title">Agenda <span class="step-ai">🤖 AI</span></div>
+          <div class="step-desc">Generates 8–15 critique themes the community would focus on, grounded in actual evidence.</div>
+        </div>
+      </div>
+      <div class="step">
+        <span class="step-num">07</span>
+        <div>
+          <div class="step-title">Comments <span class="step-ai">🤖 AI</span></div>
+          <div class="step-desc">Full threaded comment tree with votes, flairs, awards, and OP replies. The whole circus.</div>
+        </div>
+      </div>
+      <div class="step">
+        <span class="step-num">08</span>
+        <div>
+          <div class="step-title">Output</div>
+          <div class="step-desc">Seeded scores & timestamps. Structured JSON. Optional browser UI. Done.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════ SUBREDDITS ════════════════════════ -->
+<section id="vibes">
+  <div class="container">
+    <div class="section-label">22 subreddits</div>
+    <h2 class="section-title">Every community has its own personality.</h2>
+    <p class="section-sub">Each subreddit has a vibe pack — tone, pet topics, taboos, commenter archetypes, and typical replies. Click one to see what the feedback actually sounds like.</p>
+
+    <div class="sub-grid" id="sub-grid"></div>
+
+    <div class="sub-thread-header" id="thread-header">
+      <div class="sub-thread-name" id="thread-name">r/programming</div>
+      <div class="sub-thread-tone" id="thread-tone"></div>
+    </div>
+    <div class="demo-comments" id="demo-comments"></div>
+  </div>
+</section>
+
+<!-- ════════════════════════ STYLES ════════════════════════ -->
+<section>
+  <div class="container">
+    <div class="section-label">Comment styles</div>
+    <h2 class="section-title">Dial the brutality up or down.</h2>
+    <p class="section-sub">From encouraging pats on the back to full-on public execution.</p>
+
+    <div class="styles-grid">
+      <div class="style-card">
+        <div class="style-name">--style balanced</div>
+        <div class="style-desc">The default. Realistic mix of praise, criticism, and tangents about vim keybindings.</div>
+      </div>
+      <div class="style-card">
+        <div class="style-name">--style snarky</div>
+        <div class="style-desc">Passive-aggressive "well actually" energy. Maximum pedantry. Someone will mention SOLID.</div>
+      </div>
+      <div class="style-card">
+        <div class="style-name">--style supportive</div>
+        <div class="style-desc">Wholesome mode. "Great first project!" vibes even if your code makes seasoned devs cry.</div>
+      </div>
+      <div class="style-card">
+        <div class="style-name">--style hostile</div>
+        <div class="style-desc">Unfiltered. The thread you'd get if you posted a jQuery project to r/rust.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════ INSTALL ════════════════════════ -->
+<section id="install">
+  <div class="container">
+    <div class="section-label">Get started</div>
+    <h2 class="section-title">One command. No install required.</h2>
+    <p class="section-sub">Requires an <a href="https://console.anthropic.com/" style="color: var(--accent); text-decoration: none;">Anthropic API key</a>. That's it.</p>
+
+    <div class="usage-block">
+      <div class="usage-bar">
+        <span class="usage-dot"></span>
+        <span class="usage-dot"></span>
+        <span class="usage-dot"></span>
+        <span class="usage-label">terminal</span>
+      </div>
+      <div class="usage-code">
+        <div><span class="comment"># Set your API key</span></div>
+        <div><span class="cmd">export</span> <span class="flag">ANTHROPIC_API_KEY</span>=<span class="val">sk-ant-...</span></div>
+        <br>
+        <div><span class="comment"># Or pass it inline</span></div>
+        <div><span class="cmd">npx</span> <span class="val">reddit-scrutinizer</span> ./my-project <span class="flag">--api-key</span> <span class="val">sk-ant-...</span></div>
+        <br>
+        <div><span class="comment"># Run on any project — no install needed</span></div>
+        <div><span class="cmd">npx</span> <span class="val">reddit-scrutinizer</span> ./my-project <span class="flag">--subreddit</span> <span class="val">rust</span> <span class="flag">--open</span></div>
+        <br>
+        <div><span class="comment"># Snarky r/programming with 60 comments</span></div>
+        <div><span class="cmd">npx</span> <span class="val">reddit-scrutinizer</span> ./my-project <span class="flag">--subreddit</span> <span class="val">programming</span> <span class="flag">--comments</span> <span class="val">60</span> <span class="flag">--style</span> <span class="val">snarky</span> <span class="flag">--open</span></div>
+        <br>
+        <div><span class="comment"># Try the Hacker News theme</span></div>
+        <div><span class="cmd">npx</span> <span class="val">reddit-scrutinizer</span> ./my-project <span class="flag">--theme</span> <span class="val">hackernews</span> <span class="flag">--open</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════ FOOTER ════════════════════════ -->
+<footer>
+  <div class="container">
+    <p class="footer-cta">Stop wondering what Reddit would say.<br><span style="color: var(--accent);">Find out.</span></p>
+    <div class="install-cmd" onclick="navigator.clipboard.writeText('npx reddit-scrutinizer ./my-project --open'); this.querySelector('.copy-hint').textContent = 'copied!';" style="margin: 0 auto;">
+      <code>npx reddit-scrutinizer ./my-project --open</code>
+      <span class="copy-hint">copy</span>
+    </div>
+    <div class="footer-links">
+      <a href="https://github.com/helgesverre/reddit-scrutinizer" target="_blank">GitHub</a>
+      <a href="https://www.npmjs.com/package/reddit-scrutinizer" target="_blank">npm</a>
+      <a href="https://github.com/helgesverre/reddit-scrutinizer/issues" target="_blank">Issues</a>
+      <a href="https://helgesver.re" target="_blank">by Helge Sverre</a>
+    </div>
+    <p class="footer-copy">MIT License · Built with Bun, TypeScript & Claude</p>
+  </div>
+</footer>
+
+<script>
+// ─── COMMAND BUILDER ───
+function updateBuilder() {
+  const sub = document.getElementById('b-sub').value;
+  const style = document.getElementById('b-style').value;
+  const comments = document.getElementById('b-comments').value;
+  const theme = document.getElementById('b-theme').value;
+  let cmd = `npx reddit-scrutinizer ./my-project --subreddit ${sub}`;
+  if (style !== 'balanced') cmd += ` --style ${style}`;
+  if (comments !== '40') cmd += ` --comments ${comments}`;
+  if (theme !== 'reddit') cmd += ` --theme ${theme}`;
+  cmd += ' --open';
+  document.getElementById('b-cmd').textContent = cmd;
+}
+function copyBuilderCmd() {
+  const cmd = document.getElementById('b-cmd').textContent;
+  navigator.clipboard.writeText(cmd);
+  const h = document.getElementById('b-copy');
+  h.textContent = 'copied!';
+  setTimeout(() => h.textContent = 'copy', 1500);
+}
+document.querySelectorAll('#b-sub, #b-style, #b-comments, #b-theme').forEach(
+  el => el.addEventListener('input', updateBuilder)
+);
+updateBuilder();
+
+// ─── SUBREDDIT VIBES DATA ───
+const vibes = {
+  programming: {
+    tone: "cynical · pedantic · contrarian · world-weary",
+    comments: [
+      { user: "u/seen_it_all_2008", body: "So it's like X but worse? We solved this 20 years ago, the author just doesn't know it.", score: "▲ 934", time: "4h" },
+      { user: "u/project_author", op: true, body: "We're aware of X. This handles the case where you need Y and Z, which X explicitly doesn't support.", score: "▲ 412", time: "3h", reply: true },
+      { user: "u/drive_by_opinions", body: "Did anyone actually read the article or are we all just reacting to the title?", score: "▲ 1.2k", time: "3h" },
+      { user: "u/rust_evangelist", flair: "🦀 rewrite it in Rust", body: "Have you considered rewriting it in Rust?", score: "▲ 287", time: "2h", reply: true, depth: 2 },
+    ]
+  },
+  rust: {
+    tone: "earnest · technical · encouraging · safety-conscious",
+    comments: [
+      { user: "u/borrow_checker_fan", flair: "🦀 mass rewrite in rust when?", body: "The borrow checker is actually saving you from a use-after-free here. If it compiles, it probably works.", score: "▲ 743", time: "5h" },
+      { user: "u/project_author", op: true, body: "Thanks! Still fighting lifetimes in the parser module, but the compiler errors are surprisingly helpful.", score: "▲ 521", time: "4h", reply: true },
+      { user: "u/newbie_rustacean", body: "Welcome to Rust! Don't worry, fighting the borrow checker is a rite of passage. Just .clone() it for now and optimize later.", score: "▲ 389", time: "3h", reply: true, depth: 2 },
+      { user: "u/perf_nerd_42", flair: "zero-cost abstractions", body: "This compiles down to the same assembly as the C version — check Godbolt. Clippy would catch that unused import too.", score: "▲ 198", time: "2h" },
+    ]
+  },
+  typescript: {
+    tone: "opinionated · pragmatic · type-system-obsessed",
+    comments: [
+      { user: "u/strict_mode_or_die", body: "No strict mode? <code>any</code> everywhere? This is just JavaScript with extra steps.", score: "▲ 672", time: "4h" },
+      { user: "u/project_author", op: true, body: "PR welcome. We migrated from JS last month and haven't finished typing everything yet.", score: "▲ 298", time: "3h", reply: true },
+      { user: "u/zod_enjoyer", flair: "runtime validation matters", body: "Use Zod for your API boundaries. Types disappear at runtime — you need validation where data enters the system.", score: "▲ 445", time: "3h" },
+      { user: "u/enum_appreciator", body: "Discriminated unions would clean up this entire switch statement. Also, <code>satisfies</code> is your friend.", score: "▲ 187", time: "2h", reply: true, depth: 2 },
+    ]
+  },
+  javascript: {
+    tone: "fatigued · skeptical · self-deprecating · opinionated",
+    comments: [
+      { user: "u/webpack_ptsd", flair: "remembers Bower", body: "Ah yes, another framework. See you in 6 months when it's abandoned.", score: "▲ 891", time: "5h" },
+      { user: "u/vanilla_js_purist", body: "You don't need a library for this, it's a 3-line function. The platform has everything you need.", score: "▲ 534", time: "4h" },
+      { user: "u/project_author", op: true, body: "It's not a framework, it's a CLI tool. But fair, the node_modules is heavier than a black hole.", score: "▲ 1.1k", time: "3h", reply: true },
+      { user: "u/just_use_typescript", body: "This is why we have TypeScript.", score: "▲ 276", time: "2h" },
+    ]
+  },
+  python: {
+    tone: "collegial · pedantic-about-style · practical",
+    comments: [
+      { user: "u/pythonista_3000", flair: "import this", body: "That's not Pythonic — use a list comprehension instead. Beautiful is better than ugly. Readability counts.", score: "▲ 623", time: "4h" },
+      { user: "u/pathlib_evangelist", body: "Just use <code>pathlib</code>. It's 2025, stop using <code>os.path</code>. Also, f-strings — it's not 2015 anymore.", score: "▲ 487", time: "3h" },
+      { user: "u/project_author", op: true, body: "Good catch on the os.path usage. Refactoring now. The f-strings I'll fight you on — .format() reads better in logging.", score: "▲ 312", time: "2h", reply: true },
+      { user: "u/uv_convert", flair: "pip install trauma", body: "Use <code>uv</code> for package management. Trust me, your life will improve. And add type hints — mypy will thank you.", score: "▲ 198", time: "1h" },
+    ]
+  },
+  golang: {
+    tone: "pragmatic · minimalist · defensive · proverbial",
+    comments: [
+      { user: "u/simplicity_enforcer", body: "if err != nil { return err } — it's fine, you get used to it. Go is boring and that's the point.", score: "▲ 756", time: "5h" },
+      { user: "u/stdlib_purist", flair: "just use net/http", body: "The standard library already has this — you don't need a third-party package. Why not just use net/http?", score: "▲ 534", time: "4h" },
+      { user: "u/project_author", op: true, body: "We started with net/http but needed middleware chaining. Open to dropping the dependency though.", score: "▲ 287", time: "3h", reply: true },
+      { user: "u/proverb_quoter", body: "A little copying is better than a little dependency. Clear is better than clever. Read Effective Go.", score: "▲ 198", time: "2h", reply: true, depth: 2 },
+    ]
+  },
+  java: {
+    tone: "enterprise · defensive · experienced · verbose",
+    comments: [
+      { user: "u/enterprise_architect", flair: "AbstractSingletonProxyFactory", body: "Where's your dependency injection? This entire thing should be using Spring Boot with proper IoC.", score: "▲ 543", time: "4h" },
+      { user: "u/project_author", op: true, body: "Intentionally kept it simple. Not every project needs Spring. Sometimes a main() method is enough.", score: "▲ 678", time: "3h", reply: true },
+      { user: "u/java21_enjoyer", body: "Use records and sealed interfaces. It's not 2008 anymore — modern Java is actually pleasant.", score: "▲ 312", time: "2h" },
+      { user: "u/maven_warrior", body: "Your pom.xml is missing the enforcer plugin. Also, consider switching to Gradle — the build times alone are worth it.", score: "▲ 145", time: "1h", reply: true, depth: 2 },
+    ]
+  },
+  csharp: {
+    tone: "professional · pragmatic · Microsoft-aware · evolving",
+    comments: [
+      { user: "u/dotnet_evangelist", flair: ".NET 9 or bust", body: "Are you still targeting .NET 6? That's going out of support. Migrate to .NET 9 — the performance gains alone are worth it.", score: "▲ 487", time: "4h" },
+      { user: "u/linq_lover", body: "This entire foreach loop can be a single LINQ expression. Also, use <code>var</code> — the type is obvious from context.", score: "▲ 356", time: "3h" },
+      { user: "u/project_author", op: true, body: "Valid points. We're on .NET 8 LTS — will move to 9 when the team has bandwidth. The LINQ refactor is on our radar.", score: "▲ 234", time: "2h", reply: true },
+      { user: "u/nullable_reference", body: "Enable nullable reference types. It catches SO many null reference bugs at compile time.", score: "▲ 167", time: "1h" },
+    ]
+  },
+  cpp: {
+    tone: "technical · defensive · standards-obsessed · experienced",
+    comments: [
+      { user: "u/modern_cpp_advocate", flair: "C++23 enjoyer", body: "Raw <code>new</code> and <code>delete</code>? In this economy? Use <code>std::unique_ptr</code>. This isn't C with classes anymore.", score: "▲ 678", time: "5h" },
+      { user: "u/project_author", op: true, body: "Fair. The raw pointers are in the hot path — we benchmarked and smart pointers added measurable overhead here.", score: "▲ 345", time: "4h", reply: true },
+      { user: "u/ub_hunter", body: "Line 47 is undefined behavior. The compiler is allowed to literally do anything. Including format your hard drive.", score: "▲ 512", time: "3h" },
+      { user: "u/cmake_sufferer", body: "Your CMakeLists.txt is a war crime. Please look at modern CMake practices. target_link_libraries exists.", score: "▲ 234", time: "2h" },
+    ]
+  },
+  haskell: {
+    tone: "academic · precise · dry-humored · intellectual",
+    comments: [
+      { user: "u/monad_explainer", flair: "a monad is just a monoid in the category of endofunctors", body: "A monad is just a monoid in the category of endofunctors, what's the problem? But seriously, consider using mtl style here.", score: "▲ 423", time: "5h" },
+      { user: "u/practical_haskeller", body: "If it compiles, it probably works. That's not a joke — the type system catches most bugs. Have you tried Hoogle? Search by type signature.", score: "▲ 356", time: "4h" },
+      { user: "u/project_author", op: true, body: "Coming from Python — the types feel like a superpower once you stop fighting them. Still confused by lenses though.", score: "▲ 287", time: "3h", reply: true },
+      { user: "u/lens_enthusiast", body: "The <code>lens</code> library has a steep learning curve, but once it clicks, you can't go back. Start with <code>makeLenses</code> and work up.", score: "▲ 198", time: "2h", reply: true, depth: 2 },
+    ]
+  },
+  kotlin: {
+    tone: "pragmatic · modern · enthusiastic · Android-adjacent",
+    comments: [
+      { user: "u/coroutine_fan", flair: "suspend fun life()", body: "Why are you using callbacks here? Kotlin coroutines + Flow would make this entire async chain readable.", score: "▲ 534", time: "4h" },
+      { user: "u/project_author", op: true, body: "Good call. We started in Java and migrated — some callback patterns survived the transition.", score: "▲ 312", time: "3h", reply: true },
+      { user: "u/data_class_enjoyer", body: "Use a <code>data class</code> here. You get equals, hashCode, copy, and destructuring for free.", score: "▲ 245", time: "2h" },
+      { user: "u/null_safety_nerd", body: "The <code>!!</code> operator should be a code smell. Use <code>?.let</code> or <code>?: return</code> instead of force-unwrapping.", score: "▲ 187", time: "1h" },
+    ]
+  },
+  php: {
+    tone: "pragmatic · defensive · modernization-obsessed",
+    comments: [
+      { user: "u/modern_php_8", flair: "strict_types or die", body: "Have you run PHPStan on this? You'd catch half these issues at level 5. Also, add return types — this is modern PHP.", score: "▲ 567", time: "4h" },
+      { user: "u/laravel_loyalist", body: "Just use Laravel. Seriously, it's not that complicated. Livewire would handle this entire frontend.", score: "▲ 423", time: "3h" },
+      { user: "u/project_author", op: true, body: "We're on Symfony actually — PHPStan at level 6. The untyped methods are from a legacy module we haven't migrated yet.", score: "▲ 312", time: "2h", reply: true },
+      { user: "u/php_not_dead", body: "PHP powers 77% of the web, but sure, it's 'dead.' Cool project. What does it do that Symfony's component doesn't already handle?", score: "▲ 198", time: "1h" },
+    ]
+  },
+  lisp: {
+    tone: "philosophical · recursive · self-referential · ancient",
+    comments: [
+      { user: "u/parenthesis_maximizer", flair: "(((()))))", body: "The code is the data and the data is the code. But your macros need work — you're not leveraging homoiconicity here.", score: "▲ 234", time: "6h" },
+      { user: "u/project_author", op: true, body: "Fair criticism. I'm still thinking in imperative patterns. Any recommended resources for macro design?", score: "▲ 187", time: "5h", reply: true },
+      { user: "u/emacs_is_an_os", body: "Have you considered implementing this as an Emacs package? Elisp would be natural for this.", score: "▲ 156", time: "4h" },
+      { user: "u/scheme_purist", body: "This would be more elegant in Scheme. Fewer special forms, cleaner semantics. Also, tail call optimization matters here.", score: "▲ 123", time: "3h", reply: true, depth: 2 },
+    ]
+  },
+  reactjs: {
+    tone: "pragmatic · sardonic · fatigued · tribally-loyal",
+    comments: [
+      { user: "u/useEffect_police", flair: "You Might Not Need an Effect", body: "That useEffect is doing way too much. You probably don't need an effect here — derive it from state instead.", score: "▲ 678", time: "4h" },
+      { user: "u/zustand_advocate", body: "Redux for this? In 2025? Use Zustand. Or even better, just use React Query — your 'state' is really server state.", score: "▲ 512", time: "3h" },
+      { user: "u/project_author", op: true, body: "You're right about the useEffect — refactored it to useMemo. The Redux stays for now, but Zustand is on the migration list.", score: "▲ 345", time: "2h", reply: true },
+      { user: "u/nextjs_skeptic", body: "Why Next.js for this? It's a Vercel lock-in play. A Vite SPA would be half the complexity.", score: "▲ 234", time: "1h" },
+    ]
+  },
+  webdev: {
+    tone: "inclusive · opinionated · trend-aware · divided",
+    comments: [
+      { user: "u/tailwind_convert", flair: "utility-first or bust", body: "Why write custom CSS when Tailwind exists? This entire stylesheet could be 20 utility classes.", score: "▲ 534", time: "4h" },
+      { user: "u/semantic_html_nerd", body: "A <code>&lt;div&gt;</code> soup with no ARIA labels. Screen readers can't navigate this. Accessibility isn't optional.", score: "▲ 678", time: "3h" },
+      { user: "u/project_author", op: true, body: "Good catch on accessibility — adding ARIA labels now. The Tailwind debate I'll sit out of.", score: "▲ 312", time: "2h", reply: true },
+      { user: "u/htmx_enjoyer", body: "This SPA could be 10 lines of HTMX and a server endpoint. Not everything needs a build step.", score: "▲ 234", time: "1h" },
+    ]
+  },
+  devops: {
+    tone: "pragmatic · weary · anti-hype · blunt",
+    comments: [
+      { user: "u/k8s_is_overkill", flair: "just use a VM", body: "Kubernetes for a single service with 100 req/s? A $5 VPS and a systemd unit file would do the same thing.", score: "▲ 891", time: "5h" },
+      { user: "u/project_author", op: true, body: "It's running in an existing cluster. Adding a deployment was easier than provisioning a new VM.", score: "▲ 456", time: "4h", reply: true },
+      { user: "u/terraform_purist", body: "Your infra isn't in code? That's not DevOps, that's clicking buttons in a console and praying.", score: "▲ 567", time: "3h" },
+      { user: "u/oncall_survivor", flair: "page me at 3am, I dare you", body: "No health checks, no readiness probes, no alerts. Who's getting paged when this falls over at 2am?", score: "▲ 345", time: "2h" },
+    ]
+  },
+  linux: {
+    tone: "opinionated · pedantic · passionate · tribal · gatekeeping",
+    comments: [
+      { user: "u/arch_btw", flair: "I use Arch btw", body: "Works on my machine. Have you checked the Arch Wiki? It has a comprehensive article on this exact issue.", score: "▲ 567", time: "5h" },
+      { user: "u/gnu_slash_linux", body: "Friendly reminder that Linux is just the kernel. The OS is GNU/Linux. Richard Stallman would like a word.", score: "▲ 234", time: "4h" },
+      { user: "u/project_author", op: true, body: "Tested on Fedora 41 and Ubuntu 24.04. PRs welcome for other distros.", score: "▲ 312", time: "3h", reply: true },
+      { user: "u/systemd_skeptic", flair: "init freedom", body: "Systemd: because your init system should also be your DNS resolver, your boot loader, and your home directory manager.", score: "▲ 445", time: "2h" },
+    ]
+  },
+  selfhosted: {
+    tone: "pragmatic · privacy-conscious · helpful · DIY-principled",
+    comments: [
+      { user: "u/docker_compose_life", flair: "compose up && walk away", body: "Where's the Docker Compose file? If I can't <code>docker compose up</code> in under 30 seconds, I'm not interested.", score: "▲ 678", time: "4h" },
+      { user: "u/project_author", op: true, body: "Fair point — adding a docker-compose.yml to the repo this week. For now it's just a binary.", score: "▲ 345", time: "3h", reply: true },
+      { user: "u/tailscale_evangelist", body: "Please don't expose this to the public internet. Tailscale or WireGuard, then reverse proxy with Caddy.", score: "▲ 512", time: "3h" },
+      { user: "u/backup_preacher", flair: "3-2-1 or cry", body: "Cool, but what's the backup strategy? If it's not in your 3-2-1 plan, it doesn't exist.", score: "▲ 234", time: "2h" },
+    ]
+  },
+  gamedev: {
+    tone: "pragmatic · cautionary · earnest · scope-aware",
+    comments: [
+      { user: "u/scope_creep_detector", flair: "just ship it", body: "Looks cool but how long have you been working on this? The graveyard of unfinished games is full of ambitious tech demos.", score: "▲ 567", time: "5h" },
+      { user: "u/project_author", op: true, body: "6 months in, targeting a Steam demo for Next Fest. Keeping scope small — one mechanic, done well.", score: "▲ 423", time: "4h", reply: true },
+      { user: "u/godot_convert", body: "Have you considered Godot? After the Unity pricing fiasco, half of us migrated. The 4.x release is actually great.", score: "▲ 345", time: "3h" },
+      { user: "u/juice_enthusiast", flair: "screen shake everything", body: "Needs more juice. Screen shake, hit pause, particles on impact. Game feel is what separates good from great.", score: "▲ 198", time: "2h" },
+    ]
+  },
+  experienceddevs: {
+    tone: "pragmatic · world-weary · measured · anti-hype",
+    comments: [
+      { user: "u/staff_engineer_vibes", flair: "10+ YOE", body: "This is a solution looking for a problem. Before building, did you talk to actual users? The best code is code you don't write.", score: "▲ 678", time: "5h" },
+      { user: "u/project_author", op: true, body: "We did — 30 user interviews. The existing tools are either enterprise-priced or abandoned. This fills a gap.", score: "▲ 512", time: "4h", reply: true },
+      { user: "u/architecture_realist", body: "Microservices for a team of 3? You'll spend more time on service mesh than features. Start with a monolith, split when it hurts.", score: "▲ 445", time: "3h" },
+      { user: "u/tech_debt_whisperer", body: "The real question is: who maintains this when you leave? Document the why, not just the what.", score: "▲ 312", time: "2h" },
+    ]
+  },
+  localllama: {
+    tone: "technical · irreverent · enthusiastic · anti-corporate",
+    comments: [
+      { user: "u/quantization_wizard", flair: "Q4_K_M gang", body: "What model are you running this on? If it's not local, it's not private. I run Qwen 32B on a 3090 and it handles this fine.", score: "▲ 567", time: "4h" },
+      { user: "u/project_author", op: true, body: "It uses Claude via API — the structured output is hard to match with local models. But we're testing with Qwen-Coder.", score: "▲ 345", time: "3h", reply: true },
+      { user: "u/ollama_enjoyer", body: "Just use Ollama. <code>ollama run llama3.1</code> and you're done. Stop sending your code to Anthropic.", score: "▲ 423", time: "3h" },
+      { user: "u/vram_optimizer", flair: "64GB unified memory", body: "Benchmarks or it didn't happen. Also, have you tried running this with llama.cpp directly? Ollama adds overhead.", score: "▲ 198", time: "2h" },
+    ]
+  },
+  machinelearning: {
+    tone: "academic · rigorous · skeptical · paper-obsessed",
+    comments: [
+      { user: "u/paper_reviewer_2", flair: "reject & resubmit", body: "Where are the ablation studies? Without controlled experiments, these results are anecdotal at best.", score: "▲ 534", time: "5h" },
+      { user: "u/project_author", op: true, body: "This is a tool, not a research paper. But we do have eval results comparing output quality across models.", score: "▲ 312", time: "4h", reply: true },
+      { user: "u/transformer_skeptic", body: "Is this just prompt engineering? Calling it 'AI-driven discovery' is generous for what amounts to a well-crafted system prompt.", score: "▲ 445", time: "3h" },
+      { user: "u/benchmark_demander", body: "Show me the BLEU/ROUGE scores. Or at minimum, human eval with inter-annotator agreement. Vibes are not metrics.", score: "▲ 198", time: "2h" },
+    ]
+  },
+};
+
+// ─── RENDER SUBREDDIT GRID + THREAD ───
+const grid = document.getElementById('sub-grid');
+const subNames = Object.keys(vibes);
+let activeSub = 'programming';
+
+subNames.forEach(name => {
+  const chip = document.createElement('span');
+  chip.className = 'sub-chip' + (name === activeSub ? ' active' : '');
+  chip.textContent = name;
+  chip.dataset.sub = name;
+  chip.addEventListener('click', () => selectSub(name));
+  grid.appendChild(chip);
+});
+
+function selectSub(name) {
+  activeSub = name;
+  document.querySelectorAll('.sub-chip').forEach(c => c.classList.toggle('active', c.dataset.sub === name));
+  const comments = document.getElementById('demo-comments');
+  comments.classList.add('fading');
+  setTimeout(() => {
+    renderThread(name);
+    comments.classList.remove('fading');
+  }, 200);
+}
+
+function renderThread(name) {
+  const v = vibes[name];
+  document.getElementById('thread-name').textContent = `r/${name}`;
+  document.getElementById('thread-tone').textContent = v.tone;
+  const container = document.getElementById('demo-comments');
+  container.innerHTML = v.comments.map(c => {
+    const depth = c.depth || (c.reply ? 1 : 0);
+    const ml = depth * 2;
+    return `<div class="fake-comment${depth > 0 ? ' fc-reply' : ''}" style="margin-left:${ml}rem">
+      <div class="fc-header">
+        <span class="fc-user">${c.user}</span>
+        ${c.op ? '<span class="fc-op">OP</span>' : ''}
+        ${c.flair ? `<span class="fc-flair">${c.flair}</span>` : ''}
+        <span class="fc-meta">· ${c.time}</span>
+      </div>
+      <div class="fc-body">${c.body}</div>
+      <div class="fc-score"><span class="fc-up">${c.score}</span> <span>Reply</span> <span>Share</span></div>
+    </div>`;
+  }).join('');
+}
+
+renderThread('programming');
+</script>
+</body>
+</html>
