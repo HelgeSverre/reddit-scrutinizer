@@ -212,113 +212,109 @@
   }
   .scroll-arrow svg { width: 24px; height: 24px; }
 
-  /* ─── COMMAND BUILDER ─── */
-  .builder-section {
-    padding: 0 2rem 6rem;
-    display: flex;
-    justify-content: center;
+  /* ─── DIAL IN YOUR ROAST ─── */
+  .dial-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+    align-items: start;
   }
 
-  .builder-wrap {
-    max-width: 700px;
-    width: 100%;
-    border-radius: 16px;
-    overflow: hidden;
-    border: 1px solid var(--border);
-    box-shadow: 0 40px 100px -20px rgba(0,0,0,0.6), 0 0 60px var(--accent-glow);
-    background: var(--surface);
+  .dial-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
   }
 
-  .builder-bar {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.25rem;
-    border-bottom: 1px solid var(--border);
-    background: var(--surface-2);
-  }
-  .builder-dot { width: 10px; height: 10px; border-radius: 50%; }
-  .builder-dot:nth-child(1) { background: #ff5f57; }
-  .builder-dot:nth-child(2) { background: #febc2e; }
-  .builder-dot:nth-child(3) { background: #28c840; }
-  .builder-label {
-    font-family: var(--mono);
-    font-size: 0.7rem;
-    color: var(--text-dim);
-    margin-left: auto;
-  }
-
-  .builder-body { padding: 1.5rem; }
-
-  .builder-controls {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    margin-bottom: 1.25rem;
-  }
-
-  .builder-field { flex: 1; min-width: 140px; }
-  .builder-field label {
+  .dial-field label {
     display: block;
     font-family: var(--mono);
     font-size: 0.65rem;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: var(--text-dim);
-    margin-bottom: 0.35rem;
+    margin-bottom: 0.4rem;
   }
-  .builder-field select,
-  .builder-field input {
+  .dial-field select,
+  .dial-field input[type="number"] {
     width: 100%;
     font-family: var(--mono);
-    font-size: 0.8rem;
-    padding: 0.5rem 0.65rem;
-    background: var(--bg);
+    font-size: 0.85rem;
+    padding: 0.6rem 0.75rem;
+    background: var(--surface-2);
     color: var(--text);
     border: 1px solid var(--border);
-    border-radius: 6px;
+    border-radius: 8px;
     outline: none;
     transition: border-color 0.2s;
     appearance: auto;
   }
-  .builder-field select:focus,
-  .builder-field input:focus { border-color: var(--accent); }
+  .dial-field select:focus,
+  .dial-field input[type="number"]:focus { border-color: var(--accent); }
 
-  .builder-output {
-    font-family: var(--mono);
-    font-size: 0.85rem;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 1rem 1.25rem;
-    color: var(--green);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    cursor: pointer;
-    transition: border-color 0.2s;
-    overflow-x: auto;
-    white-space: nowrap;
+  .dial-preview {
+    position: relative;
   }
-  .builder-output:hover { border-color: var(--accent); }
-  .builder-output .copy-hint {
-    font-size: 0.6rem;
+  .dial-preview-label {
+    font-family: var(--mono);
+    font-size: 0.65rem;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: var(--text-dim);
-    padding: 0.2rem 0.5rem;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    flex-shrink: 0;
+    margin-bottom: 0.4rem;
   }
+  .dial-cmd {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    line-height: 1.9;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    color: var(--text);
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .dial-cmd .cmd-bin { color: var(--green); }
+  .dial-cmd .cmd-path { color: var(--text); }
+  .dial-cmd .cmd-flag { color: var(--downvote); }
+  .dial-cmd .cmd-val { color: var(--accent); }
+  .dial-cmd .cmd-cont { color: var(--text-dim); }
 
-  .builder-caption {
-    text-align: center;
+  .dial-copy-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 0.75rem;
+  }
+  .dial-copy-hint {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--text-dim);
+  }
+  .dial-copy-btn {
     font-family: var(--mono);
     font-size: 0.75rem;
-    color: var(--text-dim);
-    margin-top: 1.25rem;
+    font-weight: 700;
+    padding: 0.45rem 1rem;
+    background: var(--surface-2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .dial-copy-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  @media (max-width: 740px) {
+    .dial-layout { grid-template-columns: 1fr; gap: 1.5rem; }
+    .dial-controls { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 420px) {
+    .dial-controls { grid-template-columns: 1fr; }
   }
 
   /* ─── SECTIONS ─── */
@@ -662,7 +658,7 @@
   </p>
 
   <div class="cta-group">
-    <a href="#install" class="cta cta-primary">Get roasted</a>
+    <a href="#dial" class="cta cta-primary">Get roasted</a>
     <a href="https://github.com/helgesverre/reddit-scrutinizer" class="cta cta-ghost" target="_blank">GitHub ↗</a>
   </div>
 
@@ -671,62 +667,62 @@
     <span class="copy-hint">copy</span>
   </div>
 
-  <a href="#how" class="scroll-arrow">
+  <a href="#dial" class="scroll-arrow">
     <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg>
   </a>
 </div>
 
-<!-- ════════════════════════ COMMAND BUILDER ════════════════════════ -->
-<div class="builder-section">
-  <div>
-    <div class="builder-wrap">
-      <div class="builder-bar">
-        <span class="builder-dot"></span>
-        <span class="builder-dot"></span>
-        <span class="builder-dot"></span>
-        <span class="builder-label">command builder</span>
-      </div>
-      <div class="builder-body">
-        <div class="builder-controls">
-          <div class="builder-field">
-            <label>Subreddit</label>
-            <select id="b-sub">
-              <option>programming</option><option>rust</option><option>typescript</option>
-              <option>javascript</option><option>python</option><option>golang</option>
-              <option>java</option><option>csharp</option><option>cpp</option>
-              <option>haskell</option><option>kotlin</option><option>php</option>
-              <option>lisp</option><option>reactjs</option><option>webdev</option>
-              <option>devops</option><option>linux</option><option>selfhosted</option>
-              <option>gamedev</option><option>experienceddevs</option>
-              <option>localllama</option><option>machinelearning</option>
-            </select>
-          </div>
-          <div class="builder-field">
-            <label>Style</label>
-            <select id="b-style">
-              <option>balanced</option><option>snarky</option><option>supportive</option><option>hostile</option>
-            </select>
-          </div>
-          <div class="builder-field">
-            <label>Comments</label>
-            <input type="number" id="b-comments" value="40" min="5" max="200" step="5">
-          </div>
-          <div class="builder-field">
-            <label>Theme</label>
-            <select id="b-theme">
-              <option>reddit</option><option>hackernews</option><option>producthunt</option>
-            </select>
-          </div>
+<!-- ════════════════════════ DIAL IN YOUR ROAST ════════════════════════ -->
+<section id="dial">
+  <div class="container">
+    <div class="section-label">Configure</div>
+    <h2 class="section-title">Dial in your roast.</h2>
+    <p class="section-sub">Pick a subreddit, set the tone, choose how many comments — then copy and run.</p>
+
+    <div class="dial-layout">
+      <div class="dial-controls">
+        <div class="dial-field">
+          <label for="b-sub">Subreddit</label>
+          <select id="b-sub">
+            <option>programming</option><option>rust</option><option>typescript</option>
+            <option>javascript</option><option>python</option><option>golang</option>
+            <option>java</option><option>csharp</option><option>cpp</option>
+            <option>haskell</option><option>kotlin</option><option>php</option>
+            <option>lisp</option><option>reactjs</option><option>webdev</option>
+            <option>devops</option><option>linux</option><option>selfhosted</option>
+            <option>gamedev</option><option>experienceddevs</option>
+            <option>localllama</option><option>machinelearning</option>
+          </select>
         </div>
-        <div class="builder-output" id="b-output" onclick="copyBuilderCmd()">
-          <span id="b-cmd"></span>
-          <span class="copy-hint" id="b-copy">copy</span>
+        <div class="dial-field">
+          <label for="b-style">Style</label>
+          <select id="b-style">
+            <option>balanced</option><option>snarky</option><option>supportive</option><option>hostile</option>
+          </select>
+        </div>
+        <div class="dial-field">
+          <label for="b-comments">Comments</label>
+          <input type="number" id="b-comments" value="40" min="5" max="200" step="5">
+        </div>
+        <div class="dial-field">
+          <label for="b-theme">Theme</label>
+          <select id="b-theme">
+            <option>reddit</option><option>hackernews</option><option>producthunt</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="dial-preview">
+        <div class="dial-preview-label">Your command</div>
+        <div class="dial-cmd" id="b-cmd"></div>
+        <div class="dial-copy-row">
+          <span class="dial-copy-hint">Copies as a single line</span>
+          <button class="dial-copy-btn" id="b-copy" onclick="copyBuilderCmd()">Copy command</button>
         </div>
       </div>
     </div>
-    <p class="builder-caption">Pick your options, copy the command, run it on your project.</p>
   </div>
-</div>
+</section>
 
 <!-- ════════════════════════ HOW IT WORKS ════════════════════════ -->
 <section id="how">
@@ -895,25 +891,46 @@
 
 <script>
 // ─── COMMAND BUILDER ───
+let cmdCopyText = '';
+
+function span(cls, text) { return `<span class="${cls}">${text}</span>`; }
+
 function updateBuilder() {
   const sub = document.getElementById('b-sub').value;
   const style = document.getElementById('b-style').value;
   const comments = document.getElementById('b-comments').value;
   const theme = document.getElementById('b-theme').value;
-  let cmd = `npx reddit-scrutinizer ./my-project --subreddit ${sub}`;
-  if (style !== 'balanced') cmd += ` --style ${style}`;
-  if (comments !== '40') cmd += ` --comments ${comments}`;
-  if (theme !== 'reddit') cmd += ` --theme ${theme}`;
-  cmd += ' --open';
-  document.getElementById('b-cmd').textContent = cmd;
+
+  // Build flag list (only non-defaults)
+  const flags = [];
+  flags.push({ flag: '--subreddit', val: sub });
+  if (style !== 'balanced') flags.push({ flag: '--style', val: style });
+  if (comments !== '40') flags.push({ flag: '--comments', val: comments });
+  if (theme !== 'reddit') flags.push({ flag: '--theme', val: theme });
+  flags.push({ flag: '--open', val: null });
+
+  // Single-line for copying
+  cmdCopyText = 'npx reddit-scrutinizer ./my-project' + flags.map(f => f.val ? ` ${f.flag} ${f.val}` : ` ${f.flag}`).join('');
+
+  // Multi-line formatted for display
+  const cont = span('cmd-cont', ' \\');
+  const lines = [span('cmd-bin', 'npx') + ' ' + span('cmd-path', 'reddit-scrutinizer') + ' ' + span('cmd-path', './my-project') + cont];
+  flags.forEach((f, i) => {
+    const isLast = i === flags.length - 1;
+    const line = '  ' + span('cmd-flag', f.flag) + (f.val ? ' ' + span('cmd-val', f.val) : '') + (isLast ? '' : cont);
+    lines.push(line);
+  });
+
+  document.getElementById('b-cmd').innerHTML = lines.join('\n');
 }
+
 function copyBuilderCmd() {
-  const cmd = document.getElementById('b-cmd').textContent;
-  navigator.clipboard.writeText(cmd);
-  const h = document.getElementById('b-copy');
-  h.textContent = 'copied!';
-  setTimeout(() => h.textContent = 'copy', 1500);
+  navigator.clipboard.writeText(cmdCopyText);
+  const btn = document.getElementById('b-copy');
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy command', 1500);
 }
+
 document.querySelectorAll('#b-sub, #b-style, #b-comments, #b-theme').forEach(
   el => el.addEventListener('input', updateBuilder)
 );
