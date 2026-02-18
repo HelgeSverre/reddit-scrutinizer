@@ -85,21 +85,23 @@ reddit-scrutinizer serve ./reddit-scrutiny.json --theme hackernews --open
 
 ## Options
 
-| Flag                 | Default                    | Description                                     |
-| -------------------- | -------------------------- | ----------------------------------------------- |
-| `--subreddit <name>` | `programming`              | Target subreddit voice                          |
-| `--comments <n>`     | `40`                       | Number of comments to generate                  |
-| `--max-depth <n>`    | `4`                        | Max reply nesting depth                         |
-| `--max-replies <n>`  | `3`                        | Number of OP replies                            |
-| `--style <mode>`     | `balanced`                 | `balanced`, `snarky`, `supportive`, `hostile`   |
-| `--theme <name>`     | `reddit`                   | UI theme: `reddit`, `hackernews`, `producthunt` |
-| `--model <name>`     | `claude-sonnet-4-20250514` | Anthropic model                                 |
-| `--out <file>`       | `./reddit-scrutiny.json`   | Output file path                                |
-| `--open`             | `false`                    | Auto-open browser                               |
-| `--port <n>`         | `3000`                     | UI server port                                  |
-| `--no-ui`            | —                          | Skip web UI                                     |
-| `--temperature <n>`  | `0.8`                      | Generation temperature                          |
-| `--seed <n>`         | —                          | Random seed for reproducibility                 |
+| Flag                 | Default                          | Description                                                              |
+| -------------------- | -------------------------------- | ------------------------------------------------------------------------ |
+| `--subreddit <name>` | `programming`                    | Target subreddit voice                                                   |
+| `--comments <n>`     | `40`                             | Number of comments to generate                                           |
+| `--max-depth <n>`    | `4`                              | Max reply nesting depth                                                  |
+| `--max-replies <n>`  | `3`                              | Number of OP replies                                                     |
+| `--style <mode>`     | `balanced`                       | `balanced`, `snarky`, `supportive`, `hostile`                            |
+| `--theme <name>`     | `reddit`                         | UI theme: `reddit`, `hackernews`, `producthunt`                          |
+| `--model <name>`     | `claude-sonnet-4-5-20250929`     | Anthropic model                                                          |
+| `--out <file>`       | `./reddit-scrutiny.json`         | Output file path                                                         |
+| `--open`             | `false`                          | Auto-open browser                                                        |
+| `--port <n>`         | `3000`                           | UI server port                                                           |
+| `--no-ui`            | —                                | Skip web UI                                                              |
+| `--temperature <n>`  | `0.8`                            | Generation temperature                                                   |
+| `--seed <n>`         | —                                | Random seed for reproducibility                                          |
+| `--max-tokens <n>`   | auto-scaled (up to 64000)        | Max output tokens per API call. Auto-scales based on comment count       |
+| `--batch-size <n>`   | `50`                             | Comments per batch. Large comment counts are split into batches          |
 
 ## Available subreddits
 

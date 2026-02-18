@@ -28,6 +28,8 @@ interface RunOptions {
   theme: string;
   temperature: number;
   seed?: number;
+  maxTokens?: number;
+  batchSize: number;
 }
 
 async function run(path: string, options: RunOptions) {
@@ -79,14 +81,22 @@ async function run(path: string, options: RunOptions) {
   console.log(chalk.cyan("Analyzing critique themes..."));
   const agenda = await generateAgenda(client, dossier, vibePack, post, evidence, genOptions);
 
-  // 6. Generate comments
-  console.log(chalk.cyan(`Generating ${options.comments} comments...`));
+  // 6. Generate comments (batched for large counts)
+  const batchSize = options.batchSize;
+  if (options.comments > batchSize) {
+    const batches = Math.ceil(options.comments / batchSize);
+    console.log(chalk.cyan(`Generating ${options.comments} comments in ${batches} batches of ~${batchSize}...`));
+  } else {
+    console.log(chalk.cyan(`Generating ${options.comments} comments...`));
+  }
   const commentOpts: CommentOptions = {
     ...genOptions,
+    maxTokens: options.maxTokens,
     comments: options.comments,
     maxDepth: options.maxDepth,
     maxReplies: options.maxReplies,
     style: options.style,
+    batchSize,
   };
   const comments = await generateComments(client, dossier, vibePack, post, agenda, evidence, commentOpts);
 

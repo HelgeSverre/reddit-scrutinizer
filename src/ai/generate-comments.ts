@@ -1,7 +1,7 @@
 import type Anthropic from "@anthropic-ai/sdk";
 import { z } from "zod";
 import type { ProjectDossier } from "../scan/dossier";
-import { generateJSON, type GenerateOptions } from "./client";
+import { generateJSON, MaxTokensError, type GenerateOptions } from "./client";
 import type { GeneratedPost } from "./generate-post";
 import type { AgendaItem } from "./generate-agenda";
 import type { EvidencePack } from "./discover";
@@ -39,11 +39,14 @@ const STYLE_DESCRIPTIONS: Record<string, string> = {
   slop: "Anti-AI pile-on. Every commenter assumes the project is AI-generated slop. Comments accuse OP of using ChatGPT/Copilot, mass-downvote, demand to see 'the real code you wrote', mock AI-assisted README prose, and treat any use of AI tools as a personal insult to the craft. Typical Reddit AI backlash.",
 };
 
+export const DEFAULT_BATCH_SIZE = 50;
+
 export interface CommentOptions extends GenerateOptions {
   comments: number;
   maxDepth: number;
   maxReplies: number;
   style: string;
+  batchSize: number;
 }
 
 export async function generateComments(
@@ -55,7 +58,76 @@ export async function generateComments(
   evidence: EvidencePack | null,
   options: CommentOptions,
 ): Promise<GeneratedComment[]> {
+  const batchSize = options.batchSize;
+
+  if (options.comments <= batchSize) {
+    return generateCommentBatch(client, dossier, vibePack, post, agenda, evidence, options, []);
+  }
+
+  // Generate in batches to avoid hitting max_tokens
+  const allComments: GeneratedComment[] = [];
+  let remaining = options.comments;
+
+  while (remaining > 0) {
+    const currentBatch = Math.min(remaining, batchSize);
+    const batchOptions = { ...options, comments: currentBatch };
+    const batch = await generateCommentBatch(
+      client, dossier, vibePack, post, agenda, evidence, batchOptions, allComments,
+    );
+
+    // Re-number IDs to be globally sequential
+    const offset = allComments.length;
+    const idMap = new Map<string, string>();
+    for (let i = 0; i < batch.length; i++) {
+      const oldId = batch[i].id;
+      const newId = `c${offset + i + 1}`;
+      idMap.set(oldId, newId);
+      batch[i].id = newId;
+    }
+    for (const comment of batch) {
+      if (idMap.has(comment.parent_id)) {
+        comment.parent_id = idMap.get(comment.parent_id)!;
+      } else if (comment.parent_id !== "post" && !allComments.some((c) => c.id === comment.parent_id)) {
+        // Parent from previous batch doesn't exist — make it top-level
+        comment.parent_id = "post";
+        comment.depth = 0;
+      }
+    }
+
+    allComments.push(...batch);
+    remaining -= batch.length;
+  }
+
+  return allComments;
+}
+
+async function generateCommentBatch(
+  client: Anthropic,
+  dossier: ProjectDossier,
+  vibePack: Record<string, unknown>,
+  post: GeneratedPost,
+  agenda: AgendaItem[],
+  evidence: EvidencePack | null,
+  options: CommentOptions,
+  existingComments: GeneratedComment[],
+): Promise<GeneratedComment[]> {
   const subreddit = vibePack.subreddit as string;
+  const isFirstBatch = existingComments.length === 0;
+  const startId = existingComments.length + 1;
+
+  const continuationContext = isFirstBatch
+    ? ""
+    : `\n\nIMPORTANT: This is a CONTINUATION batch. ${existingComments.length} comments already exist.
+- Start IDs at "c${startId}"
+- You may create replies to existing comments by referencing their IDs
+- Existing top-level comment summaries (for threading):
+${existingComments
+  .filter((c) => c.depth === 0)
+  .slice(-10)
+  .map((c) => `  ${c.id}: "${c.body_md.slice(0, 80)}..." by u/${c.author}`)
+  .join("\n")}
+- Cover agenda topics not yet well-represented
+- Do NOT repeat points already made`;
 
   const system = `You are simulating Reddit comments for r/${subreddit}. Generate a realistic comment section for a project announcement post.
 
@@ -64,19 +136,19 @@ Requirements:
 - Each comment has: id, parent_id, author, author_flair, is_op, body_md, depth, is_deleted
 - Top-level comments have parent_id = "post" and depth = 0
 - Replies reference their parent's id and increment depth (max depth: ${options.maxDepth})
-- Include up to ${options.maxReplies} comments where is_op = true (the post author "${post.author}" replying to questions/feedback)
+- Include up to ${isFirstBatch ? options.maxReplies : Math.min(2, options.maxReplies)} comments where is_op = true (the post author "${post.author}" replying to questions/feedback)
 - Include 0-2 deleted comments (body_md = "[deleted]", author = "[deleted]", is_deleted = true)
 - Include at least one mild argument thread (2-3 comments disagreeing with each other)
 - Use realistic usernames that match r/${subreddit} culture
 - Mix sentiment: supportive, skeptical, snarky, pedantic, helpful
 - Follow the agenda for theme distribution
 - Comment style: ${STYLE_DESCRIPTIONS[options.style] ?? options.style}
-- Use sequential IDs like "c1", "c2", "c3", etc.
+- Use sequential IDs starting at "c${startId}"
 - When evidence is available, reference specific code patterns, file names, and technical details in comments
 - Use evidence quotes naturally — as a redditor who actually looked at the repo
 
 Subreddit vibe:
-${JSON.stringify(vibePack, null, 2)}
+${JSON.stringify(vibePack, null, 2)}${continuationContext}
 
 Return ONLY a valid JSON array.`;
 
@@ -109,5 +181,9 @@ ${JSON.stringify(evidence, null, 2)}`
       : ""
   }`;
 
-  return generateJSON<GeneratedComment[]>(client, system, userPrompt, options, z.array(GeneratedCommentSchema));
+  const estimatedTokens = options.comments * 200;
+  const maxTokens = options.maxTokens ?? Math.min(Math.max(16384, estimatedTokens), 64000);
+  const batchOptions = { ...options, maxTokens };
+
+  return generateJSON<GeneratedComment[]>(client, system, userPrompt, batchOptions, z.array(GeneratedCommentSchema));
 }

@@ -40,7 +40,9 @@ program
   .option("--port <n>", "UI server port", toInt, 3000)
   .option("--no-ui", "skip starting the UI server")
   .option("--temperature <n>", "LLM temperature", toFloat, 0.8)
-  .option("--seed <n>", "random seed for reproducibility", toInt);
+  .option("--seed <n>", "random seed for reproducibility", toInt)
+  .option("--max-tokens <n>", "max output tokens per API call (default: auto-scaled, max 64000)", toInt)
+  .option("--batch-size <n>", "comments per batch when generating large counts", toInt, 50);
 
 program
   .command("serve <file>")

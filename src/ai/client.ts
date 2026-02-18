@@ -2,6 +2,8 @@ import Anthropic from "@anthropic-ai/sdk";
 import type { z } from "zod";
 import zodToJsonSchema from "zod-to-json-schema";
 
+export const DEFAULT_MAX_TOKENS = 16384;
+
 export interface GenerateOptions {
   model: string;
   temperature: number;
@@ -33,11 +35,15 @@ export async function generateJSON<T>(
 
   const response = await client.messages.create({
     model: options.model,
-    max_tokens: options.maxTokens ?? 8192,
+    max_tokens: options.maxTokens ?? DEFAULT_MAX_TOKENS,
     temperature: options.temperature,
     system,
     messages: [{ role: "user", content: userPrompt }],
   });
+
+  if (response.stop_reason === "max_tokens") {
+    throw new MaxTokensError(options.maxTokens ?? DEFAULT_MAX_TOKENS);
+  }
 
   const text = extractText(response);
 
@@ -54,6 +60,13 @@ export async function generateJSON<T>(
       return validate(JSON.parse(fenceMatch[1]));
     }
     throw new Error(`Failed to parse JSON from response:\n${text.slice(0, 500)}`);
+  }
+}
+
+export class MaxTokensError extends Error {
+  constructor(public readonly limit: number) {
+    super(`Response truncated: hit max_tokens limit of ${limit}`);
+    this.name = "MaxTokensError";
   }
 }
 
@@ -75,7 +88,7 @@ async function generateWithStructuredOutput<T>(
 
   const response = await client.messages.create({
     model: options.model,
-    max_tokens: options.maxTokens ?? 8192,
+    max_tokens: options.maxTokens ?? DEFAULT_MAX_TOKENS,
     temperature: options.temperature,
     system,
     messages: [{ role: "user", content: userPrompt }],
@@ -86,6 +99,10 @@ async function generateWithStructuredOutput<T>(
       },
     },
   });
+
+  if (response.stop_reason === "max_tokens") {
+    throw new MaxTokensError(options.maxTokens ?? 8192);
+  }
 
   return schema.parse(JSON.parse(extractText(response)));
 }
