@@ -72,9 +72,12 @@ reddit-scrutinizer ./my-project --subreddit programming --comments 60 --style sn
 # Reproducible run with a fixed seed
 reddit-scrutinizer ./my-project --subreddit typescript --seed 42
 
-# Use the Hacker News or Product Hunt theme
+# Use a different theme
 reddit-scrutinizer ./my-project --subreddit programming --theme hackernews --open
 reddit-scrutinizer ./my-project --subreddit programming --theme producthunt --open
+reddit-scrutinizer ./my-project --subreddit programming --theme twitter --open
+reddit-scrutinizer ./my-project --subreddit programming --theme bluesky --open
+reddit-scrutinizer ./my-project --subreddit programming --theme qdb --open
 
 # View a previous result
 reddit-scrutinizer serve ./reddit-scrutiny.json --open
@@ -93,7 +96,7 @@ reddit-scrutinizer serve ./reddit-scrutiny.json --theme hackernews --open
 | `--max-depth <n>`    | `4`                              | Max reply nesting depth                                                  |
 | `--max-replies <n>`  | `3`                              | Number of OP replies                                                     |
 | `--style <mode>`     | `balanced`                       | `balanced`, `snarky`, `supportive`, `hostile`                            |
-| `--theme <name>`     | `reddit`                         | UI theme: `reddit`, `hackernews`, `producthunt`                          |
+| `--theme <name>`     | `reddit`                         | UI theme: `reddit`, `hackernews`, `producthunt`, `twitter`, `bluesky`, `qdb` |
 | `--model <name>`     | `claude-sonnet-4-5-20250929`     | Anthropic model                                                          |
 | `--out <file>`       | `./reddit-scrutiny.json`         | Output file path                                                         |
 | `--open`             | `false`                          | Auto-open browser                                                        |
@@ -117,6 +120,8 @@ View results from a previous run without re-generating:
 ```bash
 reddit-scrutinizer serve ./reddit-scrutiny.json --port 3000 --open
 reddit-scrutinizer serve ./reddit-scrutiny.json --theme producthunt --open
+reddit-scrutinizer serve ./reddit-scrutiny.json --theme twitter --open
+reddit-scrutinizer serve ./reddit-scrutiny.json --theme qdb --open
 ```
 
 The `serve` command accepts `--port`, `--open`, and `--theme`.

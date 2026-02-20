@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QDB: Quote Database</title>
+<style>
+body {
+  background-color: #ffffff;
+  color: #000000;
+  margin: 0; padding: 0;
+  font-family: arial, helvetica, sans-serif;
+  font-size: smaller;
+}
+a { color: #0000ee; }
+a:visited { color: #551a8b; }
+.header-bar {
+  background-color: #c08000;
+  padding: 2px 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: arial, helvetica, sans-serif;
+}
+.header-bar .title {
+  font-size: 14pt;
+  font-weight: bold;
+  font-style: italic;
+  color: #000000;
+}
+.header-bar .quote-title {
+  font-size: 12pt;
+  font-weight: bold;
+  color: #000000;
+}
+.nav-bar {
+  background-color: #e0e0e0;
+  padding: 1px 8px;
+  font-family: arial, helvetica, sans-serif;
+  font-size: smaller;
+  text-align: right;
+}
+.nav-bar a { color: #0000ee; text-decoration: none; }
+.nav-bar a:hover { text-decoration: underline; }
+.golden-bar {
+  background-color: #c08000;
+  height: 6px;
+  font-size: 0;
+}
+.footer-info {
+  text-align: right;
+  padding: 2px 8px;
+  font-family: arial, helvetica, sans-serif;
+  font-size: smaller;
+  color: #000000;
+}
+.content {
+  padding: 16px 8px 8px 8px;
+}
+.vote-line {
+  font-family: courier new, lucida console, fixed;
+  font-size: 10pt;
+  margin-bottom: 2px;
+}
+.vote-line a.qnum { color: #c08000; font-weight: bold; }
+.vote-line .vote-link {
+  font-size: 8pt;
+  color: #0000ee;
+  text-decoration: none;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-family: inherit;
+  padding: 0;
+}
+.vote-line .vote-link:hover { text-decoration: underline; }
+.vote-line .score { color: #000000; }
+.vote-line .flag { font-size: 8pt; color: #888888; text-decoration: none; cursor: pointer; background: none; border: none; font-family: inherit; padding: 0; }
+.qt {
+  font-family: courier new, lucida console, fixed;
+  font-size: 10pt;
+  margin-top: 0px;
+  white-space: pre-line;
+}
+.simulated-badge {
+  background: #cc0000;
+  color: #ffffff;
+  font-size: 8pt;
+  font-weight: bold;
+  padding: 0px 4px;
+  margin-left: 6px;
+  font-style: normal;
+}
+/* IRC nick colors */
+.irc-nick { font-weight: bold; }
+.irc-action { color: #8b008b; }
+.irc-context { color: #888888; }
+.irc-deleted { color: #999999; }
+.irc-flair { color: #888888; }
+.irc-separator { color: #aaaaaa; }
+.loading {
+  text-align: center; padding: 40px;
+  font-family: arial, helvetica, sans-serif;
+  font-size: smaller; color: #666666;
+}
+.error {
+  text-align: center; padding: 40px;
+  font-family: arial, helvetica, sans-serif;
+  font-size: smaller; color: #cc0000;
+}
+.heart { text-align: center; padding: 8px; font-size: smaller; }
+.heart a { text-decoration: none; }
+</style>
+</head>
+<body>
+
+<div class="header-bar">
+  <span class="title">QDB<span class="simulated-badge">SIMULATED</span></span>
+  <span class="quote-title" id="quote-title">Quote</span>
+</div>
+<div class="nav-bar">
+  <a href="#">Home</a> /
+  <a href="#">Latest</a> /
+  <a href="#">Browse</a> /
+  <a href="#">Random</a>&gt;0 /
+  <a href="#">Top 100</a>-200
+</div>
+
+<div id="app">
+  <div class="loading">Loading...</div>
+</div>
+
+<div class="nav-bar" style="margin-top: 8px;">
+  <a href="#">Home</a> /
+  <a href="#">Latest</a> /
+  <a href="#">Browse</a> /
+  <a href="#">Random</a>&gt;0 /
+  <a href="#">Top 100</a>-200
+</div>
+<div class="golden-bar"></div>
+<div class="footer-info" id="footer-count"></div>
+<div class="heart"><a href="#">&lt;3</a></div>
+
+<script>
+let DATA = null;
+
+function quoteNum(s) {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) {
+    h = ((h << 5) - h + s.charCodeAt(i)) | 0;
+  }
+  return Math.abs(h) % 900000 + 10000;
+}
+
+const NICK_COLORS = [
+  '#006600','#0000cc','#cc0000','#008080',
+  '#800080','#808000','#c06000','#0066cc',
+  '#660066','#006666','#336633','#333399',
+];
+
+function nickColor(name) {
+  const hash = name.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
+  return NICK_COLORS[hash % NICK_COLORS.length];
+}
+
+function stripHtml(html) {
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  return tmp.textContent || tmp.innerText || '';
+}
+
+async function init() {
+  try {
+    const res = await fetch('/api/data');
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    DATA = await res.json();
+    render();
+  } catch (e) {
+    document.getElementById('app').innerHTML =
+      `<div class="error"><b>Error:</b> ${e.message}</div>`;
+  }
+}
+
+function render() {
+  const sim = DATA.simulation;
+  const project = DATA.project;
+  const post = sim.post;
+  const comments = sim.comments;
+  const app = document.getElementById('app');
+  const channel = '#' + sim.subreddit.name;
+  const qNum = quoteNum(post.id);
+
+  document.getElementById('quote-title').textContent = 'Quote #' + qNum;
+
+  const lines = [];
+
+  lines.push({type: 'separator', text: `--- Log opened ${fmtDate(post.created_utc)} ---`});
+  lines.push({type: 'action', nick: post.author, text: `has joined ${channel}`});
+  lines.push({type: 'separator', text: `--- Topic for ${channel}: ${esc(project.tagline || project.name)} ---`});
+
+  const postText = stripHtml(post.body_html);
+  lines.push({type: 'msg', nick: post.author, text: post.title, isOp: true, flair: post.author_flair});
+
+  const bodyLines = wrapText(postText, 90);
+  for (const bl of bodyLines.slice(0, 15)) {
+    lines.push({type: 'msg', nick: post.author, text: bl, isOp: true});
+  }
+  if (bodyLines.length > 15) {
+    lines.push({type: 'msg', nick: post.author, text: `[... ${bodyLines.length - 15} more lines, use a pastebin ffs]`, isOp: true});
+  }
+
+  lines.push({type: 'separator', text: ''});
+
+  const byParent = {};
+  for (const c of comments) {
+    if (!byParent[c.parent_id]) byParent[c.parent_id] = [];
+    byParent[c.parent_id].push(c);
+  }
+  for (const k in byParent) {
+    byParent[k].sort((a, b) => a.created_utc - b.created_utc);
+  }
+
+  function walkComments(parentId, depth) {
+    const kids = byParent[parentId];
+    if (!kids) return;
+    for (const c of kids) {
+      if (c.is_deleted) {
+        lines.push({type: 'deleted', nick: c.author || 'unknown'});
+      } else {
+        const text = stripHtml(c.body_html);
+        const wrapped = wrapText(text, 90);
+
+        if (depth > 0 && c.parent_id !== post.id) {
+          const parent = comments.find(p => p.id === c.parent_id);
+          if (parent && !parent.is_deleted) {
+            const ctx = stripHtml(parent.body_html).slice(0, 60);
+            lines.push({type: 'context', nick: c.author, replyTo: parent.author, text: ctx, isOp: c.is_op});
+          }
+        }
+
+        for (let i = 0; i < Math.min(wrapped.length, 8); i++) {
+          lines.push({type: 'msg', nick: c.author, text: wrapped[i], isOp: c.is_op, flair: i === 0 ? c.author_flair : null});
+        }
+        if (wrapped.length > 8) {
+          lines.push({type: 'msg', nick: c.author, text: `[... ${wrapped.length - 8} more lines]`, isOp: c.is_op});
+        }
+      }
+      walkComments(c.id, depth + 1);
+    }
+  }
+
+  walkComments(post.id, 0);
+
+  lines.push({type: 'separator', text: ''});
+  lines.push({type: 'action', nick: post.author, text: `has left ${channel} ("thanks for the feedback I guess")`});
+
+  const score = post.score + comments.reduce((s, c) => s + c.score, 0);
+
+  app.innerHTML = `
+    <div class="content">
+      <div class="vote-line">
+        <a class="qnum" href="#">#${qNum}</a>
+        <button class="vote-link" onclick="doVote(1)">+</button>
+        (<span class="score" id="score">${score}</span>)
+        <button class="vote-link" onclick="doVote(-1)">-</button>
+        <button class="flag" onclick="this.textContent='[flagged]'; this.disabled=true;">[X]</button>
+      </div>
+      <p class="qt">${lines.map(renderLine).join('\n')}</p>
+    </div>
+  `;
+
+  document.getElementById('footer-count').textContent =
+    `${quoteNum(DATA.generated_at)} quotes approved`;
+}
+
+let currentScore = 0;
+
+function doVote(dir) {
+  if (!currentScore) {
+    currentScore = DATA.simulation.post.score +
+      DATA.simulation.comments.reduce((s, c) => s + c.score, 0);
+  }
+  currentScore += dir;
+  document.getElementById('score').textContent = currentScore;
+}
+
+function renderLine(line) {
+  switch (line.type) {
+    case 'msg': {
+      const color = nickColor(line.nick);
+      const opTag = line.isOp ? ' [OP]' : '';
+      const flairTag = line.flair ? ` <span class="irc-flair">[${esc(line.flair)}]</span>` : '';
+      return `<span class="irc-nick" style="color:${color}">&lt;${esc(line.nick)}${opTag}&gt;</span>${flairTag} ${esc(line.text)}`;
+    }
+    case 'action':
+      return `<span class="irc-action">* ${esc(line.nick)} ${esc(line.text)}</span>`;
+    case 'context':
+      return `<span class="irc-context">  &gt; &lt;${esc(line.replyTo)}&gt; ${esc(line.text)}${line.text.length >= 60 ? '...' : ''}</span>`;
+    case 'deleted':
+      return `<span class="irc-deleted">&lt;${esc(line.nick)}&gt; [message deleted]</span>`;
+    case 'separator':
+      return line.text ? `<span class="irc-separator">${esc(line.text)}</span>` : '';
+    default:
+      return '';
+  }
+}
+
+function wrapText(text, maxLen) {
+  const result = [];
+  const rawLines = text.split(/\n/);
+  for (const raw of rawLines) {
+    const trimmed = raw.trim();
+    if (!trimmed) continue;
+    if (trimmed.length <= maxLen) {
+      result.push(trimmed);
+    } else {
+      let remaining = trimmed;
+      while (remaining.length > maxLen) {
+        let breakAt = remaining.lastIndexOf(' ', maxLen);
+        if (breakAt <= 0) breakAt = maxLen;
+        result.push(remaining.slice(0, breakAt));
+        remaining = remaining.slice(breakAt).trim();
+      }
+      if (remaining) result.push(remaining);
+    }
+  }
+  return result;
+}
+
+function fmtDate(utc) {
+  const d = new Date(utc * 1000);
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${days[d.getDay()]} ${months[d.getMonth()]} ${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')} ${d.getFullYear()}`;
+}
+
+function esc(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+init();
+</script>
+</body>
+</html>

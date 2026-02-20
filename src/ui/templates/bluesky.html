@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bluesky — reddit-scrutinizer</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #ffffff;
+  --surface: #f3f3f8;
+  --surface-hover: #e9e9f0;
+  --border: #e0e0e8;
+  --border-light: #ebebf0;
+  --text: #1b1b1b;
+  --text-secondary: #666;
+  --text-muted: #8d8d92;
+  --text-link: #0085ff;
+  --accent: #0085ff;
+  --like: #ec4899;
+  --repost: #20bc5f;
+  --author-bg: #0085ff;
+  --author-text: #fff;
+  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+body {
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+a { color: var(--text-link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Top nav */
+.topnav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  height: 52px;
+  display: flex; align-items: center; padding: 0 20px;
+}
+.topnav-logo {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 18px; font-weight: 700; color: var(--text);
+}
+.topnav-logo svg { width: 28px; height: 28px; }
+.topnav-badge {
+  margin-left: auto; background: var(--accent); color: #fff;
+  font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 6px;
+  letter-spacing: 0.3px;
+}
+
+/* Feed container */
+.feed {
+  max-width: 600px; margin: 0 auto;
+  background: var(--bg);
+  min-height: 100vh;
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+}
+
+/* Post */
+.post {
+  padding: 16px; border-bottom: 1px solid var(--border);
+}
+.post-header {
+  display: flex; gap: 10px; margin-bottom: 8px;
+}
+.post-avatar {
+  flex-shrink: 0; width: 42px; height: 42px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 700; color: #fff;
+}
+.post-meta { flex: 1; min-width: 0; }
+.post-author-row {
+  display: flex; align-items: center; gap: 4px; flex-wrap: wrap;
+}
+.post-name { font-weight: 600; font-size: 15px; color: var(--text); }
+.author-badge {
+  display: inline-flex; align-items: center;
+  background: var(--author-bg); color: var(--author-text);
+  font-size: 10px; font-weight: 700; padding: 1px 6px;
+  border-radius: 3px; text-transform: uppercase; letter-spacing: 0.3px;
+}
+.post-handle { color: var(--text-muted); font-size: 14px; }
+.post-dot { color: var(--text-muted); }
+.post-time { color: var(--text-muted); font-size: 14px; }
+.post-flair-tag {
+  display: inline-block; background: var(--surface); color: var(--text-muted);
+  font-size: 12px; padding: 1px 8px; border-radius: 9999px;
+}
+
+.post-body { font-size: 15px; line-height: 1.6; }
+.post-body .post-title-line { font-weight: 700; font-size: 17px; margin-bottom: 6px; display: block; }
+.post-body p { margin-bottom: 8px; }
+.post-body code {
+  background: var(--surface); padding: 1px 5px; border-radius: 4px;
+  font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px;
+}
+.post-body pre {
+  background: #1a1a2e; color: #e0e0e0; padding: 12px; border-radius: 8px;
+  overflow-x: auto; margin: 8px 0;
+}
+.post-body pre code { background: none; padding: 0; color: inherit; }
+.post-body blockquote {
+  border-left: 3px solid var(--accent); padding-left: 12px;
+  color: var(--text-secondary); margin: 8px 0;
+}
+.post-body ul, .post-body ol { padding-left: 24px; margin: 8px 0; }
+.post-body h1, .post-body h2, .post-body h3 { margin: 12px 0 6px; }
+
+.post-awards {
+  display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap;
+}
+.post-award {
+  display: inline-flex; align-items: center; gap: 3px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 9999px; padding: 2px 8px; font-size: 13px;
+}
+.post-award-count { color: var(--text-muted); font-size: 12px; }
+
+.post-actions {
+  display: flex; gap: 0; margin-top: 12px;
+  justify-content: space-between; max-width: 300px;
+}
+.post-action {
+  display: flex; align-items: center; gap: 5px;
+  background: none; border: none; cursor: pointer;
+  color: var(--text-muted); font-size: 13px; font-weight: 500;
+  padding: 6px 8px; border-radius: 9999px;
+  transition: color 0.15s, background 0.15s;
+}
+.post-action svg { width: 18px; height: 18px; }
+.post-action.reply:hover { color: var(--accent); background: rgba(0, 133, 255, 0.08); }
+.post-action.reply:hover svg { color: var(--accent); }
+.post-action.repost:hover { color: var(--repost); background: rgba(32, 188, 95, 0.08); }
+.post-action.repost:hover svg { color: var(--repost); }
+.post-action.like:hover { color: var(--like); background: rgba(236, 72, 153, 0.08); }
+.post-action.like:hover svg { color: var(--like); }
+.post-action.like.liked { color: var(--like); }
+.post-action.like.liked svg { color: var(--like); }
+.post-action.more:hover { color: var(--accent); background: rgba(0, 133, 255, 0.08); }
+.post-action.more:hover svg { color: var(--accent); }
+
+/* Thread header */
+.thread-header {
+  padding: 14px 16px; border-bottom: 1px solid var(--border);
+  font-size: 16px; font-weight: 700; color: var(--text);
+  display: flex; align-items: center; gap: 8px;
+}
+.thread-count {
+  background: var(--surface); color: var(--text-muted);
+  font-size: 13px; font-weight: 600; padding: 2px 10px; border-radius: 9999px;
+}
+
+/* Comments */
+.comment-tree { }
+
+.comment {
+  display: flex; gap: 10px; padding: 14px 16px;
+  border-bottom: 1px solid var(--border-light);
+}
+.comment.collapsed > .comment-main > .comment-body,
+.comment.collapsed > .comment-main > .comment-actions,
+.comment.collapsed > .comment-main > .comment-children { display: none; }
+.comment.collapsed > .comment-main > .comment-header .collapse-hint { display: inline; }
+
+.comment-avatar {
+  flex-shrink: 0; width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700; color: #fff; cursor: pointer;
+}
+
+.comment-main { flex: 1; min-width: 0; }
+
+.comment-header {
+  display: flex; align-items: center; gap: 4px; flex-wrap: wrap;
+  margin-bottom: 2px;
+}
+.comment-name { font-weight: 600; font-size: 14px; color: var(--text); }
+.comment-name.is-op { color: var(--accent); }
+.comment-handle { color: var(--text-muted); font-size: 13px; }
+.comment-dot { color: var(--text-muted); }
+.comment-time { color: var(--text-muted); font-size: 13px; }
+.comment-flair {
+  background: var(--surface); color: var(--text-muted);
+  font-size: 11px; padding: 0 6px; border-radius: 9999px;
+}
+.collapse-hint { display: none; color: var(--text-muted); font-size: 13px; font-style: italic; }
+
+.comment-body { font-size: 14px; line-height: 1.6; color: #333; }
+.comment-body p { margin-bottom: 6px; }
+.comment-body code {
+  background: var(--surface); padding: 1px 5px; border-radius: 4px;
+  font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px;
+}
+.comment-body pre {
+  background: #1a1a2e; color: #e0e0e0; padding: 12px; border-radius: 8px;
+  overflow-x: auto; margin: 6px 0;
+}
+.comment-body pre code { background: none; padding: 0; color: inherit; }
+.comment-body blockquote {
+  border-left: 3px solid var(--accent); padding-left: 12px;
+  color: var(--text-secondary); margin: 6px 0;
+}
+
+.comment.deleted .comment-name { color: var(--text-muted); }
+.comment.deleted .comment-body { color: var(--text-muted); font-style: italic; }
+
+.comment-actions {
+  display: flex; gap: 0; margin-top: 6px;
+  justify-content: space-between; max-width: 240px;
+}
+.c-action {
+  display: flex; align-items: center; gap: 4px;
+  background: none; border: none; cursor: pointer;
+  color: var(--text-muted); font-size: 12px; font-weight: 500;
+  padding: 4px 6px; border-radius: 9999px;
+  transition: color 0.15s, background 0.15s;
+}
+.c-action svg { width: 16px; height: 16px; }
+.c-action.reply:hover { color: var(--accent); background: rgba(0, 133, 255, 0.08); }
+.c-action.reply:hover svg { color: var(--accent); }
+.c-action.repost:hover { color: var(--repost); background: rgba(32, 188, 95, 0.08); }
+.c-action.repost:hover svg { color: var(--repost); }
+.c-action.like:hover { color: var(--like); background: rgba(236, 72, 153, 0.08); }
+.c-action.like:hover svg { color: var(--like); }
+.c-action.like.liked { color: var(--like); }
+.c-action.like.liked svg { color: var(--like); }
+.c-action.more:hover { color: var(--accent); background: rgba(0, 133, 255, 0.08); }
+
+.comment-children {
+  margin-left: 4px; padding-left: 16px;
+  border-left: 2px solid var(--border-light);
+}
+.comment-children .comment { border-bottom: none; padding: 10px 0 0 0; }
+.comment-children .comment-children .comment { padding-left: 0; }
+
+/* Disclaimer */
+.disclaimer {
+  padding: 16px; text-align: center;
+  font-size: 12px; color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+}
+
+/* Loading */
+.loading {
+  text-align: center; padding: 60px 20px; color: var(--text-muted);
+  font-size: 15px;
+}
+.loading-spinner {
+  width: 28px; height: 28px; border: 3px solid var(--border);
+  border-top-color: var(--accent); border-radius: 50%;
+  animation: spin 0.8s linear infinite; margin: 0 auto 16px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.error {
+  text-align: center; padding: 60px 20px; color: #e74c3c;
+}
+.error h3 { margin-bottom: 8px; }
+
+@media (max-width: 600px) {
+  .feed { border-left: none; border-right: none; }
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-logo">
+    <svg viewBox="0 0 600 530" fill="var(--accent)"><path d="M135.72 44.03C202.216 93.951 273.74 195.17 300 249.49c26.262-54.316 97.782-155.54 164.28-205.46C512.26 8.009 590-19.862 590 68.825c0 17.712-10.155 148.79-16.111 170.07-20.703 73.984-96.144 92.854-163.25 81.433 117.3 19.964 147.14 86.092 82.697 152.22-122.39 125.59-175.91-31.511-189.63-71.766-2.514-7.38-3.69-10.832-3.708-7.896-.017-2.936-1.193.516-3.707 7.896-13.714 40.255-67.233 197.36-189.63 71.766-64.444-66.128-34.605-132.256 82.697-152.22-67.108 11.421-142.549-7.449-163.25-81.433C20.15 217.613 10 86.536 10 68.824c0-88.687 77.742-60.816 125.72-24.795z"/></svg>
+    <span>Bluesky</span>
+  </div>
+  <div class="topnav-badge">SIMULATED</div>
+</nav>
+
+<div id="app">
+  <div class="loading">
+    <div class="loading-spinner"></div>
+    Loading...
+  </div>
+</div>
+
+<script>
+const REPLY_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`;
+const REPOST_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>`;
+const HEART_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.501 5.501 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`;
+const HEART_FILLED_SVG = `<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.501 5.501 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`;
+const MORE_SVG = `<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>`;
+
+const AVATAR_COLORS = [
+  '#0085ff','#6c5ce7','#00b894','#e84393','#fd79a8',
+  '#e17055','#00cec9','#a29bfe','#ffeaa7','#55a3f5',
+  '#74b9ff','#ff7675','#636e72','#b2bec3','#2d3436',
+];
+
+let DATA = null;
+
+function colorForUser(name) {
+  const hash = name.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
+  return AVATAR_COLORS[hash % AVATAR_COLORS.length];
+}
+
+function initialsFor(name) {
+  if (!name || name === '[deleted]') return '?';
+  return name.slice(0, 2).toUpperCase();
+}
+
+async function init() {
+  try {
+    const res = await fetch('/api/data');
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    DATA = await res.json();
+    render();
+  } catch (e) {
+    document.getElementById('app').innerHTML =
+      `<div class="error"><h3>Failed to load</h3><p>${e.message}</p></div>`;
+  }
+}
+
+function render() {
+  const sim = DATA.simulation;
+  const app = document.getElementById('app');
+
+  app.innerHTML = `
+    <div class="feed">
+      ${renderPost(sim.post, sim.comments.length)}
+      <div class="thread-header">
+        Replies
+        <span class="thread-count">${sim.comments.length}</span>
+      </div>
+      <div class="comment-tree">
+        ${renderCommentTree(sim.comments, sim.post.id)}
+      </div>
+      <div class="disclaimer">
+        This is a simulated Bluesky thread generated by reddit-scrutinizer using ${esc(DATA.input.model)}.
+        No real users were involved. Generated ${new Date(DATA.generated_at).toLocaleDateString()}.
+      </div>
+    </div>
+  `;
+}
+
+function renderPost(post, commentCount) {
+  const color = colorForUser(post.author);
+  const handle = '@' + post.author.toLowerCase().replace(/[^a-z0-9_]/g, '') + '.bsky.social';
+  const reposts = Math.floor(post.score * 0.1);
+
+  return `
+    <div class="post">
+      <div class="post-header">
+        <div class="post-avatar" style="background:${color}">${initialsFor(post.author)}</div>
+        <div class="post-meta">
+          <div class="post-author-row">
+            <span class="post-name">${esc(post.author)}</span>
+            <span class="author-badge">Author</span>
+            ${post.post_flair ? `<span class="post-flair-tag">${esc(post.post_flair)}</span>` : ''}
+          </div>
+          <div>
+            <span class="post-handle">${esc(handle)}</span>
+            <span class="post-dot">·</span>
+            <span class="post-time">${formatTime(post.created_utc)}</span>
+          </div>
+        </div>
+      </div>
+      <div class="post-body">
+        <span class="post-title-line">${esc(post.title)}</span>
+        ${post.body_html}
+      </div>
+      ${post.awards && post.awards.length ? `<div class="post-awards">${post.awards.map(a =>
+        `<span class="post-award">${a.icon}${a.count > 1 ? `<span class="post-award-count">${a.count}</span>` : ''}</span>`
+      ).join('')}</div>` : ''}
+      <div class="post-actions">
+        <button class="post-action reply">${REPLY_SVG}<span>${formatScore(commentCount)}</span></button>
+        <button class="post-action repost">${REPOST_SVG}<span>${formatScore(reposts)}</span></button>
+        <button class="post-action like" onclick="togglePostLike(this)" data-base="${post.score}">${HEART_SVG}<span class="like-count">${formatScore(post.score)}</span></button>
+        <button class="post-action more">${MORE_SVG}</button>
+      </div>
+    </div>
+  `;
+}
+
+function renderCommentTree(comments, postId) {
+  const byParent = {};
+  for (const c of comments) {
+    if (!byParent[c.parent_id]) byParent[c.parent_id] = [];
+    byParent[c.parent_id].push(c);
+  }
+  for (const k in byParent) {
+    byParent[k].sort((a, b) => b.score - a.score);
+  }
+  function renderChildren(parentId) {
+    const kids = byParent[parentId];
+    if (!kids || !kids.length) return '';
+    return kids.map(c => renderComment(c, byParent)).join('');
+  }
+  return renderChildren(postId);
+}
+
+function renderComment(comment, byParent) {
+  const classes = ['comment'];
+  if (comment.is_deleted) classes.push('deleted');
+  const children = byParent[comment.id];
+  const hasChildren = children && children.length > 0;
+  const authorDisplay = comment.is_deleted ? '[deleted]' : comment.author;
+  const color = colorForUser(authorDisplay);
+  const handle = '@' + authorDisplay.toLowerCase().replace(/[^a-z0-9_]/g, '') + '.bsky.social';
+  const likeCount = Math.max(0, comment.score);
+
+  return `
+    <div class="${classes.join(' ')}" data-id="${comment.id}">
+      <div class="comment-avatar" style="background:${color}" onclick="toggleCollapse(this)" title="Collapse">${initialsFor(authorDisplay)}</div>
+      <div class="comment-main">
+        <div class="comment-header">
+          <span class="comment-name ${comment.is_op ? 'is-op' : ''}">${comment.is_deleted ? '[deleted]' : esc(comment.author)}</span>
+          ${comment.is_op && !comment.is_deleted ? '<span class="author-badge">Author</span>' : ''}
+          ${comment.author_flair && !comment.is_deleted ? `<span class="comment-flair">${esc(comment.author_flair)}</span>` : ''}
+          <span class="comment-handle">${esc(handle)}</span>
+          <span class="comment-dot">·</span>
+          <span class="comment-time">${formatTime(comment.created_utc)}</span>
+          <span class="collapse-hint">(collapsed)</span>
+        </div>
+        <div class="comment-body">${comment.body_html}</div>
+        <div class="comment-actions">
+          <button class="c-action reply">${REPLY_SVG}</button>
+          <button class="c-action repost">${REPOST_SVG}</button>
+          <button class="c-action like" onclick="toggleLike(this)" data-base="${comment.score}">${HEART_SVG}<span class="like-count">${formatScore(likeCount)}</span></button>
+          <button class="c-action more">${MORE_SVG}</button>
+        </div>
+        ${hasChildren ? `<div class="comment-children">${children.sort((a, b) => b.score - a.score).map(c => renderComment(c, byParent)).join('')}</div>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function toggleCollapse(el) {
+  el.closest('.comment').classList.toggle('collapsed');
+}
+
+function togglePostLike(btn) {
+  const base = parseInt(btn.dataset.base);
+  if (btn.classList.contains('liked')) {
+    btn.classList.remove('liked');
+    btn.innerHTML = HEART_SVG + `<span class="like-count">${formatScore(base)}</span>`;
+  } else {
+    btn.classList.add('liked');
+    btn.innerHTML = HEART_FILLED_SVG + `<span class="like-count">${formatScore(base + 1)}</span>`;
+  }
+}
+
+function toggleLike(btn) {
+  const base = parseInt(btn.dataset.base);
+  const likeBase = Math.max(0, base);
+  if (btn.classList.contains('liked')) {
+    btn.classList.remove('liked');
+    btn.innerHTML = HEART_SVG + `<span class="like-count">${formatScore(likeBase)}</span>`;
+  } else {
+    btn.classList.add('liked');
+    btn.innerHTML = HEART_FILLED_SVG + `<span class="like-count">${formatScore(likeBase + 1)}</span>`;
+  }
+}
+
+function formatScore(n) {
+  if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+  if (n >= 10000) return (n / 1000).toFixed(1) + 'K';
+  if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+  return String(n);
+}
+
+function formatTime(utc) {
+  const now = Date.now() / 1000;
+  const diff = Math.max(0, now - utc);
+  if (diff < 60) return 'now';
+  if (diff < 3600) return Math.floor(diff / 60) + 'm';
+  if (diff < 86400) return Math.floor(diff / 3600) + 'h';
+  if (diff < 604800) return Math.floor(diff / 86400) + 'd';
+  return Math.floor(diff / 604800) + 'w';
+}
+
+function esc(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+init();
+</script>
+</body>
+</html>

@@ -31,7 +31,7 @@ program
   )
   .addOption(
     new Option("--theme <name>", "UI theme")
-      .choices(["reddit", "hackernews", "producthunt"])
+      .choices(["reddit", "hackernews", "producthunt", "twitter", "bluesky", "qdb"])
       .default("reddit"),
   )
   .option("--model <name>", "Anthropic model to use", "claude-sonnet-4-5-20250929")
@@ -52,7 +52,7 @@ program
   .option("--open", "open UI in browser", false)
   .addOption(
     new Option("--theme <name>", "UI theme")
-      .choices(["reddit", "hackernews", "producthunt"])
+      .choices(["reddit", "hackernews", "producthunt", "twitter", "bluesky", "qdb"])
       .default("reddit"),
   )
   .action(async (file: string, opts: { port: number; open: boolean; theme: string }) => {
