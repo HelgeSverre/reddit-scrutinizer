@@ -1,6 +1,15 @@
 {
   "subreddit": "cpp",
-  "tone": ["dense", "standards-obsessed", "meticulous", "argumentative", "knowledgeable", "defensive", "world-weary", "expert-oriented"],
+  "tone": [
+    "dense",
+    "standards-obsessed",
+    "meticulous",
+    "argumentative",
+    "knowledgeable",
+    "defensive",
+    "world-weary",
+    "expert-oriented"
+  ],
   "pet_topics": [
     "undefined behavior and its consequences",
     "RAII and resource management",
@@ -28,17 +37,61 @@
     "saying 'just use exceptions' in embedded or performance-critical contexts"
   ],
   "archetypes": [
-    { "type": "standards-lawyer", "frequency": 0.17, "description": "Quotes the standard by section number, knows the difference between ill-formed and UB" },
-    { "type": "modern-cpp-evangelist", "frequency": 0.14, "description": "Pushes C++20/23/26 features, smart pointers everywhere, excited about ranges and std::expected" },
-    { "type": "safety-concerned", "frequency": 0.12, "description": "Worried about C++ falling behind Rust on safety, follows Profiles vs Safe C++ debates closely" },
-    { "type": "template-metaprogrammer", "frequency": 0.12, "description": "Writes compile-time everything, pushes constexpr boundaries, migrating from SFINAE to concepts, excited about P2996 reflection" },
-    { "type": "embedded-dev", "frequency": 0.10, "description": "Works on bare metal, cares about code size and determinism, -fno-exceptions -fno-rtti" },
-    { "type": "backwards-compat-warrior", "frequency": 0.10, "description": "Maintains million-line codebases, every breaking change is a disaster, ABI must be stable" },
-    { "type": "build-system-sufferer", "frequency": 0.08, "description": "Fights CMake daily, debates vcpkg vs Conan, knows FetchContent workarounds, dreams of better tooling" },
-    { "type": "compiler-dev", "frequency": 0.05, "description": "Works on GCC/Clang/MSVC, provides implementation perspective on proposals" },
-    { "type": "reluctant-user", "frequency": 0.05, "description": "Uses C++ because their domain demands it, pragmatic complaints about complexity" },
-    { "type": "gamedev-practitioner", "frequency": 0.04, "description": "Unreal Engine or custom engines, cares about compile times, virtual function overhead, data-oriented design" },
-    { "type": "committee-insider", "frequency": 0.03, "description": "Posts trip reports, provides insider perspective on proposal progress, carries outsized authority" }
+    {
+      "type": "standards-lawyer",
+      "frequency": 0.17,
+      "description": "Quotes the standard by section number, knows the difference between ill-formed and UB"
+    },
+    {
+      "type": "modern-cpp-evangelist",
+      "frequency": 0.14,
+      "description": "Pushes C++20/23/26 features, smart pointers everywhere, excited about ranges and std::expected"
+    },
+    {
+      "type": "safety-concerned",
+      "frequency": 0.12,
+      "description": "Worried about C++ falling behind Rust on safety, follows Profiles vs Safe C++ debates closely"
+    },
+    {
+      "type": "template-metaprogrammer",
+      "frequency": 0.12,
+      "description": "Writes compile-time everything, pushes constexpr boundaries, migrating from SFINAE to concepts, excited about P2996 reflection"
+    },
+    {
+      "type": "embedded-dev",
+      "frequency": 0.1,
+      "description": "Works on bare metal, cares about code size and determinism, -fno-exceptions -fno-rtti"
+    },
+    {
+      "type": "backwards-compat-warrior",
+      "frequency": 0.1,
+      "description": "Maintains million-line codebases, every breaking change is a disaster, ABI must be stable"
+    },
+    {
+      "type": "build-system-sufferer",
+      "frequency": 0.08,
+      "description": "Fights CMake daily, debates vcpkg vs Conan, knows FetchContent workarounds, dreams of better tooling"
+    },
+    {
+      "type": "compiler-dev",
+      "frequency": 0.05,
+      "description": "Works on GCC/Clang/MSVC, provides implementation perspective on proposals"
+    },
+    {
+      "type": "reluctant-user",
+      "frequency": 0.05,
+      "description": "Uses C++ because their domain demands it, pragmatic complaints about complexity"
+    },
+    {
+      "type": "gamedev-practitioner",
+      "frequency": 0.04,
+      "description": "Unreal Engine or custom engines, cares about compile times, virtual function overhead, data-oriented design"
+    },
+    {
+      "type": "committee-insider",
+      "frequency": 0.03,
+      "description": "Posts trip reports, provides insider perspective on proposal progress, carries outsized authority"
+    }
   ],
   "common_flairs": [
     "Discussion",

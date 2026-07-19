@@ -1,6 +1,14 @@
 {
   "subreddit": "python",
-  "tone": ["collegial", "pedantic-about-style", "intermediate-focused", "practical", "opinionated", "diverse", "news-driven"],
+  "tone": [
+    "collegial",
+    "pedantic-about-style",
+    "intermediate-focused",
+    "practical",
+    "opinionated",
+    "diverse",
+    "news-driven"
+  ],
   "pet_topics": [
     "PEP compliance and Pythonic idioms",
     "type hints and mypy/pyright adoption",
@@ -29,25 +37,58 @@
     "self-promoting without community participation"
   ],
   "archetypes": [
-    { "type": "pythonista", "frequency": 0.15, "description": "Writes idiomatic code, quotes the Zen of Python, refactors everything to be Pythonic, recommends pathlib and dataclasses" },
-    { "type": "data-scientist", "frequency": 0.14, "description": "Lives in Jupyter notebooks, pandas/numpy/sklearn stack, increasingly exploring Polars and Marimo" },
-    { "type": "ml-engineer", "frequency": 0.12, "description": "PyTorch/transformers stack, discusses model training, CUDA issues, deployment, and LLM integration" },
-    { "type": "automation-scripter", "frequency": 0.12, "description": "Uses Python to automate everything, 50-line scripts that save hours, practical to the bone" },
-    { "type": "type-hint-advocate", "frequency": 0.10, "description": "Wants strict typing everywhere, uses mypy/pyright religiously, excited about Rust-based type checkers" },
-    { "type": "web-framework-partisan", "frequency": 0.10, "description": "Has strong opinions on FastAPI vs Django vs Flask, will recommend their framework for every use case" },
-    { "type": "toolchain-optimizer", "frequency": 0.08, "description": "Evangelizes ruff, uv, pyproject.toml, and pre-commit hooks; has strong opinions on CI/CD setup" },
-    { "type": "helpful-mentor", "frequency": 0.07, "description": "Reviews code, suggests improvements, links to docs, genuinely wants others to succeed" },
-    { "type": "packaging-sufferer", "frequency": 0.06, "description": "Has been burned by pip, setuptools, poetry, and conda — now uses uv and prays" },
-    { "type": "ai-skeptic", "frequency": 0.06, "description": "Pushes back on AI/LLM hype, questions Copilot code quality, worries about the profession's future" }
+    {
+      "type": "pythonista",
+      "frequency": 0.15,
+      "description": "Writes idiomatic code, quotes the Zen of Python, refactors everything to be Pythonic, recommends pathlib and dataclasses"
+    },
+    {
+      "type": "data-scientist",
+      "frequency": 0.14,
+      "description": "Lives in Jupyter notebooks, pandas/numpy/sklearn stack, increasingly exploring Polars and Marimo"
+    },
+    {
+      "type": "ml-engineer",
+      "frequency": 0.12,
+      "description": "PyTorch/transformers stack, discusses model training, CUDA issues, deployment, and LLM integration"
+    },
+    {
+      "type": "automation-scripter",
+      "frequency": 0.12,
+      "description": "Uses Python to automate everything, 50-line scripts that save hours, practical to the bone"
+    },
+    {
+      "type": "type-hint-advocate",
+      "frequency": 0.1,
+      "description": "Wants strict typing everywhere, uses mypy/pyright religiously, excited about Rust-based type checkers"
+    },
+    {
+      "type": "web-framework-partisan",
+      "frequency": 0.1,
+      "description": "Has strong opinions on FastAPI vs Django vs Flask, will recommend their framework for every use case"
+    },
+    {
+      "type": "toolchain-optimizer",
+      "frequency": 0.08,
+      "description": "Evangelizes ruff, uv, pyproject.toml, and pre-commit hooks; has strong opinions on CI/CD setup"
+    },
+    {
+      "type": "helpful-mentor",
+      "frequency": 0.07,
+      "description": "Reviews code, suggests improvements, links to docs, genuinely wants others to succeed"
+    },
+    {
+      "type": "packaging-sufferer",
+      "frequency": 0.06,
+      "description": "Has been burned by pip, setuptools, poetry, and conda — now uses uv and prays"
+    },
+    {
+      "type": "ai-skeptic",
+      "frequency": 0.06,
+      "description": "Pushes back on AI/LLM hype, questions Copilot code quality, worries about the profession's future"
+    }
   ],
-  "common_flairs": [
-    "Discussion",
-    "News",
-    "Showcase",
-    "Help",
-    "Resource",
-    "Tutorial"
-  ],
+  "common_flairs": ["Discussion", "News", "Showcase", "Help", "Resource", "Tutorial"],
   "typical_replies": [
     "That's not Pythonic — use a list comprehension instead.",
     "Have you tried `python -m venv`? Stop using system Python.",

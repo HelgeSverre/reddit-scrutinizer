@@ -1,6 +1,15 @@
 {
   "subreddit": "lisp",
-  "tone": ["academic", "opinionated", "nostalgic", "philosophical", "purist", "passionate", "self-aware", "existential"],
+  "tone": [
+    "academic",
+    "opinionated",
+    "nostalgic",
+    "philosophical",
+    "purist",
+    "passionate",
+    "self-aware",
+    "existential"
+  ],
   "pet_topics": [
     "macros and metaprogramming",
     "s-expressions as universal syntax",
@@ -29,15 +38,51 @@
     "dismissing the condition/restart system"
   ],
   "archetypes": [
-    { "type": "cl-purist", "frequency": 0.28, "description": "Common Lisp is the one true Lisp, SBCL is the answer, everything else is a toy" },
-    { "type": "curious-newcomer", "frequency": 0.16, "description": "Heard Lisp is enlightening, asks which dialect to learn, overwhelmed by choices" },
-    { "type": "scheme-lover", "frequency": 0.12, "description": "Prefers minimalism and elegance, references R7RS, loves continuations and tail calls" },
-    { "type": "macro-wizard", "frequency": 0.10, "description": "Writes macros that generate macros, masters defmacro, believes code-as-data is the ultimate paradigm" },
-    { "type": "clojure-pragmatist", "frequency": 0.10, "description": "Uses Lisp ideas in production on the JVM, focused on practical immutability" },
-    { "type": "language-historian", "frequency": 0.08, "description": "Drops McCarthy quotes, references Lisp 1.5, invokes 'Worse is Better' and Greenspun's Tenth Rule" },
-    { "type": "emacs-evangelist", "frequency": 0.06, "description": "Emacs is not just a tool, it's an identity; discusses SLIME vs SLY, their config IS their Lisp project" },
-    { "type": "production-pragmatist", "frequency": 0.05, "description": "Uses Common Lisp in production, cares about deployment, CI/CD, and modernizing the CL ecosystem" },
-    { "type": "tooling-tinkerer", "frequency": 0.05, "description": "Works on Lem, Coalton, ocicl, CLOG; shares projects focused on modernizing the ecosystem" }
+    {
+      "type": "cl-purist",
+      "frequency": 0.28,
+      "description": "Common Lisp is the one true Lisp, SBCL is the answer, everything else is a toy"
+    },
+    {
+      "type": "curious-newcomer",
+      "frequency": 0.16,
+      "description": "Heard Lisp is enlightening, asks which dialect to learn, overwhelmed by choices"
+    },
+    {
+      "type": "scheme-lover",
+      "frequency": 0.12,
+      "description": "Prefers minimalism and elegance, references R7RS, loves continuations and tail calls"
+    },
+    {
+      "type": "macro-wizard",
+      "frequency": 0.1,
+      "description": "Writes macros that generate macros, masters defmacro, believes code-as-data is the ultimate paradigm"
+    },
+    {
+      "type": "clojure-pragmatist",
+      "frequency": 0.1,
+      "description": "Uses Lisp ideas in production on the JVM, focused on practical immutability"
+    },
+    {
+      "type": "language-historian",
+      "frequency": 0.08,
+      "description": "Drops McCarthy quotes, references Lisp 1.5, invokes 'Worse is Better' and Greenspun's Tenth Rule"
+    },
+    {
+      "type": "emacs-evangelist",
+      "frequency": 0.06,
+      "description": "Emacs is not just a tool, it's an identity; discusses SLIME vs SLY, their config IS their Lisp project"
+    },
+    {
+      "type": "production-pragmatist",
+      "frequency": 0.05,
+      "description": "Uses Common Lisp in production, cares about deployment, CI/CD, and modernizing the CL ecosystem"
+    },
+    {
+      "type": "tooling-tinkerer",
+      "frequency": 0.05,
+      "description": "Works on Lem, Coalton, ocicl, CLOG; shares projects focused on modernizing the ecosystem"
+    }
   ],
   "common_flairs": [
     "Common Lisp",

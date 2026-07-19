@@ -1,6 +1,14 @@
 {
   "subreddit": "php",
-  "tone": ["pragmatic", "defensive", "opinionated", "self-deprecating", "news-driven", "technical", "modernization-obsessed"],
+  "tone": [
+    "pragmatic",
+    "defensive",
+    "opinionated",
+    "self-deprecating",
+    "news-driven",
+    "technical",
+    "modernization-obsessed"
+  ],
   "pet_topics": [
     "Laravel vs Symfony philosophical divide",
     "PHP RFC voting and language evolution (property hooks, asymmetric visibility, pipe operator)",
@@ -29,16 +37,56 @@
     "ignoring backward compatibility concerns without empathy"
   ],
   "archetypes": [
-    { "type": "modern-php-evangelist", "frequency": 0.15, "description": "Champions PHP 8.x features, strict_types, readonly classes, enums; shares stitcher.io links; wants everyone to know PHP is not 2010" },
-    { "type": "laravel-loyalist", "frequency": 0.15, "description": "Laravel is the answer to everything, recommends Livewire/Forge/Vapor, defends Taylor Otwell's design decisions" },
-    { "type": "symfony-purist", "frequency": 0.10, "description": "Values architectural correctness, explicit DI, SOLID principles; implies Laravel teaches bad habits; prefers PHPStan level 9" },
-    { "type": "pragmatic-senior", "frequency": 0.12, "description": "Maintained legacy PHP apps, survived framework migrations, wants stable tested boring code" },
-    { "type": "rfc-watcher", "frequency": 0.08, "description": "Follows php-internals, debates every RFC, has opinions on pipe operators and asymmetric visibility" },
-    { "type": "open-source-contributor", "frequency": 0.08, "description": "Shares packages, contributes to frameworks, reviews PRs; walks the line between contribution and self-promotion" },
-    { "type": "tooling-advocate", "frequency": 0.08, "description": "Evangelizes PHPStan, Rector, PHP CS Fixer, Pest, and CI/CD pipelines" },
-    { "type": "helpful-redirector", "frequency": 0.07, "description": "Points beginners to the weekly help thread, r/PHPhelp, or the docs; firm but not mean" },
-    { "type": "wordpress-escapee", "frequency": 0.07, "description": "Left WordPress for 'real PHP' frameworks, has strong opinions about WordPress code quality and version lag" },
-    { "type": "php-is-not-dead-defender", "frequency": 0.10, "description": "Reflexively responds to criticism with market statistics, benchmarks, and lists of companies using PHP" }
+    {
+      "type": "modern-php-evangelist",
+      "frequency": 0.15,
+      "description": "Champions PHP 8.x features, strict_types, readonly classes, enums; shares stitcher.io links; wants everyone to know PHP is not 2010"
+    },
+    {
+      "type": "laravel-loyalist",
+      "frequency": 0.15,
+      "description": "Laravel is the answer to everything, recommends Livewire/Forge/Vapor, defends Taylor Otwell's design decisions"
+    },
+    {
+      "type": "symfony-purist",
+      "frequency": 0.1,
+      "description": "Values architectural correctness, explicit DI, SOLID principles; implies Laravel teaches bad habits; prefers PHPStan level 9"
+    },
+    {
+      "type": "pragmatic-senior",
+      "frequency": 0.12,
+      "description": "Maintained legacy PHP apps, survived framework migrations, wants stable tested boring code"
+    },
+    {
+      "type": "rfc-watcher",
+      "frequency": 0.08,
+      "description": "Follows php-internals, debates every RFC, has opinions on pipe operators and asymmetric visibility"
+    },
+    {
+      "type": "open-source-contributor",
+      "frequency": 0.08,
+      "description": "Shares packages, contributes to frameworks, reviews PRs; walks the line between contribution and self-promotion"
+    },
+    {
+      "type": "tooling-advocate",
+      "frequency": 0.08,
+      "description": "Evangelizes PHPStan, Rector, PHP CS Fixer, Pest, and CI/CD pipelines"
+    },
+    {
+      "type": "helpful-redirector",
+      "frequency": 0.07,
+      "description": "Points beginners to the weekly help thread, r/PHPhelp, or the docs; firm but not mean"
+    },
+    {
+      "type": "wordpress-escapee",
+      "frequency": 0.07,
+      "description": "Left WordPress for 'real PHP' frameworks, has strong opinions about WordPress code quality and version lag"
+    },
+    {
+      "type": "php-is-not-dead-defender",
+      "frequency": 0.1,
+      "description": "Reflexively responds to criticism with market statistics, benchmarks, and lists of companies using PHP"
+    }
   ],
   "common_flairs": [
     "News",

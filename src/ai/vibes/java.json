@@ -1,6 +1,14 @@
 {
   "subreddit": "java",
-  "tone": ["technical", "opinionated", "defensive", "curmudgeonly", "professional", "gatekeepy", "dry"],
+  "tone": [
+    "technical",
+    "opinionated",
+    "defensive",
+    "curmudgeonly",
+    "professional",
+    "gatekeepy",
+    "dry"
+  ],
   "pet_topics": [
     "new Java releases and JEPs (pattern matching, string templates)",
     "virtual threads and Project Loom adoption",
@@ -31,18 +39,66 @@
     "suggesting Java should adopt features wholesale from other languages"
   ],
   "archetypes": [
-    { "type": "enterprise-veteran", "frequency": 0.18, "description": "10+ years in Java, works at a bank or insurance company, deeply pragmatic, references production war stories" },
-    { "type": "modern-java-evangelist", "frequency": 0.14, "description": "Excited about records, sealed classes, virtual threads, pattern matching; reminds people 'this is not your grandfather's Java'" },
-    { "type": "spring-devotee", "frequency": 0.12, "description": "Knows Spring Boot inside and out, answers every framework question with 'just use Spring', considers alternatives niche" },
-    { "type": "framework-skeptic", "frequency": 0.10, "description": "Distrusts Spring magic, advocates plain Java, minimal dependencies, understanding what code actually does" },
-    { "type": "jep-watcher", "frequency": 0.08, "description": "Tracks every OpenJDK mailing list, knows JEP numbers by heart, first to post about new JDK early-access builds" },
-    { "type": "build-tool-partisan", "frequency": 0.07, "description": "Strong opinions about Maven vs Gradle, will derail any thread to explain why their build tool is objectively correct" },
-    { "type": "performance-nerd", "frequency": 0.07, "description": "Cares about JMH benchmarks, GC tuning, JIT compilation, GraalVM native images; asks 'did you benchmark it?'" },
-    { "type": "licensing-watchdog", "frequency": 0.05, "description": "Monitors Oracle's every move, warns about audit risks, recommends Temurin/Corretto" },
-    { "type": "lurking-kotlin-dev", "frequency": 0.05, "description": "Cautiously mentions Kotlin advantages while trying not to get banned, phrases as 'in other JVM languages...'" },
-    { "type": "library-author", "frequency": 0.05, "description": "Maintains an open-source Java library, posts releases and asks for feedback" },
-    { "type": "curmudgeon", "frequency": 0.05, "description": "Thinks Java peaked at version 8, finds modern syntax unnecessary, considers the language 'good enough as it was'" },
-    { "type": "helpful-redirector", "frequency": 0.04, "description": "Politely tells beginners to go to r/learnjava or r/javahelp, sometimes provides a brief answer first" }
+    {
+      "type": "enterprise-veteran",
+      "frequency": 0.18,
+      "description": "10+ years in Java, works at a bank or insurance company, deeply pragmatic, references production war stories"
+    },
+    {
+      "type": "modern-java-evangelist",
+      "frequency": 0.14,
+      "description": "Excited about records, sealed classes, virtual threads, pattern matching; reminds people 'this is not your grandfather's Java'"
+    },
+    {
+      "type": "spring-devotee",
+      "frequency": 0.12,
+      "description": "Knows Spring Boot inside and out, answers every framework question with 'just use Spring', considers alternatives niche"
+    },
+    {
+      "type": "framework-skeptic",
+      "frequency": 0.1,
+      "description": "Distrusts Spring magic, advocates plain Java, minimal dependencies, understanding what code actually does"
+    },
+    {
+      "type": "jep-watcher",
+      "frequency": 0.08,
+      "description": "Tracks every OpenJDK mailing list, knows JEP numbers by heart, first to post about new JDK early-access builds"
+    },
+    {
+      "type": "build-tool-partisan",
+      "frequency": 0.07,
+      "description": "Strong opinions about Maven vs Gradle, will derail any thread to explain why their build tool is objectively correct"
+    },
+    {
+      "type": "performance-nerd",
+      "frequency": 0.07,
+      "description": "Cares about JMH benchmarks, GC tuning, JIT compilation, GraalVM native images; asks 'did you benchmark it?'"
+    },
+    {
+      "type": "licensing-watchdog",
+      "frequency": 0.05,
+      "description": "Monitors Oracle's every move, warns about audit risks, recommends Temurin/Corretto"
+    },
+    {
+      "type": "lurking-kotlin-dev",
+      "frequency": 0.05,
+      "description": "Cautiously mentions Kotlin advantages while trying not to get banned, phrases as 'in other JVM languages...'"
+    },
+    {
+      "type": "library-author",
+      "frequency": 0.05,
+      "description": "Maintains an open-source Java library, posts releases and asks for feedback"
+    },
+    {
+      "type": "curmudgeon",
+      "frequency": 0.05,
+      "description": "Thinks Java peaked at version 8, finds modern syntax unnecessary, considers the language 'good enough as it was'"
+    },
+    {
+      "type": "helpful-redirector",
+      "frequency": 0.04,
+      "description": "Politely tells beginners to go to r/learnjava or r/javahelp, sometimes provides a brief answer first"
+    }
   ],
   "common_flairs": [
     "News",

@@ -3,7 +3,12 @@ import { resolve, join } from "node:path";
 import getPort from "get-port";
 import open from "open";
 
-export async function startServer(jsonPath: string, preferredPort: number, autoOpen: boolean, theme: string = "reddit"): Promise<number> {
+export async function startServer(
+  jsonPath: string,
+  preferredPort: number,
+  autoOpen: boolean,
+  theme: string = "reddit",
+): Promise<number> {
   const dataPath = resolve(jsonPath);
   const jsonData = await readFile(dataPath, "utf-8");
 

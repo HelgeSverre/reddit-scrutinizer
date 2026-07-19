@@ -51,8 +51,8 @@ describe("detectLanguages", () => {
       { path: "d.ts", size: 10 },
     ];
     const result = detectLanguages(files);
-    expect(result[0].name).toBe("TypeScript");
-    expect(result[1].name).toBe("Python");
+    expect(result.at(0)?.name).toBe("TypeScript");
+    expect(result.at(1)?.name).toBe("Python");
   });
 });
 

@@ -1,6 +1,15 @@
 {
   "subreddit": "reactjs",
-  "tone": ["pragmatic", "opinionated", "sardonic", "helpful", "skeptical", "direct", "fatigued", "tribally-loyal"],
+  "tone": [
+    "pragmatic",
+    "opinionated",
+    "sardonic",
+    "helpful",
+    "skeptical",
+    "direct",
+    "fatigued",
+    "tribally-loyal"
+  ],
   "pet_topics": [
     "useEffect misuse and the 'You Might Not Need an Effect' doctrine",
     "state management wars (Redux vs Zustand vs Jotai vs React Query)",
@@ -31,18 +40,66 @@
     "advocating for class components over hooks"
   ],
   "archetypes": [
-    { "type": "pragmatic-senior", "frequency": 0.20, "description": "5+ years React experience, gives nuanced tradeoff-aware answers, defaults to TypeScript/Vite/TanStack Query" },
-    { "type": "helpful-explainer", "frequency": 0.15, "description": "Writes multi-paragraph answers with code snippets and doc links, answers the question before suggesting alternatives" },
-    { "type": "zustand-tanstack-evangelist", "frequency": 0.10, "description": "Recently migrated from Redux/Next.js and wants everyone to know, recommends Zustand and TanStack in every thread" },
-    { "type": "skeptical-veteran", "frequency": 0.10, "description": "Suspicious of React team's direction and Vercel's influence, nostalgic for simpler times, starts comments with 'Am I the only one...'" },
-    { "type": "one-liner-wit", "frequency": 0.10, "description": "Drops sardonic comments that get disproportionately upvoted, pure entertainment value" },
-    { "type": "library-maintainer", "frequency": 0.05, "description": "Actual open-source maintainers who show up in threads about their projects, comments carry authority" },
-    { "type": "struggling-junior", "frequency": 0.08, "description": "Asks questions about useEffect, state management, or project setup, sometimes gets redirected to docs" },
-    { "type": "framework-hopper", "frequency": 0.05, "description": "Just tried Solid/Svelte/Vue and is back to report findings, gently proselytizing for alternatives" },
-    { "type": "architecture-astronaut", "frequency": 0.05, "description": "Overcomplicates simple questions with enterprise patterns, suggests micro-frontends for a todo app" },
-    { "type": "corporate-dev", "frequency": 0.05, "description": "Works at a large company with legacy CRA codebase, asks about migration strategies" },
-    { "type": "hot-take-artist", "frequency": 0.04, "description": "Posts 'unpopular opinions' that are actually popular, generates engagement but rarely novel" },
-    { "type": "ai-tool-builder", "frequency": 0.03, "description": "Building with AI integration, posts shadcn + Tailwind + Supabase projects, community mildly fatigued by the pattern" }
+    {
+      "type": "pragmatic-senior",
+      "frequency": 0.2,
+      "description": "5+ years React experience, gives nuanced tradeoff-aware answers, defaults to TypeScript/Vite/TanStack Query"
+    },
+    {
+      "type": "helpful-explainer",
+      "frequency": 0.15,
+      "description": "Writes multi-paragraph answers with code snippets and doc links, answers the question before suggesting alternatives"
+    },
+    {
+      "type": "zustand-tanstack-evangelist",
+      "frequency": 0.1,
+      "description": "Recently migrated from Redux/Next.js and wants everyone to know, recommends Zustand and TanStack in every thread"
+    },
+    {
+      "type": "skeptical-veteran",
+      "frequency": 0.1,
+      "description": "Suspicious of React team's direction and Vercel's influence, nostalgic for simpler times, starts comments with 'Am I the only one...'"
+    },
+    {
+      "type": "one-liner-wit",
+      "frequency": 0.1,
+      "description": "Drops sardonic comments that get disproportionately upvoted, pure entertainment value"
+    },
+    {
+      "type": "library-maintainer",
+      "frequency": 0.05,
+      "description": "Actual open-source maintainers who show up in threads about their projects, comments carry authority"
+    },
+    {
+      "type": "struggling-junior",
+      "frequency": 0.08,
+      "description": "Asks questions about useEffect, state management, or project setup, sometimes gets redirected to docs"
+    },
+    {
+      "type": "framework-hopper",
+      "frequency": 0.05,
+      "description": "Just tried Solid/Svelte/Vue and is back to report findings, gently proselytizing for alternatives"
+    },
+    {
+      "type": "architecture-astronaut",
+      "frequency": 0.05,
+      "description": "Overcomplicates simple questions with enterprise patterns, suggests micro-frontends for a todo app"
+    },
+    {
+      "type": "corporate-dev",
+      "frequency": 0.05,
+      "description": "Works at a large company with legacy CRA codebase, asks about migration strategies"
+    },
+    {
+      "type": "hot-take-artist",
+      "frequency": 0.04,
+      "description": "Posts 'unpopular opinions' that are actually popular, generates engagement but rarely novel"
+    },
+    {
+      "type": "ai-tool-builder",
+      "frequency": 0.03,
+      "description": "Building with AI integration, posts shadcn + Tailwind + Supabase projects, community mildly fatigued by the pattern"
+    }
   ],
   "common_flairs": [
     "Discussion",

@@ -1,6 +1,14 @@
 {
   "subreddit": "MachineLearning",
-  "tone": ["critical-yet-curious", "academic", "sardonic", "rigorous", "stratified", "anti-hype", "exasperated"],
+  "tone": [
+    "critical-yet-curious",
+    "academic",
+    "sardonic",
+    "rigorous",
+    "stratified",
+    "anti-hype",
+    "exasperated"
+  ],
   "pet_topics": [
     "scaling laws and the Bitter Lesson",
     "conference peer review dysfunction (Reviewer 2, ICLR AI-generated reviews scandal)",
@@ -29,17 +37,61 @@
     "dismissing reproducibility concerns or not releasing code"
   ],
   "archetypes": [
-    { "type": "paper-critic", "frequency": 0.15, "description": "Reads the actual paper, identifies methodological issues, asks about ablations, baselines, and statistical significance" },
-    { "type": "phd-student", "frequency": 0.14, "description": "Working on own research, comments from deep-but-narrow expertise, commiserates about reviews and compute access" },
-    { "type": "industry-practitioner", "frequency": 0.13, "description": "Works at a tech company, asks 'but does it scale?' and 'what's the latency?', skeptical of MNIST-only papers" },
-    { "type": "hype-deflator", "frequency": 0.12, "description": "Shows up whenever a post has a grandiose title: 'This is just existing technique with minor modification'" },
-    { "type": "helpful-explainer", "frequency": 0.10, "description": "Provides accessible paper breakdowns, links to blog posts and tutorials, explains notation" },
-    { "type": "big-lab-insider", "frequency": 0.07, "description": "Works at Google DeepMind, Meta FAIR, or OpenAI; sometimes the actual paper author doing informal AMA" },
-    { "type": "open-source-advocate", "frequency": 0.07, "description": "Champions reproducibility and code release, celebrates open weight releases, suspicious of closed-source results" },
-    { "type": "career-anxious", "frequency": 0.06, "description": "Worried about job market, whether PhD topic is still relevant, or if LLMs made their subfield obsolete" },
-    { "type": "safety-alignment-voice", "frequency": 0.05, "description": "Brings up alignment, dual-use concerns, and societal impact; gets pushback if too speculative" },
-    { "type": "bitter-reviewer", "frequency": 0.05, "description": "Channels conference reviewing frustrations into comments: 'Reviewer 2 would reject this'" },
-    { "type": "lurker-voter", "frequency": 0.06, "description": "Rarely comments but shapes what rises through upvotes; when they comment, it's brief" }
+    {
+      "type": "paper-critic",
+      "frequency": 0.15,
+      "description": "Reads the actual paper, identifies methodological issues, asks about ablations, baselines, and statistical significance"
+    },
+    {
+      "type": "phd-student",
+      "frequency": 0.14,
+      "description": "Working on own research, comments from deep-but-narrow expertise, commiserates about reviews and compute access"
+    },
+    {
+      "type": "industry-practitioner",
+      "frequency": 0.13,
+      "description": "Works at a tech company, asks 'but does it scale?' and 'what's the latency?', skeptical of MNIST-only papers"
+    },
+    {
+      "type": "hype-deflator",
+      "frequency": 0.12,
+      "description": "Shows up whenever a post has a grandiose title: 'This is just existing technique with minor modification'"
+    },
+    {
+      "type": "helpful-explainer",
+      "frequency": 0.1,
+      "description": "Provides accessible paper breakdowns, links to blog posts and tutorials, explains notation"
+    },
+    {
+      "type": "big-lab-insider",
+      "frequency": 0.07,
+      "description": "Works at Google DeepMind, Meta FAIR, or OpenAI; sometimes the actual paper author doing informal AMA"
+    },
+    {
+      "type": "open-source-advocate",
+      "frequency": 0.07,
+      "description": "Champions reproducibility and code release, celebrates open weight releases, suspicious of closed-source results"
+    },
+    {
+      "type": "career-anxious",
+      "frequency": 0.06,
+      "description": "Worried about job market, whether PhD topic is still relevant, or if LLMs made their subfield obsolete"
+    },
+    {
+      "type": "safety-alignment-voice",
+      "frequency": 0.05,
+      "description": "Brings up alignment, dual-use concerns, and societal impact; gets pushback if too speculative"
+    },
+    {
+      "type": "bitter-reviewer",
+      "frequency": 0.05,
+      "description": "Channels conference reviewing frustrations into comments: 'Reviewer 2 would reject this'"
+    },
+    {
+      "type": "lurker-voter",
+      "frequency": 0.06,
+      "description": "Rarely comments but shapes what rises through upvotes; when they comment, it's brief"
+    }
   ],
   "common_flairs": [
     "[R] Research",

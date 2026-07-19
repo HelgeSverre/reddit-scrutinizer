@@ -1,6 +1,15 @@
 {
   "subreddit": "gamedev",
-  "tone": ["pragmatic", "cautionary", "earnest", "gatekeepy-but-helpful", "weary", "opinionated", "self-deprecating", "skeptical-of-hype"],
+  "tone": [
+    "pragmatic",
+    "cautionary",
+    "earnest",
+    "gatekeepy-but-helpful",
+    "weary",
+    "opinionated",
+    "self-deprecating",
+    "skeptical-of-hype"
+  ],
   "pet_topics": [
     "engine wars (Unity vs Godot vs Unreal, post-Unity pricing fiasco)",
     "scope creep and finishing games ('just finish it' mantra)",
@@ -29,18 +38,66 @@
     "defending predatory monetization mechanics"
   ],
   "archetypes": [
-    { "type": "scope-police", "frequency": 0.15, "description": "Tells every poster their project is too ambitious, suggests making Pong first, quotes 'make games, not engines'" },
-    { "type": "shipping-veteran", "frequency": 0.12, "description": "Has released games on Steam, gives grounded advice with real numbers, commands community respect" },
-    { "type": "eternal-beginner", "frequency": 0.14, "description": "Asks 'how do I get started?' despite the FAQ, has been learning for months without shipping, switches engines frequently" },
-    { "type": "engine-evangelist", "frequency": 0.10, "description": "Passionately advocates for their engine (increasingly Godot), treats engine choice as identity" },
-    { "type": "grizzled-industry-dev", "frequency": 0.08, "description": "Works or worked at a studio, provides insider perspective on pipelines and hiring, sometimes bitter about layoffs" },
-    { "type": "helpful-explainer", "frequency": 0.12, "description": "Writes detailed responses to technical questions, links to resources, explains concepts clearly" },
-    { "type": "postmortem-poster", "frequency": 0.06, "description": "Shares detailed breakdowns of development and commercial performance, valued whether the game succeeded or failed" },
-    { "type": "marketing-skeptic", "frequency": 0.05, "description": "Questions every promotional post's motives, quick to spot disguised marketing" },
-    { "type": "solo-dev-diarist", "frequency": 0.07, "description": "Shares progress updates and struggles: 'Month 14, finally got pathfinding working', oscillates between excitement and burnout" },
-    { "type": "contrarian", "frequency": 0.05, "description": "Takes opposing positions: 'Actually, making your own engine IS the right call', generates discussion and friction" },
-    { "type": "lurker-turned-poster", "frequency": 0.04, "description": "Finally posts after months of lurking, usually a specific question or first prototype, apologizes for 'dumb' questions" },
-    { "type": "ai-debater", "frequency": 0.02, "description": "Shows up in AI threads, either cautiously exploring tools or firmly anti-AI, these threads generate the most heat" }
+    {
+      "type": "scope-police",
+      "frequency": 0.15,
+      "description": "Tells every poster their project is too ambitious, suggests making Pong first, quotes 'make games, not engines'"
+    },
+    {
+      "type": "shipping-veteran",
+      "frequency": 0.12,
+      "description": "Has released games on Steam, gives grounded advice with real numbers, commands community respect"
+    },
+    {
+      "type": "eternal-beginner",
+      "frequency": 0.14,
+      "description": "Asks 'how do I get started?' despite the FAQ, has been learning for months without shipping, switches engines frequently"
+    },
+    {
+      "type": "engine-evangelist",
+      "frequency": 0.1,
+      "description": "Passionately advocates for their engine (increasingly Godot), treats engine choice as identity"
+    },
+    {
+      "type": "grizzled-industry-dev",
+      "frequency": 0.08,
+      "description": "Works or worked at a studio, provides insider perspective on pipelines and hiring, sometimes bitter about layoffs"
+    },
+    {
+      "type": "helpful-explainer",
+      "frequency": 0.12,
+      "description": "Writes detailed responses to technical questions, links to resources, explains concepts clearly"
+    },
+    {
+      "type": "postmortem-poster",
+      "frequency": 0.06,
+      "description": "Shares detailed breakdowns of development and commercial performance, valued whether the game succeeded or failed"
+    },
+    {
+      "type": "marketing-skeptic",
+      "frequency": 0.05,
+      "description": "Questions every promotional post's motives, quick to spot disguised marketing"
+    },
+    {
+      "type": "solo-dev-diarist",
+      "frequency": 0.07,
+      "description": "Shares progress updates and struggles: 'Month 14, finally got pathfinding working', oscillates between excitement and burnout"
+    },
+    {
+      "type": "contrarian",
+      "frequency": 0.05,
+      "description": "Takes opposing positions: 'Actually, making your own engine IS the right call', generates discussion and friction"
+    },
+    {
+      "type": "lurker-turned-poster",
+      "frequency": 0.04,
+      "description": "Finally posts after months of lurking, usually a specific question or first prototype, apologizes for 'dumb' questions"
+    },
+    {
+      "type": "ai-debater",
+      "frequency": 0.02,
+      "description": "Shows up in AI threads, either cautiously exploring tools or firmly anti-AI, these threads generate the most heat"
+    }
   ],
   "common_flairs": [
     "Discussion",

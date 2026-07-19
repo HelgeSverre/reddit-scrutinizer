@@ -5,13 +5,20 @@ function makeComments(
   count: number,
   depth: number,
   parentId = "post",
-): { id: string; parent_id: string; depth: number; score: number; controversiality: 0 | 1; created_utc: number }[] {
+): {
+  id: string;
+  parent_id: string;
+  depth: number;
+  score: number;
+  controversiality: 0 | 1;
+  created_utc: number;
+}[] {
   return Array.from({ length: count }, (_, i) => ({
     id: `c${depth}_${i}`,
     parent_id: parentId,
     depth,
     score: 0,
-    controversiality: 0 as 0,
+    controversiality: 0 as const,
     created_utc: 0,
   }));
 }
@@ -23,9 +30,7 @@ describe("assignScores", () => {
     assignScores(a, 42);
     assignScores(b, 42);
     expect(a.map((c) => c.score)).toEqual(b.map((c) => c.score));
-    expect(a.map((c) => c.controversiality)).toEqual(
-      b.map((c) => c.controversiality),
-    );
+    expect(a.map((c) => c.controversiality)).toEqual(b.map((c) => c.controversiality));
   });
 
   test("different seeds produce different scores", () => {
@@ -33,7 +38,7 @@ describe("assignScores", () => {
     const b = makeComments(10, 0);
     assignScores(a, 42);
     assignScores(b, 999);
-    const same = a.every((c, i) => c.score === b[i].score);
+    const same = a.every((c, i) => c.score === b.at(i)?.score);
     expect(same).toBe(false);
   });
 
@@ -95,9 +100,7 @@ describe("assignTimestamps", () => {
     const c2 = makeComments(5, 0);
     assignTimestamps(post1, "t3_abc", c1, 42);
     assignTimestamps(post2, "t3_abc", c2, 42);
-    expect(c1.map((c) => c.created_utc)).toEqual(
-      c2.map((c) => c.created_utc),
-    );
+    expect(c1.map((c) => c.created_utc)).toEqual(c2.map((c) => c.created_utc));
   });
 
   test("top-level comments get timestamps after the post", () => {
@@ -111,8 +114,12 @@ describe("assignTimestamps", () => {
 
   test("replies get timestamps after their parent", () => {
     const post = { created_utc: 0 };
-    const parent = makeComments(1, 0)[0];
-    const reply = makeComments(1, 1, parent.id)[0];
+    const parent = makeComments(1, 0).at(0);
+    expect(parent).toBeDefined();
+    if (!parent) throw new Error("parent fixture was not created");
+    const reply = makeComments(1, 1, parent.id).at(0);
+    expect(reply).toBeDefined();
+    if (!reply) throw new Error("reply fixture was not created");
     reply.parent_id = parent.id;
     const comments = [parent, reply];
     assignTimestamps(post, "t3_abc", comments, 42);
@@ -123,7 +130,8 @@ describe("assignTimestamps", () => {
     const post = { created_utc: 0 };
     const topLevel = makeComments(3, 0);
     const replies = topLevel.map((p) => {
-      const r = makeComments(1, 1, p.id)[0];
+      const r = makeComments(1, 1, p.id).at(0);
+      if (!r) throw new Error("reply fixture was not created");
       r.parent_id = p.id;
       return r;
     });
@@ -131,7 +139,9 @@ describe("assignTimestamps", () => {
     assignTimestamps(post, "t3_abc", comments, 42);
 
     for (const reply of replies) {
-      const parent = topLevel.find((p) => p.id === reply.parent_id)!;
+      const parent = topLevel.find((p) => p.id === reply.parent_id);
+      expect(parent).toBeDefined();
+      if (!parent) throw new Error(`parent ${reply.parent_id} was not found`);
       expect(reply.created_utc).toBeGreaterThan(parent.created_utc);
     }
   });

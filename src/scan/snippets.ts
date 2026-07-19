@@ -66,35 +66,93 @@ export function classifyFile(path: string): FileKind {
   }
 
   const manifests = new Set([
-    "package.json", "cargo.toml", "go.mod", "pyproject.toml", "setup.py",
-    "gemfile", "pom.xml", "build.gradle", "build.gradle.kts", "mix.exs",
-    "package.swift", "composer.json",
+    "package.json",
+    "cargo.toml",
+    "go.mod",
+    "pyproject.toml",
+    "setup.py",
+    "gemfile",
+    "pom.xml",
+    "build.gradle",
+    "build.gradle.kts",
+    "mix.exs",
+    "package.swift",
+    "composer.json",
   ]);
   if (manifests.has(base)) return "manifest";
 
   if (
-    base === "tsconfig.json" || base === "biome.json" || base === "makefile" ||
-    base === "dockerfile" || base === ".env.example" ||
-    base.startsWith("vite.config") || base.startsWith("webpack.config") ||
-    base.startsWith("next.config") || base.startsWith("tailwind.config") ||
-    base.startsWith(".eslintrc") || base.startsWith("docker-compose")
+    base === "tsconfig.json" ||
+    base === "biome.json" ||
+    base === "makefile" ||
+    base === "dockerfile" ||
+    base === ".env.example" ||
+    base.startsWith("vite.config") ||
+    base.startsWith("webpack.config") ||
+    base.startsWith("next.config") ||
+    base.startsWith("tailwind.config") ||
+    base.startsWith(".eslintrc") ||
+    base.startsWith("docker-compose")
   ) {
     return "config";
   }
 
-  if (lower.includes(".github/workflows") || base === ".gitlab-ci.yml" || base === "jenkinsfile" || lower.includes(".circleci")) {
+  if (
+    lower.includes(".github/workflows") ||
+    base === ".gitlab-ci.yml" ||
+    base === "jenkinsfile" ||
+    lower.includes(".circleci")
+  ) {
     return "ci";
   }
 
-  if ([".md", ".mdx", ".rst", ".txt"].includes(ext) || base.startsWith("readme") || base.startsWith("changelog")) {
+  if (
+    [".md", ".mdx", ".rst", ".txt"].includes(ext) ||
+    base.startsWith("readme") ||
+    base.startsWith("changelog")
+  ) {
     return "doc";
   }
 
   const sourceExts = new Set([
-    ".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".rs", ".py", ".go", ".rb",
-    ".java", ".kt", ".kts", ".swift", ".c", ".h", ".cpp", ".cc", ".cxx", ".hpp",
-    ".cs", ".php", ".lua", ".zig", ".ex", ".exs", ".hs", ".ml", ".mli", ".scala",
-    ".clj", ".cljs", ".dart", ".vue", ".svelte", ".sql", ".sh", ".bash",
+    ".ts",
+    ".tsx",
+    ".js",
+    ".jsx",
+    ".mjs",
+    ".cjs",
+    ".rs",
+    ".py",
+    ".go",
+    ".rb",
+    ".java",
+    ".kt",
+    ".kts",
+    ".swift",
+    ".c",
+    ".h",
+    ".cpp",
+    ".cc",
+    ".cxx",
+    ".hpp",
+    ".cs",
+    ".php",
+    ".lua",
+    ".zig",
+    ".ex",
+    ".exs",
+    ".hs",
+    ".ml",
+    ".mli",
+    ".scala",
+    ".clj",
+    ".cljs",
+    ".dart",
+    ".vue",
+    ".svelte",
+    ".sql",
+    ".sh",
+    ".bash",
   ]);
   if (sourceExts.has(ext)) return "source";
 
@@ -109,7 +167,13 @@ export function buildFileIndex(files: WalkEntry[]): FileIndex {
   }));
 
   const priority: Record<FileKind, number> = {
-    manifest: 0, config: 1, ci: 2, source: 3, test: 4, doc: 5, other: 6,
+    manifest: 0,
+    config: 1,
+    ci: 2,
+    source: 3,
+    test: 4,
+    doc: 5,
+    other: 6,
   };
 
   entries.sort((a, b) => {

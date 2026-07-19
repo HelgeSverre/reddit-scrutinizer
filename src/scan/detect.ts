@@ -153,7 +153,9 @@ export async function detectStack(rootPath: string): Promise<string[]> {
   if (pkg) {
     const allDeps: Record<string, unknown> = {
       ...(typeof pkg.dependencies === "object" && pkg.dependencies ? pkg.dependencies : {}),
-      ...(typeof pkg.devDependencies === "object" && pkg.devDependencies ? pkg.devDependencies : {}),
+      ...(typeof pkg.devDependencies === "object" && pkg.devDependencies
+        ? pkg.devDependencies
+        : {}),
     };
 
     const frameworks: [string, string][] = [
@@ -204,10 +206,12 @@ export async function detectLicense(rootPath: string): Promise<string | null> {
       const content = await readFile(join(rootPath, name), "utf-8");
       const head = content.slice(0, 500).toLowerCase();
 
-      if (head.includes("mit license") || head.includes("permission is hereby granted, free of charge"))
+      if (
+        head.includes("mit license") ||
+        head.includes("permission is hereby granted, free of charge")
+      )
         return "MIT";
-      if (head.includes("apache license") && head.includes("2.0"))
-        return "Apache-2.0";
+      if (head.includes("apache license") && head.includes("2.0")) return "Apache-2.0";
       if (head.includes("gnu general public license") || head.includes("gpl")) {
         if (head.includes("version 3")) return "GPL-3.0";
         if (head.includes("version 2")) return "GPL-2.0";
@@ -234,10 +238,6 @@ export async function detectLicense(rootPath: string): Promise<string | null> {
 export function detectTests(files: { path: string; size: number }[]): boolean {
   return files.some((f) => {
     const lower = f.path.toLowerCase();
-    return (
-      lower.includes("test") ||
-      lower.includes("spec") ||
-      lower.includes("__tests__")
-    );
+    return lower.includes("test") || lower.includes("spec") || lower.includes("__tests__");
   });
 }

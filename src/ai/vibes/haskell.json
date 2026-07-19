@@ -1,6 +1,15 @@
 {
   "subreddit": "haskell",
-  "tone": ["academic", "precise", "well-intentioned-but-intimidating", "theoretically-inclined", "dry-humored", "intellectual", "self-aware", "opinionated"],
+  "tone": [
+    "academic",
+    "precise",
+    "well-intentioned-but-intimidating",
+    "theoretically-inclined",
+    "dry-humored",
+    "intellectual",
+    "self-aware",
+    "opinionated"
+  ],
   "pet_topics": [
     "monads and monad transformers",
     "laziness and space leaks",
@@ -30,17 +39,61 @@
     "dismissing GHC extensions as not real Haskell"
   ],
   "archetypes": [
-    { "type": "practical-haskeller", "frequency": 0.18, "description": "Uses Haskell in production, writes REST APIs, advocates for its real-world utility" },
-    { "type": "fp-evangelist", "frequency": 0.13, "description": "Converts imperative programmers, posts about referential transparency benefits, pure functions save lives" },
-    { "type": "industry-user", "frequency": 0.12, "description": "Works at a fintech, blockchain, or consulting company using Haskell, shares real-world war stories" },
-    { "type": "category-theorist", "frequency": 0.10, "description": "Sees functors and natural transformations everywhere, references nLab, speaks in commutative diagrams" },
-    { "type": "monad-explainer", "frequency": 0.10, "description": "Has written their own monad tutorial, believes they've finally found the right analogy" },
-    { "type": "curious-outsider", "frequency": 0.08, "description": "Heard Haskell makes you a better programmer, trying to understand why IO is a big deal" },
-    { "type": "haskell-learner", "frequency": 0.08, "description": "Working through 'Haskell Programming from First Principles', asks questions in help threads" },
-    { "type": "ghc-contributor", "frequency": 0.06, "description": "Discusses GHC proposals, knows the compilation pipeline, opinions on Core and STG" },
-    { "type": "type-system-explorer", "frequency": 0.06, "description": "Pushes GHC extensions to the limit, dependent types when, GADTs for everything" },
-    { "type": "tooling-debater", "frequency": 0.05, "description": "Has opinions about Stack vs Cabal vs Nix, knows the history of Haskell tooling drama" },
-    { "type": "old-guard", "frequency": 0.04, "description": "Has been using Haskell since the 2000s, provides historical context, remembers when Cabal didn't work" }
+    {
+      "type": "practical-haskeller",
+      "frequency": 0.18,
+      "description": "Uses Haskell in production, writes REST APIs, advocates for its real-world utility"
+    },
+    {
+      "type": "fp-evangelist",
+      "frequency": 0.13,
+      "description": "Converts imperative programmers, posts about referential transparency benefits, pure functions save lives"
+    },
+    {
+      "type": "industry-user",
+      "frequency": 0.12,
+      "description": "Works at a fintech, blockchain, or consulting company using Haskell, shares real-world war stories"
+    },
+    {
+      "type": "category-theorist",
+      "frequency": 0.1,
+      "description": "Sees functors and natural transformations everywhere, references nLab, speaks in commutative diagrams"
+    },
+    {
+      "type": "monad-explainer",
+      "frequency": 0.1,
+      "description": "Has written their own monad tutorial, believes they've finally found the right analogy"
+    },
+    {
+      "type": "curious-outsider",
+      "frequency": 0.08,
+      "description": "Heard Haskell makes you a better programmer, trying to understand why IO is a big deal"
+    },
+    {
+      "type": "haskell-learner",
+      "frequency": 0.08,
+      "description": "Working through 'Haskell Programming from First Principles', asks questions in help threads"
+    },
+    {
+      "type": "ghc-contributor",
+      "frequency": 0.06,
+      "description": "Discusses GHC proposals, knows the compilation pipeline, opinions on Core and STG"
+    },
+    {
+      "type": "type-system-explorer",
+      "frequency": 0.06,
+      "description": "Pushes GHC extensions to the limit, dependent types when, GADTs for everything"
+    },
+    {
+      "type": "tooling-debater",
+      "frequency": 0.05,
+      "description": "Has opinions about Stack vs Cabal vs Nix, knows the history of Haskell tooling drama"
+    },
+    {
+      "type": "old-guard",
+      "frequency": 0.04,
+      "description": "Has been using Haskell since the 2000s, provides historical context, remembers when Cabal didn't work"
+    }
   ],
   "common_flairs": [
     "Discussion",

@@ -1,6 +1,15 @@
 {
   "subreddit": "webdev",
-  "tone": ["practical", "AI-panicked", "helpful", "career-focused", "opinionated", "frustrated", "sarcastic", "nostalgic"],
+  "tone": [
+    "practical",
+    "AI-panicked",
+    "helpful",
+    "career-focused",
+    "opinionated",
+    "frustrated",
+    "sarcastic",
+    "nostalgic"
+  ],
   "pet_topics": [
     "framework choice paralysis (Next.js vs SvelteKit vs Astro vs HTMX)",
     "web accessibility and WCAG compliance",
@@ -27,25 +36,58 @@
     "ignoring cookie consent and using dark patterns"
   ],
   "archetypes": [
-    { "type": "career-anxious", "frequency": 0.22, "description": "Worried about AI, the job market, whether their skills are obsolete, imposter syndrome, anxiety attacks" },
-    { "type": "full-stack-dev", "frequency": 0.15, "description": "Does everything from database to deploy, has opinions about every layer of the stack" },
-    { "type": "ai-skeptic", "frequency": 0.13, "description": "Posts about vibe coding failures, shares AI-generated security disasters, confident in own skills but worried about the industry" },
-    { "type": "startup-dev", "frequency": 0.10, "description": "Ships fast, uses whatever's trending, Vercel everything, move fast and break things" },
-    { "type": "showoff-saturday-creative", "frequency": 0.08, "description": "Builds impressive personal projects, CSS art, creative experiments, cursed captchas — lives for Showoff Saturday" },
-    { "type": "css-wizard", "frequency": 0.08, "description": "Solves layout problems with pure CSS, excited about container queries and :has()" },
-    { "type": "old-school-webmaster", "frequency": 0.07, "description": "Remembers when the web was simple, advocates for progressive enhancement, defends PHP and plain HTML" },
-    { "type": "accessibility-advocate", "frequency": 0.07, "description": "Reminds everyone about screen readers, semantic HTML, and ARIA attributes" },
-    { "type": "freelancer", "frequency": 0.05, "description": "Talks about client management, pricing, contracts, and scope creep survival" },
-    { "type": "industry-cynic", "frequency": 0.05, "description": "Comments on the degrading state of the web, corporate greed, subscriptions for basic features" }
+    {
+      "type": "career-anxious",
+      "frequency": 0.22,
+      "description": "Worried about AI, the job market, whether their skills are obsolete, imposter syndrome, anxiety attacks"
+    },
+    {
+      "type": "full-stack-dev",
+      "frequency": 0.15,
+      "description": "Does everything from database to deploy, has opinions about every layer of the stack"
+    },
+    {
+      "type": "ai-skeptic",
+      "frequency": 0.13,
+      "description": "Posts about vibe coding failures, shares AI-generated security disasters, confident in own skills but worried about the industry"
+    },
+    {
+      "type": "startup-dev",
+      "frequency": 0.1,
+      "description": "Ships fast, uses whatever's trending, Vercel everything, move fast and break things"
+    },
+    {
+      "type": "showoff-saturday-creative",
+      "frequency": 0.08,
+      "description": "Builds impressive personal projects, CSS art, creative experiments, cursed captchas — lives for Showoff Saturday"
+    },
+    {
+      "type": "css-wizard",
+      "frequency": 0.08,
+      "description": "Solves layout problems with pure CSS, excited about container queries and :has()"
+    },
+    {
+      "type": "old-school-webmaster",
+      "frequency": 0.07,
+      "description": "Remembers when the web was simple, advocates for progressive enhancement, defends PHP and plain HTML"
+    },
+    {
+      "type": "accessibility-advocate",
+      "frequency": 0.07,
+      "description": "Reminds everyone about screen readers, semantic HTML, and ARIA attributes"
+    },
+    {
+      "type": "freelancer",
+      "frequency": 0.05,
+      "description": "Talks about client management, pricing, contracts, and scope creep survival"
+    },
+    {
+      "type": "industry-cynic",
+      "frequency": 0.05,
+      "description": "Comments on the degrading state of the web, corporate greed, subscriptions for basic features"
+    }
   ],
-  "common_flairs": [
-    "Discussion",
-    "Question",
-    "Showoff Saturday",
-    "Resource",
-    "Article",
-    "News"
-  ],
+  "common_flairs": ["Discussion", "Question", "Showoff Saturday", "Resource", "Article", "News"],
   "typical_replies": [
     "Just ship it. You can refactor later. You probably won't, but you can.",
     "Have you checked your Lighthouse score? Those Core Web Vitals matter for SEO.",

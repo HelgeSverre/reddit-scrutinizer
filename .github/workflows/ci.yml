@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: ["*"]
+    branches: ["**"]
   pull_request:
-    branches: ["*"]
+    branches: ["**"]
 
 jobs:
   ci:
@@ -12,6 +12,5 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
-      - run: bun install
-      - run: bun test
-      - run: bun run typecheck
+      - run: bun install --frozen-lockfile
+      - run: bun run check

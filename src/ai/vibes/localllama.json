@@ -1,6 +1,15 @@
 {
   "subreddit": "LocalLLaMA",
-  "tone": ["technical", "irreverent", "enthusiastic", "skeptical", "DIY-pragmatic", "anti-corporate", "collaborative", "impatient"],
+  "tone": [
+    "technical",
+    "irreverent",
+    "enthusiastic",
+    "skeptical",
+    "DIY-pragmatic",
+    "anti-corporate",
+    "collaborative",
+    "impatient"
+  ],
   "pet_topics": [
     "new model releases and first impressions (Llama, Mistral, Qwen, DeepSeek)",
     "quantization methods (GGUF vs GPTQ vs AWQ vs EXL2, Q4_K_M vs Q5_K_M)",
@@ -31,18 +40,66 @@
     "low-effort 'AI will replace X' doomerism"
   ],
   "archetypes": [
-    { "type": "benchmarker", "frequency": 0.12, "description": "Tests every new model with standardized prompts, posts tok/s numbers and perplexity scores, first to spot underperformance" },
-    { "type": "hardware-enthusiast", "frequency": 0.14, "description": "Posts multi-GPU builds, debates 3090 vs 4090 cost-efficiency, knows used-market price of every enterprise GPU" },
-    { "type": "quant-cooker", "frequency": 0.08, "description": "Creates and shares quantized model versions, debates imatrix vs dynamic quantization, follows bartowski and Unsloth religiously" },
-    { "type": "privacy-maximalist", "frequency": 0.08, "description": "Every discussion loops back to data sovereignty, suspicious of any tool that phones home" },
-    { "type": "rp-creative-writer", "frequency": 0.10, "description": "Uses SillyTavern or KoboldCpp for roleplay and fiction, evaluates models on character consistency and prose quality" },
-    { "type": "confused-beginner", "frequency": 0.12, "description": "Posts 'which model should I use?' or 'how do I get started with Ollama?', often has a Mac with 8GB RAM" },
-    { "type": "openai-critic", "frequency": 0.07, "description": "Reminds everyone that OpenAI is neither open nor trustworthy, tracks every broken promise, celebrates when open models surpass GPT" },
-    { "type": "developer-integrator", "frequency": 0.10, "description": "Building apps on local models, cares about API compatibility, function calling, structured output, and production reliability" },
-    { "type": "meme-lord", "frequency": 0.05, "description": "Creates highest-upvoted content: VRAM memes, 'we're so back / it's so over' posts, hardware cope, OpenAI dunking" },
-    { "type": "research-tracker", "frequency": 0.06, "description": "Follows arxiv papers, tracks architectural innovations (MoE, Mamba, speculative decoding), posts paper summaries" },
-    { "type": "apple-silicon-advocate", "frequency": 0.05, "description": "Evangelizes Mac Studio for inference, posts unified memory benchmarks, argues with NVIDIA partisans" },
-    { "type": "grizzled-veteran", "frequency": 0.03, "description": "Has been running local models since GPT-J, remembers GGML-to-GGUF migration, corrects misconceptions with authority" }
+    {
+      "type": "benchmarker",
+      "frequency": 0.12,
+      "description": "Tests every new model with standardized prompts, posts tok/s numbers and perplexity scores, first to spot underperformance"
+    },
+    {
+      "type": "hardware-enthusiast",
+      "frequency": 0.14,
+      "description": "Posts multi-GPU builds, debates 3090 vs 4090 cost-efficiency, knows used-market price of every enterprise GPU"
+    },
+    {
+      "type": "quant-cooker",
+      "frequency": 0.08,
+      "description": "Creates and shares quantized model versions, debates imatrix vs dynamic quantization, follows bartowski and Unsloth religiously"
+    },
+    {
+      "type": "privacy-maximalist",
+      "frequency": 0.08,
+      "description": "Every discussion loops back to data sovereignty, suspicious of any tool that phones home"
+    },
+    {
+      "type": "rp-creative-writer",
+      "frequency": 0.1,
+      "description": "Uses SillyTavern or KoboldCpp for roleplay and fiction, evaluates models on character consistency and prose quality"
+    },
+    {
+      "type": "confused-beginner",
+      "frequency": 0.12,
+      "description": "Posts 'which model should I use?' or 'how do I get started with Ollama?', often has a Mac with 8GB RAM"
+    },
+    {
+      "type": "openai-critic",
+      "frequency": 0.07,
+      "description": "Reminds everyone that OpenAI is neither open nor trustworthy, tracks every broken promise, celebrates when open models surpass GPT"
+    },
+    {
+      "type": "developer-integrator",
+      "frequency": 0.1,
+      "description": "Building apps on local models, cares about API compatibility, function calling, structured output, and production reliability"
+    },
+    {
+      "type": "meme-lord",
+      "frequency": 0.05,
+      "description": "Creates highest-upvoted content: VRAM memes, 'we're so back / it's so over' posts, hardware cope, OpenAI dunking"
+    },
+    {
+      "type": "research-tracker",
+      "frequency": 0.06,
+      "description": "Follows arxiv papers, tracks architectural innovations (MoE, Mamba, speculative decoding), posts paper summaries"
+    },
+    {
+      "type": "apple-silicon-advocate",
+      "frequency": 0.05,
+      "description": "Evangelizes Mac Studio for inference, posts unified memory benchmarks, argues with NVIDIA partisans"
+    },
+    {
+      "type": "grizzled-veteran",
+      "frequency": 0.03,
+      "description": "Has been running local models since GPT-J, remembers GGML-to-GGUF migration, corrects misconceptions with authority"
+    }
   ],
   "common_flairs": [
     "Discussion",

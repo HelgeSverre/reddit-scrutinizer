@@ -1,18 +1,14 @@
-import { describe, test, expect, afterEach } from "bun:test";
+import { afterAll, afterEach, describe, expect, test } from "bun:test";
 import { join } from "node:path";
+import { ScrutinyOutputSchema } from "../src/output/schema";
 import { startServer } from "../src/ui/server";
 
 const FIXTURE_JSON = join(import.meta.dir, "fixtures/sample-scrutiny.json");
 
 let servers: Array<{ stop: () => void }> = [];
 
-// Bun.serve returns a Server object we can track for cleanup
 const originalServe = Bun.serve;
-
-function trackServer<T>(server: T): T {
-  servers.push(server as any);
-  return server;
-}
+const startBunServer = originalServe.bind(Bun) as (...args: unknown[]) => { stop: () => void };
 
 afterEach(() => {
   for (const server of servers) {
@@ -24,13 +20,15 @@ afterEach(() => {
 });
 
 // Monkey-patch Bun.serve to track servers for cleanup
-const _origServe = Bun.serve.bind(Bun);
-// @ts-ignore
-Bun.serve = function (...args: any[]) {
-  const server = _origServe(...args);
+Bun.serve = ((...args: unknown[]) => {
+  const server = startBunServer(...args);
   servers.push(server);
   return server;
-};
+}) as typeof Bun.serve;
+
+afterAll(() => {
+  Bun.serve = originalServe;
+});
 
 describe("startServer", () => {
   test("starts server on the requested port", async () => {
@@ -60,7 +58,7 @@ describe("startServer", () => {
     expect(res.status).toBe(200);
     expect(res.headers.get("content-type")).toContain("application/json");
 
-    const data = await res.json();
+    const data = ScrutinyOutputSchema.parse(await res.json());
     expect(data.schema_version).toBe("1.0");
     expect(data.simulation).toBeDefined();
     expect(data.simulation.post).toBeDefined();

@@ -1,6 +1,15 @@
 {
   "subreddit": "linux",
-  "tone": ["opinionated", "technical", "cynical", "pedantic", "passionate", "news-driven", "tribal", "gatekeeping"],
+  "tone": [
+    "opinionated",
+    "technical",
+    "cynical",
+    "pedantic",
+    "passionate",
+    "news-driven",
+    "tribal",
+    "gatekeeping"
+  ],
   "pet_topics": [
     "Snap vs Flatpak vs AppImage packaging wars",
     "Wayland vs X11 transition (niche DEs lagging, NVIDIA pain points)",
@@ -31,18 +40,66 @@
     "calling Linux 'just a hobby OS' or 'not ready for the desktop'"
   ],
   "archetypes": [
-    { "type": "greybeard-sysadmin", "frequency": 0.14, "description": "Used Linux since the 90s, references Slackware and Gentoo, prefers terminal to any GUI, skeptical of abstraction" },
-    { "type": "distro-hopper", "frequency": 0.12, "description": "Perpetually switching distros, currently on NixOS or Fedora Silverblue, was on Arch last month" },
-    { "type": "news-commentator", "frequency": 0.13, "description": "Reacts to Phoronix/LWN links with informed takes, adds context the article missed" },
-    { "type": "freedom-purist", "frequency": 0.09, "description": "Cares about GPL compliance and FSF principles, corrects 'open source' to 'free software', distrusts any CLA" },
-    { "type": "pragmatic-engineer", "frequency": 0.11, "description": "Uses Linux professionally in production, cares about stability and real-world tradeoffs over ideology" },
-    { "type": "arch-btw", "frequency": 0.07, "description": "Mentions Arch, AUR, or minimal install in most threads, derives identity from running a hands-on distro" },
-    { "type": "desktop-enthusiast", "frequency": 0.08, "description": "Passionate about DE/WM choice, theming, and workflow; overlaps with r/unixporn" },
-    { "type": "privacy-advocate", "frequency": 0.06, "description": "Brings up telemetry, tracking, and data sovereignty in most threads; recommends hardened Firefox" },
-    { "type": "helpful-corrector", "frequency": 0.07, "description": "Politely or pedantically corrects technical inaccuracies: 'Actually, Linux is just the kernel...'" },
-    { "type": "corporate-skeptic", "frequency": 0.05, "description": "Watches Red Hat/IBM, Canonical, and NVIDIA with deep suspicion; 'embrace, extend, extinguish' is in vocabulary" },
-    { "type": "lurker-reactor", "frequency": 0.05, "description": "Short low-effort comments, high volume low depth, links to Arch Wiki" },
-    { "type": "troll-provocateur", "frequency": 0.03, "description": "Posts 'just use Windows' or 'Linux will never be ready' to provoke" }
+    {
+      "type": "greybeard-sysadmin",
+      "frequency": 0.14,
+      "description": "Used Linux since the 90s, references Slackware and Gentoo, prefers terminal to any GUI, skeptical of abstraction"
+    },
+    {
+      "type": "distro-hopper",
+      "frequency": 0.12,
+      "description": "Perpetually switching distros, currently on NixOS or Fedora Silverblue, was on Arch last month"
+    },
+    {
+      "type": "news-commentator",
+      "frequency": 0.13,
+      "description": "Reacts to Phoronix/LWN links with informed takes, adds context the article missed"
+    },
+    {
+      "type": "freedom-purist",
+      "frequency": 0.09,
+      "description": "Cares about GPL compliance and FSF principles, corrects 'open source' to 'free software', distrusts any CLA"
+    },
+    {
+      "type": "pragmatic-engineer",
+      "frequency": 0.11,
+      "description": "Uses Linux professionally in production, cares about stability and real-world tradeoffs over ideology"
+    },
+    {
+      "type": "arch-btw",
+      "frequency": 0.07,
+      "description": "Mentions Arch, AUR, or minimal install in most threads, derives identity from running a hands-on distro"
+    },
+    {
+      "type": "desktop-enthusiast",
+      "frequency": 0.08,
+      "description": "Passionate about DE/WM choice, theming, and workflow; overlaps with r/unixporn"
+    },
+    {
+      "type": "privacy-advocate",
+      "frequency": 0.06,
+      "description": "Brings up telemetry, tracking, and data sovereignty in most threads; recommends hardened Firefox"
+    },
+    {
+      "type": "helpful-corrector",
+      "frequency": 0.07,
+      "description": "Politely or pedantically corrects technical inaccuracies: 'Actually, Linux is just the kernel...'"
+    },
+    {
+      "type": "corporate-skeptic",
+      "frequency": 0.05,
+      "description": "Watches Red Hat/IBM, Canonical, and NVIDIA with deep suspicion; 'embrace, extend, extinguish' is in vocabulary"
+    },
+    {
+      "type": "lurker-reactor",
+      "frequency": 0.05,
+      "description": "Short low-effort comments, high volume low depth, links to Arch Wiki"
+    },
+    {
+      "type": "troll-provocateur",
+      "frequency": 0.03,
+      "description": "Posts 'just use Windows' or 'Linux will never be ready' to provoke"
+    }
   ],
   "common_flairs": [
     "News",

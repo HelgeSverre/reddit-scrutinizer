@@ -1,6 +1,14 @@
 {
   "subreddit": "javascript",
-  "tone": ["news-driven", "opinionated", "fatigued", "skeptical", "fast-moving", "divided", "self-deprecating"],
+  "tone": [
+    "news-driven",
+    "opinionated",
+    "fatigued",
+    "skeptical",
+    "fast-moving",
+    "divided",
+    "self-deprecating"
+  ],
   "pet_topics": [
     "bundle size and tree-shaking",
     "meta-framework wars (Next.js vs SvelteKit vs Nuxt vs Astro)",
@@ -26,26 +34,68 @@
     "unattributed self-promotion and blog spam"
   ],
   "archetypes": [
-    { "type": "exhausted-senior", "frequency": 0.15, "description": "Has webpack PTSD, remembers Bower, just wants stability and things that work" },
-    { "type": "typescript-evangelist", "frequency": 0.13, "description": "'Just use TypeScript' is the answer to everything, can't believe people still write plain JS" },
-    { "type": "framework-hopper", "frequency": 0.12, "description": "Rewrites their app in a new framework every 6 months, always chasing the next thing" },
-    { "type": "vanilla-purist", "frequency": 0.10, "description": "The platform has everything you need, web components are the future, stop using React" },
-    { "type": "tc39-watcher", "frequency": 0.10, "description": "Follows proposals obsessively, excited about signals, decorators, and pattern matching" },
-    { "type": "nextjs-critic", "frequency": 0.08, "description": "Everything is a Vercel lock-in, RSC is overengineered, suspicious of corporate open source" },
-    { "type": "helpful-explainer", "frequency": 0.08, "description": "Patiently explains closures, prototypes, and 'this' binding for the 1000th time" },
-    { "type": "blog-poster", "frequency": 0.07, "description": "Shares their own articles, libraries, and projects; walks the line between contribution and self-promotion" },
-    { "type": "runtime-debater", "frequency": 0.05, "description": "Bun is faster, Node is stable, Deno is the future — posts benchmarks, argues about startup times" },
-    { "type": "npm-everything", "frequency": 0.05, "description": "There's a package for that, npm install is-odd, 400 dependencies for a todo app" },
-    { "type": "snarky-commenter", "frequency": 0.04, "description": "One-liner jokes, deadpan cynicism, node_modules black hole references" },
-    { "type": "just-use-jquery", "frequency": 0.03, "description": "Ironic or sincere, nobody can tell, but jQuery still works and ships fast" }
+    {
+      "type": "exhausted-senior",
+      "frequency": 0.15,
+      "description": "Has webpack PTSD, remembers Bower, just wants stability and things that work"
+    },
+    {
+      "type": "typescript-evangelist",
+      "frequency": 0.13,
+      "description": "'Just use TypeScript' is the answer to everything, can't believe people still write plain JS"
+    },
+    {
+      "type": "framework-hopper",
+      "frequency": 0.12,
+      "description": "Rewrites their app in a new framework every 6 months, always chasing the next thing"
+    },
+    {
+      "type": "vanilla-purist",
+      "frequency": 0.1,
+      "description": "The platform has everything you need, web components are the future, stop using React"
+    },
+    {
+      "type": "tc39-watcher",
+      "frequency": 0.1,
+      "description": "Follows proposals obsessively, excited about signals, decorators, and pattern matching"
+    },
+    {
+      "type": "nextjs-critic",
+      "frequency": 0.08,
+      "description": "Everything is a Vercel lock-in, RSC is overengineered, suspicious of corporate open source"
+    },
+    {
+      "type": "helpful-explainer",
+      "frequency": 0.08,
+      "description": "Patiently explains closures, prototypes, and 'this' binding for the 1000th time"
+    },
+    {
+      "type": "blog-poster",
+      "frequency": 0.07,
+      "description": "Shares their own articles, libraries, and projects; walks the line between contribution and self-promotion"
+    },
+    {
+      "type": "runtime-debater",
+      "frequency": 0.05,
+      "description": "Bun is faster, Node is stable, Deno is the future — posts benchmarks, argues about startup times"
+    },
+    {
+      "type": "npm-everything",
+      "frequency": 0.05,
+      "description": "There's a package for that, npm install is-odd, 400 dependencies for a todo app"
+    },
+    {
+      "type": "snarky-commenter",
+      "frequency": 0.04,
+      "description": "One-liner jokes, deadpan cynicism, node_modules black hole references"
+    },
+    {
+      "type": "just-use-jquery",
+      "frequency": 0.03,
+      "description": "Ironic or sincere, nobody can tell, but jQuery still works and ships fast"
+    }
   ],
-  "common_flairs": [
-    "[AskJS]",
-    "[ShowJS]",
-    "News",
-    "Discussion",
-    "Article"
-  ],
+  "common_flairs": ["[AskJS]", "[ShowJS]", "News", "Discussion", "Article"],
   "typical_replies": [
     "Ah yes, another framework. See you in 6 months when it's abandoned.",
     "You don't need a library for this, it's a 3-line function.",

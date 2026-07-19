@@ -1,360 +1,442 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hacker News</title>
-<style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hacker News</title>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-body {
-  background: #fff;
-  font-family: Verdana, Geneva, sans-serif;
-  font-size: 10pt;
-  color: #000;
-}
+      body {
+        background: #fff;
+        font-family: Verdana, Geneva, sans-serif;
+        font-size: 10pt;
+        color: #000;
+      }
 
-.hn-center {
-  width: 85%;
-  max-width: 1280px;
-  margin: 0 auto;
-  background: #f6f6ef;
-}
+      .hn-center {
+        width: 85%;
+        max-width: 1280px;
+        margin: 0 auto;
+        background: #f6f6ef;
+      }
 
-a { color: #000; text-decoration: none; }
-a:visited { color: #828282; }
-a:hover { text-decoration: underline; }
+      a {
+        color: #000;
+        text-decoration: none;
+      }
+      a:visited {
+        color: #828282;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
 
-/* Header */
-.header {
-  background: #ff6600;
-  padding: 2px;
-}
-.header-inner {
-  display: flex;
-  align-items: center;
-  padding: 2px 4px;
-  gap: 4px;
-}
-.header-logo {
-  border: 1px solid #fff;
-  width: 18px;
-  height: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 11px;
-  color: #fff;
-  background: #ff6600;
-  flex-shrink: 0;
-}
-.header-nav {
-  font-size: 10pt;
-  color: #000;
-  font-weight: bold;
-}
-.header-nav a { color: #000; }
-.header-nav .hn-name {
-  font-weight: bold;
-  margin-right: 6px;
-}
-.header-nav .pipe { color: #000; margin: 0 3px; }
-.header-badge {
-  margin-left: auto;
-  background: #fff;
-  color: #ff6600;
-  font-size: 8pt;
-  font-weight: bold;
-  padding: 1px 5px;
-  border-radius: 2px;
-}
+      /* Header */
+      .header {
+        background: #ff6600;
+        padding: 2px;
+      }
+      .header-inner {
+        display: flex;
+        align-items: center;
+        padding: 2px 4px;
+        gap: 4px;
+      }
+      .header-logo {
+        border: 1px solid #fff;
+        width: 18px;
+        height: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 11px;
+        color: #fff;
+        background: #ff6600;
+        flex-shrink: 0;
+      }
+      .header-nav {
+        font-size: 10pt;
+        color: #000;
+        font-weight: bold;
+      }
+      .header-nav a {
+        color: #000;
+      }
+      .header-nav .hn-name {
+        font-weight: bold;
+        margin-right: 6px;
+      }
+      .header-nav .pipe {
+        color: #000;
+        margin: 0 3px;
+      }
+      .header-badge {
+        margin-left: auto;
+        background: #fff;
+        color: #ff6600;
+        font-size: 8pt;
+        font-weight: bold;
+        padding: 1px 5px;
+        border-radius: 2px;
+      }
 
-/* Main content area */
-.content {
-  padding: 0;
-}
+      /* Main content area */
+      .content {
+        padding: 0;
+      }
 
-/* Post (item) */
-.post-row {
-  padding: 10px 6px 0 6px;
-}
-.post-title-row {
-  display: flex;
-  align-items: baseline;
-  gap: 4px;
-}
-.post-rank {
-  color: #828282;
-  font-size: 10pt;
-  min-width: 20px;
-  text-align: right;
-  margin-right: 2px;
-}
-.upvote {
-  color: #9a9a9a;
-  cursor: pointer;
-  font-size: 10pt;
-  user-select: none;
-  margin-right: 2px;
-}
-.upvote:hover { color: #ff6600; }
-.upvote.upvoted { color: #ff6600; }
-.post-title-text {
-  font-size: 10pt;
-}
-.post-title-text a { color: #000; }
-.post-title-text a:visited { color: #828282; }
-.post-domain {
-  font-size: 8pt;
-  color: #828282;
-  margin-left: 4px;
-}
-.post-subline {
-  font-size: 7pt;
-  color: #828282;
-  padding-left: 38px;
-  margin-top: 2px;
-  padding-bottom: 5px;
-}
-.post-subline a { color: #828282; }
-.post-subline a:hover { text-decoration: underline; }
+      /* Post (item) */
+      .post-row {
+        padding: 10px 6px 0 6px;
+      }
+      .post-title-row {
+        display: flex;
+        align-items: baseline;
+        gap: 4px;
+      }
+      .post-rank {
+        color: #828282;
+        font-size: 10pt;
+        min-width: 20px;
+        text-align: right;
+        margin-right: 2px;
+      }
+      .upvote {
+        color: #9a9a9a;
+        cursor: pointer;
+        font-size: 10pt;
+        user-select: none;
+        margin-right: 2px;
+      }
+      .upvote:hover {
+        color: #ff6600;
+      }
+      .upvote.upvoted {
+        color: #ff6600;
+      }
+      .post-title-text {
+        font-size: 10pt;
+      }
+      .post-title-text a {
+        color: #000;
+      }
+      .post-title-text a:visited {
+        color: #828282;
+      }
+      .post-domain {
+        font-size: 8pt;
+        color: #828282;
+        margin-left: 4px;
+      }
+      .post-subline {
+        font-size: 7pt;
+        color: #828282;
+        padding-left: 38px;
+        margin-top: 2px;
+        padding-bottom: 5px;
+      }
+      .post-subline a {
+        color: #828282;
+      }
+      .post-subline a:hover {
+        text-decoration: underline;
+      }
 
-/* Post body (self text) */
-.post-body-container {
-  padding: 8px 6px 8px 38px;
-  font-size: 9pt;
-  color: #000;
-  line-height: 1.4;
-}
-.post-body-container p { margin-bottom: 8px; }
-.post-body-container code {
-  font-family: monospace;
-  font-size: 9pt;
-  background: #e8e8e0;
-  padding: 1px 3px;
-}
-.post-body-container pre {
-  background: #e8e8e0;
-  padding: 8px;
-  overflow-x: auto;
-  margin: 6px 0;
-  font-size: 9pt;
-}
-.post-body-container pre code { background: none; padding: 0; }
-.post-body-container blockquote {
-  border-left: 2px solid #828282;
-  padding-left: 8px;
-  color: #828282;
-  margin: 6px 0;
-  font-style: italic;
-}
-.post-body-container ul, .post-body-container ol { padding-left: 20px; margin: 6px 0; }
+      /* Post body (self text) */
+      .post-body-container {
+        padding: 8px 6px 8px 38px;
+        font-size: 9pt;
+        color: #000;
+        line-height: 1.4;
+      }
+      .post-body-container p {
+        margin-bottom: 8px;
+      }
+      .post-body-container code {
+        font-family: monospace;
+        font-size: 9pt;
+        background: #e8e8e0;
+        padding: 1px 3px;
+      }
+      .post-body-container pre {
+        background: #e8e8e0;
+        padding: 8px;
+        overflow-x: auto;
+        margin: 6px 0;
+        font-size: 9pt;
+      }
+      .post-body-container pre code {
+        background: none;
+        padding: 0;
+      }
+      .post-body-container blockquote {
+        border-left: 2px solid #828282;
+        padding-left: 8px;
+        color: #828282;
+        margin: 6px 0;
+        font-style: italic;
+      }
+      .post-body-container ul,
+      .post-body-container ol {
+        padding-left: 20px;
+        margin: 6px 0;
+      }
 
-/* Separator */
-.spacer {
-  height: 10px;
-}
+      /* Separator */
+      .spacer {
+        height: 10px;
+      }
 
-/* Comments section */
-.comments-header {
-  padding: 0 6px;
-  border-top: 2px solid #ff6600;
-  padding-top: 6px;
-}
+      /* Comments section */
+      .comments-header {
+        padding: 0 6px;
+        border-top: 2px solid #ff6600;
+        padding-top: 6px;
+      }
 
-.comment-tree {
-  padding: 0 6px 20px 6px;
-}
+      .comment-tree {
+        padding: 0 6px 20px 6px;
+      }
 
-.comment {
-  margin-top: 10px;
-}
-.comment.collapsed > .comment-main > .comment-body,
-.comment.collapsed > .comment-main > .comment-actions,
-.comment.collapsed > .comment-main > .comment-children { display: none; }
+      .comment {
+        margin-top: 10px;
+      }
+      .comment.collapsed > .comment-main > .comment-body,
+      .comment.collapsed > .comment-main > .comment-actions,
+      .comment.collapsed > .comment-main > .comment-children {
+        display: none;
+      }
 
-.comment-head {
-  font-size: 7pt;
-  color: #828282;
-  display: flex;
-  align-items: baseline;
-  gap: 4px;
-  flex-wrap: wrap;
-}
-.comment-head .c-upvote {
-  color: #9a9a9a;
-  cursor: pointer;
-  font-size: 8pt;
-  user-select: none;
-}
-.comment-head .c-upvote:hover { color: #ff6600; }
-.comment-head .c-upvote.upvoted { color: #ff6600; }
-.comment-toggle {
-  cursor: pointer;
-  font-size: 7pt;
-  color: #828282;
-  user-select: none;
-}
-.comment-toggle:hover { color: #000; }
-.comment-user {
-  font-weight: bold;
-  color: #000;
-}
-.comment-user a { color: #000; text-decoration: none; }
-.comment-user.is-op a { color: #3c963c; }
-.comment-score {
-  color: #828282;
-}
-.comment-time {
-  color: #828282;
-}
-.comment-time a { color: #828282; }
-.comment-nav-link a { color: #828282; font-size: 7pt; }
-.comment-nav-link a:hover { text-decoration: underline; }
-.controversial::after { content: ' [flagged]'; }
+      .comment-head {
+        font-size: 7pt;
+        color: #828282;
+        display: flex;
+        align-items: baseline;
+        gap: 4px;
+        flex-wrap: wrap;
+      }
+      .comment-head .c-upvote {
+        color: #9a9a9a;
+        cursor: pointer;
+        font-size: 8pt;
+        user-select: none;
+      }
+      .comment-head .c-upvote:hover {
+        color: #ff6600;
+      }
+      .comment-head .c-upvote.upvoted {
+        color: #ff6600;
+      }
+      .comment-toggle {
+        cursor: pointer;
+        font-size: 7pt;
+        color: #828282;
+        user-select: none;
+      }
+      .comment-toggle:hover {
+        color: #000;
+      }
+      .comment-user {
+        font-weight: bold;
+        color: #000;
+      }
+      .comment-user a {
+        color: #000;
+        text-decoration: none;
+      }
+      .comment-user.is-op a {
+        color: #3c963c;
+      }
+      .comment-score {
+        color: #828282;
+      }
+      .comment-time {
+        color: #828282;
+      }
+      .comment-time a {
+        color: #828282;
+      }
+      .comment-nav-link a {
+        color: #828282;
+        font-size: 7pt;
+      }
+      .comment-nav-link a:hover {
+        text-decoration: underline;
+      }
+      .controversial::after {
+        content: " [flagged]";
+      }
 
-.comment-text {
-  font-size: 9pt;
-  color: #000;
-  line-height: 1.4;
-  margin-top: 4px;
-  overflow-wrap: break-word;
-}
-.comment-text p { margin-bottom: 6px; }
-.comment-text code {
-  font-family: monospace;
-  font-size: 9pt;
-  background: #e8e8e0;
-  padding: 1px 3px;
-}
-.comment-text pre {
-  background: #e8e8e0;
-  padding: 8px;
-  overflow-x: auto;
-  margin: 6px 0;
-  font-size: 9pt;
-}
-.comment-text pre code { background: none; padding: 0; }
-.comment-text blockquote {
-  border-left: 2px solid #828282;
-  padding-left: 8px;
-  color: #828282;
-  margin: 6px 0;
-  font-style: italic;
-}
+      .comment-text {
+        font-size: 9pt;
+        color: #000;
+        line-height: 1.4;
+        margin-top: 4px;
+        overflow-wrap: break-word;
+      }
+      .comment-text p {
+        margin-bottom: 6px;
+      }
+      .comment-text code {
+        font-family: monospace;
+        font-size: 9pt;
+        background: #e8e8e0;
+        padding: 1px 3px;
+      }
+      .comment-text pre {
+        background: #e8e8e0;
+        padding: 8px;
+        overflow-x: auto;
+        margin: 6px 0;
+        font-size: 9pt;
+      }
+      .comment-text pre code {
+        background: none;
+        padding: 0;
+      }
+      .comment-text blockquote {
+        border-left: 2px solid #828282;
+        padding-left: 8px;
+        color: #828282;
+        margin: 6px 0;
+        font-style: italic;
+      }
 
-.comment.deleted .comment-user a { color: #828282; }
-.comment.deleted .comment-text { color: #828282; font-style: italic; }
-.comment.negative .comment-text { opacity: 0.6; }
+      .comment.deleted .comment-user a {
+        color: #828282;
+      }
+      .comment.deleted .comment-text {
+        color: #828282;
+        font-style: italic;
+      }
+      .comment.negative .comment-text {
+        opacity: 0.6;
+      }
 
-.comment-reply a { color: #828282; font-size: 7pt; text-decoration: underline; }
-.comment-children { }
+      .comment-reply a {
+        color: #828282;
+        font-size: 7pt;
+        text-decoration: underline;
+      }
+      .comment-children {
+      }
 
-/* Disclaimer */
-.disclaimer {
-  border-top: 2px solid #ff6600;
-  padding: 10px;
-  text-align: center;
-  font-size: 7pt;
-  color: #828282;
-  margin-top: 20px;
-}
+      /* Disclaimer */
+      .disclaimer {
+        border-top: 2px solid #ff6600;
+        padding: 10px;
+        text-align: center;
+        font-size: 7pt;
+        color: #828282;
+        margin-top: 20px;
+      }
 
-/* Loading */
-.loading {
-  text-align: center;
-  padding: 40px;
-  color: #828282;
-  font-size: 10pt;
-}
+      /* Loading */
+      .loading {
+        text-align: center;
+        padding: 40px;
+        color: #828282;
+        font-size: 10pt;
+      }
 
-/* Error */
-.error {
-  max-width: 600px;
-  margin: 40px auto;
-  padding: 20px;
-  text-align: center;
-  color: #ff0000;
-  font-size: 10pt;
-}
+      /* Error */
+      .error {
+        max-width: 600px;
+        margin: 40px auto;
+        padding: 20px;
+        text-align: center;
+        color: #ff0000;
+        font-size: 10pt;
+      }
 
-/* Footer links */
-.hn-footer {
-  text-align: center;
-  padding: 10px;
-  border-top: 2px solid #ff6600;
-  font-size: 7pt;
-  color: #828282;
-}
-.hn-footer a { color: #828282; margin: 0 4px; }
+      /* Footer links */
+      .hn-footer {
+        text-align: center;
+        padding: 10px;
+        border-top: 2px solid #ff6600;
+        font-size: 7pt;
+        color: #828282;
+      }
+      .hn-footer a {
+        color: #828282;
+        margin: 0 4px;
+      }
 
-@media (max-width: 600px) {
-  .post-subline { padding-left: 28px; }
-  .post-body-container { padding-left: 28px; }
-}
-</style>
-</head>
-<body>
+      @media (max-width: 600px) {
+        .post-subline {
+          padding-left: 28px;
+        }
+        .post-body-container {
+          padding-left: 28px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="hn-center">
+      <table width="100%" cellspacing="0" cellpadding="0" border="0" bgcolor="#ff6600">
+        <tr>
+          <td style="padding: 2px">
+            <div class="header-inner">
+              <div class="header-logo">Y</div>
+              <span class="header-nav">
+                <a href="#" class="hn-name">Hacker News</a>
+                <span class="pipe">|</span>
+                <a href="#">new</a>
+                <span class="pipe">|</span>
+                <a href="#">past</a>
+                <span class="pipe">|</span>
+                <a href="#">comments</a>
+                <span class="pipe">|</span>
+                <a href="#">ask</a>
+                <span class="pipe">|</span>
+                <a href="#">show</a>
+                <span class="pipe">|</span>
+                <a href="#">jobs</a>
+                <span class="pipe">|</span>
+                <a href="#">submit</a>
+              </span>
+              <span class="header-badge">SIMULATED</span>
+            </div>
+          </td>
+        </tr>
+      </table>
 
-<div class="hn-center">
-
-<table width="100%" cellspacing="0" cellpadding="0" border="0" bgcolor="#ff6600">
-<tr>
-  <td style="padding: 2px;">
-    <div class="header-inner">
-      <div class="header-logo">Y</div>
-      <span class="header-nav">
-        <a href="#" class="hn-name">Hacker News</a>
-        <span class="pipe">|</span>
-        <a href="#">new</a>
-        <span class="pipe">|</span>
-        <a href="#">past</a>
-        <span class="pipe">|</span>
-        <a href="#">comments</a>
-        <span class="pipe">|</span>
-        <a href="#">ask</a>
-        <span class="pipe">|</span>
-        <a href="#">show</a>
-        <span class="pipe">|</span>
-        <a href="#">jobs</a>
-        <span class="pipe">|</span>
-        <a href="#">submit</a>
-      </span>
-      <span class="header-badge">SIMULATED</span>
+      <div id="app">
+        <div class="loading">Loading...</div>
+      </div>
     </div>
-  </td>
-</tr>
-</table>
 
-<div id="app">
-  <div class="loading">Loading...</div>
-</div>
+    <script>
+      let DATA = null;
 
-</div>
+      async function init() {
+        try {
+          const res = await fetch("/api/data");
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          DATA = await res.json();
+          render();
+        } catch (e) {
+          document.getElementById("app").innerHTML =
+            `<div class="error"><b>Failed to load</b><br>${e.message}</div>`;
+        }
+      }
 
-<script>
-let DATA = null;
+      function render() {
+        const sim = DATA.simulation;
+        const post = sim.post;
+        const comments = sim.comments;
+        const app = document.getElementById("app");
 
-async function init() {
-  try {
-    const res = await fetch('/api/data');
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    DATA = await res.json();
-    render();
-  } catch (e) {
-    document.getElementById('app').innerHTML =
-      `<div class="error"><b>Failed to load</b><br>${e.message}</div>`;
-  }
-}
-
-function render() {
-  const sim = DATA.simulation;
-  const post = sim.post;
-  const comments = sim.comments;
-  const app = document.getElementById('app');
-
-  app.innerHTML = `
+        app.innerHTML = `
     <div class="content">
       <div class="post-row">
         <div class="post-title-row">
@@ -366,14 +448,14 @@ function render() {
           <span class="post-domain">(self)</span>
         </div>
         <div class="post-subline">
-          <span class="post-score-val" data-base="${post.score}">${post.score} point${post.score !== 1 ? 's' : ''}</span>
+          <span class="post-score-val" data-base="${post.score}">${post.score} point${post.score !== 1 ? "s" : ""}</span>
           by <a href="#">${esc(post.author)}</a>
           <span>${formatTime(post.created_utc)}</span>
           | <a href="#">hide</a>
-          | <a href="#">${comments.length}&nbsp;comment${comments.length !== 1 ? 's' : ''}</a>
+          | <a href="#">${comments.length}&nbsp;comment${comments.length !== 1 ? "s" : ""}</a>
         </div>
       </div>
-      ${post.body_html ? `<div class="post-body-container">${post.body_html}</div>` : ''}
+      ${post.body_html ? `<div class="post-body-container">${post.body_html}</div>` : ""}
       <div class="spacer"></div>
       <div class="comment-tree">
         ${renderCommentTree(comments, post.id)}
@@ -394,46 +476,46 @@ function render() {
       <a href="#">Contact</a>
     </div>
   `;
-}
+      }
 
-function renderCommentTree(comments, postId) {
-  const byParent = {};
-  for (const c of comments) {
-    const pid = c.parent_id;
-    if (!byParent[pid]) byParent[pid] = [];
-    byParent[pid].push(c);
-  }
-  for (const k in byParent) {
-    byParent[k].sort((a, b) => b.score - a.score);
-  }
+      function renderCommentTree(comments, postId) {
+        const byParent = {};
+        for (const c of comments) {
+          const pid = c.parent_id;
+          if (!byParent[pid]) byParent[pid] = [];
+          byParent[pid].push(c);
+        }
+        for (const k in byParent) {
+          byParent[k].sort((a, b) => b.score - a.score);
+        }
 
-  function renderChildren(parentId, depth) {
-    const kids = byParent[parentId];
-    if (!kids || !kids.length) return '';
-    return kids.map(c => renderComment(c, byParent, depth)).join('');
-  }
+        function renderChildren(parentId, depth) {
+          const kids = byParent[parentId];
+          if (!kids || !kids.length) return "";
+          return kids.map((c) => renderComment(c, byParent, depth)).join("");
+        }
 
-  return renderChildren(postId, 0);
-}
+        return renderChildren(postId, 0);
+      }
 
-function renderComment(comment, byParent, depth) {
-  const classes = ['comment'];
-  if (comment.is_deleted) classes.push('deleted');
-  if (comment.score < 0) classes.push('negative');
+      function renderComment(comment, byParent, depth) {
+        const classes = ["comment"];
+        if (comment.is_deleted) classes.push("deleted");
+        if (comment.score < 0) classes.push("negative");
 
-  const children = byParent[comment.id];
-  const hasChildren = children && children.length > 0;
-  const indent = depth * 40;
+        const children = byParent[comment.id];
+        const hasChildren = children && children.length > 0;
+        const indent = depth * 40;
 
-  return `
-    <div class="${classes.join(' ')}" data-id="${comment.id}" style="margin-left: ${indent}px;">
+        return `
+    <div class="${classes.join(" ")}" data-id="${comment.id}" style="margin-left: ${indent}px;">
       <div class="comment-main">
         <div class="comment-head">
           <span class="c-upvote" onclick="toggleCommentUpvote(this)" title="upvote">&#9650;</span>
-          <span class="comment-user ${comment.is_op ? 'is-op' : ''}">
-            <a href="#">${comment.is_deleted ? '[deleted]' : esc(comment.author)}</a>
+          <span class="comment-user ${comment.is_op ? "is-op" : ""}">
+            <a href="#">${comment.is_deleted ? "[deleted]" : esc(comment.author)}</a>
           </span>
-          <span class="comment-score${comment.controversiality ? ' controversial' : ''}" data-base="${comment.score}">${comment.score} point${comment.score !== 1 ? 's' : ''}</span>
+          <span class="comment-score${comment.controversiality ? " controversial" : ""}" data-base="${comment.score}">${comment.score} point${comment.score !== 1 ? "s" : ""}</span>
           <span class="comment-time"><a href="#">${formatTime(comment.created_utc)}</a></span>
           <span class="comment-toggle" onclick="toggleCollapse(this)">[–]</span>
         </div>
@@ -444,62 +526,69 @@ function renderComment(comment, byParent, depth) {
           <span class="comment-reply"><a href="#">reply</a></span>
         </div>
         <div class="comment-children">
-          ${hasChildren ? children.sort((a, b) => b.score - a.score).map(c => renderComment(c, byParent, depth + 1)).join('') : ''}
+          ${
+            hasChildren
+              ? children
+                  .sort((a, b) => b.score - a.score)
+                  .map((c) => renderComment(c, byParent, depth + 1))
+                  .join("")
+              : ""
+          }
         </div>
       </div>
     </div>
   `;
-}
+      }
 
-function toggleCollapse(el) {
-  const comment = el.closest('.comment');
-  const isCollapsed = comment.classList.toggle('collapsed');
-  el.textContent = isCollapsed ? '[+]' : '[–]';
-}
+      function toggleCollapse(el) {
+        const comment = el.closest(".comment");
+        const isCollapsed = comment.classList.toggle("collapsed");
+        el.textContent = isCollapsed ? "[+]" : "[–]";
+      }
 
-function togglePostUpvote(el) {
-  const subline = el.closest('.post-row').querySelector('.post-score-val');
-  const base = parseInt(subline.dataset.base);
-  if (el.classList.contains('upvoted')) {
-    el.classList.remove('upvoted');
-    subline.textContent = base + ' point' + (base !== 1 ? 's' : '');
-  } else {
-    el.classList.add('upvoted');
-    subline.textContent = (base + 1) + ' point' + ((base + 1) !== 1 ? 's' : '');
-  }
-}
+      function togglePostUpvote(el) {
+        const subline = el.closest(".post-row").querySelector(".post-score-val");
+        const base = parseInt(subline.dataset.base);
+        if (el.classList.contains("upvoted")) {
+          el.classList.remove("upvoted");
+          subline.textContent = base + " point" + (base !== 1 ? "s" : "");
+        } else {
+          el.classList.add("upvoted");
+          subline.textContent = base + 1 + " point" + (base + 1 !== 1 ? "s" : "");
+        }
+      }
 
-function toggleCommentUpvote(el) {
-  const scoreEl = el.closest('.comment-head').querySelector('.comment-score');
-  const base = parseInt(scoreEl.dataset.base);
-  if (el.classList.contains('upvoted')) {
-    el.classList.remove('upvoted');
-    scoreEl.textContent = base + ' point' + (base !== 1 ? 's' : '');
-  } else {
-    el.classList.add('upvoted');
-    scoreEl.textContent = (base + 1) + ' point' + ((base + 1) !== 1 ? 's' : '');
-  }
-}
+      function toggleCommentUpvote(el) {
+        const scoreEl = el.closest(".comment-head").querySelector(".comment-score");
+        const base = parseInt(scoreEl.dataset.base);
+        if (el.classList.contains("upvoted")) {
+          el.classList.remove("upvoted");
+          scoreEl.textContent = base + " point" + (base !== 1 ? "s" : "");
+        } else {
+          el.classList.add("upvoted");
+          scoreEl.textContent = base + 1 + " point" + (base + 1 !== 1 ? "s" : "");
+        }
+      }
 
-function formatTime(utc) {
-  const now = Date.now() / 1000;
-  const diff = Math.max(0, now - utc);
-  if (diff < 60) return 'just now';
-  if (diff < 3600) return Math.floor(diff / 60) + ' minutes ago';
-  if (diff < 7200) return '1 hour ago';
-  if (diff < 86400) return Math.floor(diff / 3600) + ' hours ago';
-  if (diff < 172800) return '1 day ago';
-  if (diff < 604800) return Math.floor(diff / 86400) + ' days ago';
-  return Math.floor(diff / 604800) + ' weeks ago';
-}
+      function formatTime(utc) {
+        const now = Date.now() / 1000;
+        const diff = Math.max(0, now - utc);
+        if (diff < 60) return "just now";
+        if (diff < 3600) return Math.floor(diff / 60) + " minutes ago";
+        if (diff < 7200) return "1 hour ago";
+        if (diff < 86400) return Math.floor(diff / 3600) + " hours ago";
+        if (diff < 172800) return "1 day ago";
+        if (diff < 604800) return Math.floor(diff / 86400) + " days ago";
+        return Math.floor(diff / 604800) + " weeks ago";
+      }
 
-function esc(s) {
-  const d = document.createElement('div');
-  d.textContent = s;
-  return d.innerHTML;
-}
+      function esc(s) {
+        const d = document.createElement("div");
+        d.textContent = s;
+        return d.innerHTML;
+      }
 
-init();
-</script>
-</body>
+      init();
+    </script>
+  </body>
 </html>

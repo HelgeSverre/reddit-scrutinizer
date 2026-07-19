@@ -1,6 +1,15 @@
 {
   "subreddit": "ExperiencedDevs",
-  "tone": ["pragmatic", "world-weary", "direct", "measured", "collegial", "dry-humored", "gatekept", "anti-hype"],
+  "tone": [
+    "pragmatic",
+    "world-weary",
+    "direct",
+    "measured",
+    "collegial",
+    "dry-humored",
+    "gatekept",
+    "anti-hype"
+  ],
   "pet_topics": [
     "IC vs Management track (Staff/Principal vs EM)",
     "dealing with underperformers and non-technical managers",
@@ -30,18 +39,66 @@
     "elitist dismissal of bootcamp or self-taught developers"
   ],
   "archetypes": [
-    { "type": "pragmatic-staff-engineer", "frequency": 0.20, "description": "8-15 years experience, gives measured context-rich advice, frequently says 'it depends' with the variables that matter" },
-    { "type": "battle-scarred-veteran", "frequency": 0.12, "description": "15-25+ years, drops wisdom like 'we called that SOA in 2005', occasionally writes drunk-post-style manifestos" },
-    { "type": "frustrated-mid-senior", "frequency": 0.15, "description": "5-8 years in, dealing with dysfunctional team or promotion that didn't happen, looking for validation and tactical advice" },
-    { "type": "process-skeptic", "frequency": 0.10, "description": "Allergic to Agile theater, unnecessary meetings, and corporate process overhead" },
-    { "type": "architecture-astronaut-spotter", "frequency": 0.08, "description": "Identifies overengineering, replies with 'YAGNI' and 'have you considered just using PostgreSQL?'" },
-    { "type": "reluctant-manager", "frequency": 0.08, "description": "Recently moved to management, misses coding, posts about IC-to-EM transition and people problems" },
-    { "type": "faang-insider", "frequency": 0.07, "description": "Provides insight into big-company leveling and promo cycles, sometimes tone-deaf about non-FAANG reality" },
-    { "type": "startup-survivor", "frequency": 0.06, "description": "Lived through early-stage chaos, shares war stories about tech debt and equity compensation reality" },
-    { "type": "ai-skeptic-realist", "frequency": 0.05, "description": "Pushes back on AI hype while acknowledging utility: 'It's a fancy autocomplete that occasionally writes correct code'" },
-    { "type": "career-optimizer", "frequency": 0.04, "description": "Focused on compensation and job hopping strategy, knows Levels.fyi numbers by heart" },
-    { "type": "lurking-junior", "frequency": 0.03, "description": "Less than 3 years but reads voraciously, occasionally slips into threads and gets redirected to weekly Ask thread" },
-    { "type": "documentation-evangelist", "frequency": 0.02, "description": "Appears in knowledge management threads, believes documentation is undervalued, cites Drunk Post wisdom" }
+    {
+      "type": "pragmatic-staff-engineer",
+      "frequency": 0.2,
+      "description": "8-15 years experience, gives measured context-rich advice, frequently says 'it depends' with the variables that matter"
+    },
+    {
+      "type": "battle-scarred-veteran",
+      "frequency": 0.12,
+      "description": "15-25+ years, drops wisdom like 'we called that SOA in 2005', occasionally writes drunk-post-style manifestos"
+    },
+    {
+      "type": "frustrated-mid-senior",
+      "frequency": 0.15,
+      "description": "5-8 years in, dealing with dysfunctional team or promotion that didn't happen, looking for validation and tactical advice"
+    },
+    {
+      "type": "process-skeptic",
+      "frequency": 0.1,
+      "description": "Allergic to Agile theater, unnecessary meetings, and corporate process overhead"
+    },
+    {
+      "type": "architecture-astronaut-spotter",
+      "frequency": 0.08,
+      "description": "Identifies overengineering, replies with 'YAGNI' and 'have you considered just using PostgreSQL?'"
+    },
+    {
+      "type": "reluctant-manager",
+      "frequency": 0.08,
+      "description": "Recently moved to management, misses coding, posts about IC-to-EM transition and people problems"
+    },
+    {
+      "type": "faang-insider",
+      "frequency": 0.07,
+      "description": "Provides insight into big-company leveling and promo cycles, sometimes tone-deaf about non-FAANG reality"
+    },
+    {
+      "type": "startup-survivor",
+      "frequency": 0.06,
+      "description": "Lived through early-stage chaos, shares war stories about tech debt and equity compensation reality"
+    },
+    {
+      "type": "ai-skeptic-realist",
+      "frequency": 0.05,
+      "description": "Pushes back on AI hype while acknowledging utility: 'It's a fancy autocomplete that occasionally writes correct code'"
+    },
+    {
+      "type": "career-optimizer",
+      "frequency": 0.04,
+      "description": "Focused on compensation and job hopping strategy, knows Levels.fyi numbers by heart"
+    },
+    {
+      "type": "lurking-junior",
+      "frequency": 0.03,
+      "description": "Less than 3 years but reads voraciously, occasionally slips into threads and gets redirected to weekly Ask thread"
+    },
+    {
+      "type": "documentation-evangelist",
+      "frequency": 0.02,
+      "description": "Appears in knowledge management threads, believes documentation is undervalued, cites Drunk Post wisdom"
+    }
   ],
   "common_flairs": [
     "General Discussion",

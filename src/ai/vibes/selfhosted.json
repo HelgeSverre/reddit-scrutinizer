@@ -1,6 +1,15 @@
 {
   "subreddit": "selfhosted",
-  "tone": ["pragmatic", "privacy-conscious", "helpful", "opinionated", "skeptical", "enthusiastic", "DIY-principled", "quality-gatekeeping"],
+  "tone": [
+    "pragmatic",
+    "privacy-conscious",
+    "helpful",
+    "opinionated",
+    "skeptical",
+    "enthusiastic",
+    "DIY-principled",
+    "quality-gatekeeping"
+  ],
   "pet_topics": [
     "media server wars (Jellyfin vs Plex enshittification)",
     "photo management and Google Photos replacements (Immich)",
@@ -29,16 +38,56 @@
     "vendor lock-in features or proprietary data formats"
   ],
   "archetypes": [
-    { "type": "docker-evangelist", "frequency": 0.15, "description": "Answers every question with a Docker Compose snippet, has 30+ containers running, thinks bare metal is barbaric" },
-    { "type": "privacy-purist", "frequency": 0.12, "description": "De-Googled their entire life, runs own email server, distrusts Cloudflare, uses Tailscale or raw WireGuard" },
-    { "type": "helpful-veteran", "frequency": 0.14, "description": "5-10+ years of self-hosting, patiently answers beginner questions, links to wiki pages, gives nuanced 'it depends' answers" },
-    { "type": "newbie-enthusiast", "frequency": 0.15, "description": "Just discovered self-hosting, excited about everything, asks 'what hardware should I start with?', gets addicted quickly" },
-    { "type": "stack-showoff", "frequency": 0.08, "description": "Lives for Dashboard Wednesdays, has meticulously configured Homepage instance, runs 50+ services, storage in double-digit terabytes" },
-    { "type": "foss-ideologue", "frequency": 0.08, "description": "Evaluates licensing first, features second, champions AGPL, refuses anything with a CLA or license change" },
-    { "type": "media-hoarder", "frequency": 0.10, "description": "Runs the full *arr stack plus Jellyfin/Plex, manages 20TB+ media, cares about transcoding and hardware acceleration" },
-    { "type": "sysadmin-crossover", "frequency": 0.06, "description": "Does this professionally, brings enterprise practices home, recommends Ansible and Terraform, runs Grafana + Prometheus" },
-    { "type": "project-author", "frequency": 0.05, "description": "Developers posting self-hostable projects, good ones disclose affiliation upfront, bad ones get caught astroturfing" },
-    { "type": "skeptical-reviewer", "frequency": 0.07, "description": "First comment: 'What's the license?' Second: 'What happens if you abandon this?' Third: 'How is this different from existing tool?'" }
+    {
+      "type": "docker-evangelist",
+      "frequency": 0.15,
+      "description": "Answers every question with a Docker Compose snippet, has 30+ containers running, thinks bare metal is barbaric"
+    },
+    {
+      "type": "privacy-purist",
+      "frequency": 0.12,
+      "description": "De-Googled their entire life, runs own email server, distrusts Cloudflare, uses Tailscale or raw WireGuard"
+    },
+    {
+      "type": "helpful-veteran",
+      "frequency": 0.14,
+      "description": "5-10+ years of self-hosting, patiently answers beginner questions, links to wiki pages, gives nuanced 'it depends' answers"
+    },
+    {
+      "type": "newbie-enthusiast",
+      "frequency": 0.15,
+      "description": "Just discovered self-hosting, excited about everything, asks 'what hardware should I start with?', gets addicted quickly"
+    },
+    {
+      "type": "stack-showoff",
+      "frequency": 0.08,
+      "description": "Lives for Dashboard Wednesdays, has meticulously configured Homepage instance, runs 50+ services, storage in double-digit terabytes"
+    },
+    {
+      "type": "foss-ideologue",
+      "frequency": 0.08,
+      "description": "Evaluates licensing first, features second, champions AGPL, refuses anything with a CLA or license change"
+    },
+    {
+      "type": "media-hoarder",
+      "frequency": 0.1,
+      "description": "Runs the full *arr stack plus Jellyfin/Plex, manages 20TB+ media, cares about transcoding and hardware acceleration"
+    },
+    {
+      "type": "sysadmin-crossover",
+      "frequency": 0.06,
+      "description": "Does this professionally, brings enterprise practices home, recommends Ansible and Terraform, runs Grafana + Prometheus"
+    },
+    {
+      "type": "project-author",
+      "frequency": 0.05,
+      "description": "Developers posting self-hostable projects, good ones disclose affiliation upfront, bad ones get caught astroturfing"
+    },
+    {
+      "type": "skeptical-reviewer",
+      "frequency": 0.07,
+      "description": "First comment: 'What's the license?' Second: 'What happens if you abandon this?' Third: 'How is this different from existing tool?'"
+    }
   ],
   "common_flairs": [
     "Need Help",

@@ -1,6 +1,14 @@
 {
   "subreddit": "devops",
-  "tone": ["pragmatic", "weary", "opinionated", "helpful-but-blunt", "anti-hype", "self-deprecating", "gatekeeping-adjacent"],
+  "tone": [
+    "pragmatic",
+    "weary",
+    "opinionated",
+    "helpful-but-blunt",
+    "anti-hype",
+    "self-deprecating",
+    "gatekeeping-adjacent"
+  ],
   "pet_topics": [
     "Kubernetes: overkill or essential?",
     "Infrastructure-as-Code tooling wars (Terraform vs OpenTofu vs Pulumi vs CDK)",
@@ -30,18 +38,66 @@
     "blog spam and generic 'Top 10 DevOps Tools' SEO listicles"
   ],
   "archetypes": [
-    { "type": "battle-scarred-sre", "frequency": 0.15, "description": "8+ years on-call, answers with production war stories, says 'it depends' a lot, references the Google SRE book" },
-    { "type": "infrastructure-purist", "frequency": 0.12, "description": "Everything must be IaC, immutable, and reproducible, hates ClickOps, asks 'is that in version control?'" },
-    { "type": "kubernetes-pragmatist", "frequency": 0.11, "description": "Uses K8s daily but acknowledges complexity, pushes back on both 'K8s for everything' and 'K8s is dead'" },
-    { "type": "career-questioner", "frequency": 0.10, "description": "Junior or aspiring DevOps engineer asking about roadmaps and certifications, frequently redirected to megathread" },
-    { "type": "grumpy-sysadmin", "frequency": 0.10, "description": "Was a sysadmin before DevOps existed, resents title inflation, insists 'we were doing this 15 years ago'" },
-    { "type": "tool-evangelist", "frequency": 0.09, "description": "Strong opinion on one tool (Pulumi, Nix, ArgoCD, Tailscale), recommends it in every tangentially related thread" },
-    { "type": "cloud-cost-hawk", "frequency": 0.08, "description": "Obsessed with FinOps, posts about right-sizing and reserved instances, cites DHH's cloud exit in every cost discussion" },
-    { "type": "helpful-mentor", "frequency": 0.07, "description": "Provides thorough patient answers with documentation links, genuinely wants newcomers to succeed" },
-    { "type": "anti-hype-skeptic", "frequency": 0.06, "description": "'Platform Engineering is just DevOps renamed', 'AI won't replace your on-call', 'that startup tool will get rug-pulled'" },
-    { "type": "vendor-shill-detector", "frequency": 0.05, "description": "First to check poster's account history, calls out self-promotion, serves as community immune system" },
-    { "type": "drive-by-philosopher", "frequency": 0.04, "description": "Drops 'DevOps is a culture, not a role' and leaves, occasionally posts about Conway's Law and Team Topologies" },
-    { "type": "meme-contributor", "frequency": 0.03, "description": "YAML jokes, 'works on my machine' references, on-call suffering memes" }
+    {
+      "type": "battle-scarred-sre",
+      "frequency": 0.15,
+      "description": "8+ years on-call, answers with production war stories, says 'it depends' a lot, references the Google SRE book"
+    },
+    {
+      "type": "infrastructure-purist",
+      "frequency": 0.12,
+      "description": "Everything must be IaC, immutable, and reproducible, hates ClickOps, asks 'is that in version control?'"
+    },
+    {
+      "type": "kubernetes-pragmatist",
+      "frequency": 0.11,
+      "description": "Uses K8s daily but acknowledges complexity, pushes back on both 'K8s for everything' and 'K8s is dead'"
+    },
+    {
+      "type": "career-questioner",
+      "frequency": 0.1,
+      "description": "Junior or aspiring DevOps engineer asking about roadmaps and certifications, frequently redirected to megathread"
+    },
+    {
+      "type": "grumpy-sysadmin",
+      "frequency": 0.1,
+      "description": "Was a sysadmin before DevOps existed, resents title inflation, insists 'we were doing this 15 years ago'"
+    },
+    {
+      "type": "tool-evangelist",
+      "frequency": 0.09,
+      "description": "Strong opinion on one tool (Pulumi, Nix, ArgoCD, Tailscale), recommends it in every tangentially related thread"
+    },
+    {
+      "type": "cloud-cost-hawk",
+      "frequency": 0.08,
+      "description": "Obsessed with FinOps, posts about right-sizing and reserved instances, cites DHH's cloud exit in every cost discussion"
+    },
+    {
+      "type": "helpful-mentor",
+      "frequency": 0.07,
+      "description": "Provides thorough patient answers with documentation links, genuinely wants newcomers to succeed"
+    },
+    {
+      "type": "anti-hype-skeptic",
+      "frequency": 0.06,
+      "description": "'Platform Engineering is just DevOps renamed', 'AI won't replace your on-call', 'that startup tool will get rug-pulled'"
+    },
+    {
+      "type": "vendor-shill-detector",
+      "frequency": 0.05,
+      "description": "First to check poster's account history, calls out self-promotion, serves as community immune system"
+    },
+    {
+      "type": "drive-by-philosopher",
+      "frequency": 0.04,
+      "description": "Drops 'DevOps is a culture, not a role' and leaves, occasionally posts about Conway's Law and Team Topologies"
+    },
+    {
+      "type": "meme-contributor",
+      "frequency": 0.03,
+      "description": "YAML jokes, 'works on my machine' references, on-call suffering memes"
+    }
   ],
   "common_flairs": [
     "Discussion",

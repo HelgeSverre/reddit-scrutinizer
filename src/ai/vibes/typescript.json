@@ -1,6 +1,15 @@
 {
   "subreddit": "typescript",
-  "tone": ["nerdy", "type-obsessed", "helpful", "opinionated", "config-frustrated", "precise", "pedantic", "skeptical-of-hype"],
+  "tone": [
+    "nerdy",
+    "type-obsessed",
+    "helpful",
+    "opinionated",
+    "config-frustrated",
+    "precise",
+    "pedantic",
+    "skeptical-of-hype"
+  ],
   "pet_topics": [
     "type safety and soundness gaps",
     "advanced generics and conditional types",
@@ -28,25 +37,58 @@
     "suggesting 'just use JavaScript' as a solution"
   ],
   "archetypes": [
-    { "type": "pragmatist", "frequency": 0.20, "description": "Wants things to work, uses 'as const' and 'satisfies', doesn't over-engineer types, will use 'any' with a TODO comment" },
-    { "type": "type-gymnast", "frequency": 0.18, "description": "Writes recursive conditional types for fun, builds type-level parsers, lives on the TS playground, follows type-challenges" },
-    { "type": "beginner-in-distress", "frequency": 0.14, "description": "Posts screenshots of incomprehensible type errors, coming from JS, confused by generics, asks 'why doesn't this work'" },
-    { "type": "framework-evangelist", "frequency": 0.12, "description": "Pushes Next.js, or Astro, or whatever's hot, every framework solves everything" },
-    { "type": "config-warrior", "frequency": 0.10, "description": "Knows every tsconfig option, fights about moduleResolution, has opinions on path aliases and project references" },
-    { "type": "strict-mode-enforcer", "frequency": 0.08, "description": "If strictNullChecks isn't on, you're not writing TypeScript, enables every strict flag individually" },
-    { "type": "matt-pocock-disciple", "frequency": 0.06, "description": "Quotes Total TypeScript, links Matt's articles, recommends type over interface, spreading the gospel of satisfies" },
-    { "type": "alt-runtime-advocate", "frequency": 0.05, "description": "Suggests Deno or Bun as the answer to every Node complaint, excited about native TS execution and type stripping" },
-    { "type": "migration-survivor", "frequency": 0.05, "description": "Has war stories about migrating large JS codebases, knows every escape hatch, compassionate toward any usage" },
-    { "type": "enum-abolitionist", "frequency": 0.02, "description": "Will comment 'don't use enums' on any post containing an enum, links to articles about why enums are terrible" }
+    {
+      "type": "pragmatist",
+      "frequency": 0.2,
+      "description": "Wants things to work, uses 'as const' and 'satisfies', doesn't over-engineer types, will use 'any' with a TODO comment"
+    },
+    {
+      "type": "type-gymnast",
+      "frequency": 0.18,
+      "description": "Writes recursive conditional types for fun, builds type-level parsers, lives on the TS playground, follows type-challenges"
+    },
+    {
+      "type": "beginner-in-distress",
+      "frequency": 0.14,
+      "description": "Posts screenshots of incomprehensible type errors, coming from JS, confused by generics, asks 'why doesn't this work'"
+    },
+    {
+      "type": "framework-evangelist",
+      "frequency": 0.12,
+      "description": "Pushes Next.js, or Astro, or whatever's hot, every framework solves everything"
+    },
+    {
+      "type": "config-warrior",
+      "frequency": 0.1,
+      "description": "Knows every tsconfig option, fights about moduleResolution, has opinions on path aliases and project references"
+    },
+    {
+      "type": "strict-mode-enforcer",
+      "frequency": 0.08,
+      "description": "If strictNullChecks isn't on, you're not writing TypeScript, enables every strict flag individually"
+    },
+    {
+      "type": "matt-pocock-disciple",
+      "frequency": 0.06,
+      "description": "Quotes Total TypeScript, links Matt's articles, recommends type over interface, spreading the gospel of satisfies"
+    },
+    {
+      "type": "alt-runtime-advocate",
+      "frequency": 0.05,
+      "description": "Suggests Deno or Bun as the answer to every Node complaint, excited about native TS execution and type stripping"
+    },
+    {
+      "type": "migration-survivor",
+      "frequency": 0.05,
+      "description": "Has war stories about migrating large JS codebases, knows every escape hatch, compassionate toward any usage"
+    },
+    {
+      "type": "enum-abolitionist",
+      "frequency": 0.02,
+      "description": "Will comment 'don't use enums' on any post containing an enum, links to articles about why enums are terrible"
+    }
   ],
-  "common_flairs": [
-    "Help",
-    "Discussion",
-    "Tool/Library",
-    "Show & Tell",
-    "Article",
-    "News"
-  ],
+  "common_flairs": ["Help", "Discussion", "Tool/Library", "Show & Tell", "Article", "News"],
   "typical_replies": [
     "Use `satisfies` instead of type annotation here — you'll keep the narrowed type.",
     "You're looking for a mapped type with conditional inference.",

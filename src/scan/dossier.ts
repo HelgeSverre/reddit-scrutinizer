@@ -54,38 +54,42 @@ function extractDescription(readme: string, manifest: Record<string, unknown> | 
   return "";
 }
 
-async function detectProjectName(rootPath: string): Promise<[string, Record<string, unknown> | null]> {
+async function detectProjectName(
+  rootPath: string,
+): Promise<[string, Record<string, unknown> | null]> {
   // Try package.json
   const pkgContent = await readTextFile(join(rootPath, "package.json"));
   if (pkgContent) {
     try {
       const pkg = JSON.parse(pkgContent);
       if (pkg.name) return [pkg.name, pkg];
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
   }
 
   // Try Cargo.toml
   const cargo = await readTextFile(join(rootPath, "Cargo.toml"));
   if (cargo) {
-    const match = cargo.match(/^\s*name\s*=\s*"([^"]+)"/m);
-    if (match) return [match[1], null];
+    const name = cargo.match(/^\s*name\s*=\s*"([^"]+)"/m)?.[1];
+    if (name) return [name, null];
   }
 
   // Try go.mod
   const gomod = await readTextFile(join(rootPath, "go.mod"));
   if (gomod) {
-    const match = gomod.match(/^module\s+(\S+)/m);
-    if (match) {
-      const parts = match[1].split("/");
-      return [parts[parts.length - 1], null];
+    const modulePath = gomod.match(/^module\s+(\S+)/m)?.[1];
+    if (modulePath) {
+      const name = modulePath.split("/").at(-1);
+      if (name) return [name, null];
     }
   }
 
   // Try pyproject.toml
   const pyproj = await readTextFile(join(rootPath, "pyproject.toml"));
   if (pyproj) {
-    const match = pyproj.match(/^\s*name\s*=\s*"([^"]+)"/m);
-    if (match) return [match[1], null];
+    const name = pyproj.match(/^\s*name\s*=\s*"([^"]+)"/m)?.[1];
+    if (name) return [name, null];
   }
 
   return [basename(rootPath), null];
@@ -190,7 +194,11 @@ function selectExcerpts(files: WalkEntry[]): { path: string; why: string }[] {
   // 1. Entrypoints
   for (const pattern of ENTRYPOINT_PATTERNS) {
     const match = files.find(
-      (f) => f.path.startsWith(pattern) || f.path.endsWith(`/${pattern}`) || basename(f.path, ".ts") === pattern || basename(f.path, ".js") === pattern,
+      (f) =>
+        f.path.startsWith(pattern) ||
+        f.path.endsWith(`/${pattern}`) ||
+        basename(f.path, ".ts") === pattern ||
+        basename(f.path, ".js") === pattern,
     );
     if (match) add(match.path, "main entrypoint");
   }
@@ -211,10 +219,40 @@ function selectExcerpts(files: WalkEntry[]): { path: string; why: string }[] {
 
   // 4. Largest non-test source files (core modules)
   const sourceFiles = files
-    .filter((f) => !isTestFile(f.path) && !MANIFEST_FILES.has(basename(f.path)) && !CONFIG_FILES.has(basename(f.path)))
+    .filter(
+      (f) =>
+        !isTestFile(f.path) &&
+        !MANIFEST_FILES.has(basename(f.path)) &&
+        !CONFIG_FILES.has(basename(f.path)),
+    )
     .filter((f) => {
       const ext = f.path.slice(f.path.lastIndexOf(".")).toLowerCase();
-      return [".ts", ".tsx", ".js", ".jsx", ".rs", ".py", ".go", ".rb", ".java", ".c", ".cpp", ".cs", ".php", ".swift", ".kt", ".zig", ".ex", ".hs", ".scala", ".clj", ".dart", ".lua", ".vue", ".svelte"].includes(ext);
+      return [
+        ".ts",
+        ".tsx",
+        ".js",
+        ".jsx",
+        ".rs",
+        ".py",
+        ".go",
+        ".rb",
+        ".java",
+        ".c",
+        ".cpp",
+        ".cs",
+        ".php",
+        ".swift",
+        ".kt",
+        ".zig",
+        ".ex",
+        ".hs",
+        ".scala",
+        ".clj",
+        ".dart",
+        ".lua",
+        ".vue",
+        ".svelte",
+      ].includes(ext);
     })
     .sort((a, b) => b.size - a.size);
 
@@ -254,7 +292,11 @@ export async function buildDossier(rootPath: string): Promise<ProjectDossier> {
   const stack = await detectStack(rootPath);
   const license = await detectLicense(rootPath);
   const hasTests = detectTests(files);
-  const hasCi = stack.includes("GitHub Actions") || stack.includes("GitLab CI") || stack.includes("CircleCI") || stack.includes("Jenkins");
+  const hasCi =
+    stack.includes("GitHub Actions") ||
+    stack.includes("GitLab CI") ||
+    stack.includes("CircleCI") ||
+    stack.includes("Jenkins");
   const readme = await readReadme(rootPath);
   const description = extractDescription(readme, manifest);
   const fileTree = buildFileTree(files);

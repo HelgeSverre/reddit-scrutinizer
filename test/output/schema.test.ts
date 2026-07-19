@@ -1,9 +1,5 @@
 import { describe, test, expect } from "bun:test";
-import {
-  PostSchema,
-  CommentSchema,
-  ScrutinyOutputSchema,
-} from "../../src/output/schema";
+import { PostSchema, CommentSchema, ScrutinyOutputSchema } from "../../src/output/schema";
 
 const validPost = {
   id: "t3_abc123",
@@ -74,7 +70,8 @@ describe("PostSchema", () => {
   });
 
   test("missing required fields fail", () => {
-    const { title, ...missing } = validPost;
+    const missing: Record<string, unknown> = { ...validPost };
+    delete missing.title;
     expect(PostSchema.safeParse(missing).success).toBe(false);
   });
 });
@@ -85,31 +82,20 @@ describe("CommentSchema", () => {
   });
 
   test("missing required fields fail", () => {
-    const { body_md, ...missing } = validComment;
+    const missing: Record<string, unknown> = { ...validComment };
+    delete missing.body_md;
     expect(CommentSchema.safeParse(missing).success).toBe(false);
   });
 
   test("invalid controversiality values (not 0 or 1) fail", () => {
-    expect(
-      CommentSchema.safeParse({ ...validComment, controversiality: 2 }).success,
-    ).toBe(false);
-    expect(
-      CommentSchema.safeParse({ ...validComment, controversiality: -1 })
-        .success,
-    ).toBe(false);
-    expect(
-      CommentSchema.safeParse({ ...validComment, controversiality: 0.5 })
-        .success,
-    ).toBe(false);
+    expect(CommentSchema.safeParse({ ...validComment, controversiality: 2 }).success).toBe(false);
+    expect(CommentSchema.safeParse({ ...validComment, controversiality: -1 }).success).toBe(false);
+    expect(CommentSchema.safeParse({ ...validComment, controversiality: 0.5 }).success).toBe(false);
   });
 
   test("controversiality 0 and 1 both pass", () => {
-    expect(
-      CommentSchema.safeParse({ ...validComment, controversiality: 0 }).success,
-    ).toBe(true);
-    expect(
-      CommentSchema.safeParse({ ...validComment, controversiality: 1 }).success,
-    ).toBe(true);
+    expect(CommentSchema.safeParse({ ...validComment, controversiality: 0 }).success).toBe(true);
+    expect(CommentSchema.safeParse({ ...validComment, controversiality: 1 }).success).toBe(true);
   });
 });
 
@@ -119,14 +105,14 @@ describe("ScrutinyOutputSchema", () => {
   });
 
   test("schema_version must be '1.0'", () => {
-    expect(
-      ScrutinyOutputSchema.safeParse({ ...validOutput, schema_version: "2.0" })
-        .success,
-    ).toBe(false);
+    expect(ScrutinyOutputSchema.safeParse({ ...validOutput, schema_version: "2.0" }).success).toBe(
+      false,
+    );
   });
 
   test("missing required fields fail", () => {
-    const { simulation, ...missing } = validOutput;
+    const missing: Record<string, unknown> = { ...validOutput };
+    delete missing.simulation;
     expect(ScrutinyOutputSchema.safeParse(missing).success).toBe(false);
   });
 });
