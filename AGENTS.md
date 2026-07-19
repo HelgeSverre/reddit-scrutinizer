@@ -4,14 +4,18 @@
 
 reddit-scrutinizer is a CLI tool that simulates Reddit reactions to a codebase. It scans a project, then uses Claude (Anthropic API) to generate a realistic Reddit post, critique themes, and threaded comments as if the project were posted to a specific subreddit.
 
-Runtime: Bun. Language: TypeScript (strict). Package manager: bun. Test runner: `bun test`.
+Runtime: Bun. Language: TypeScript (strict). Package manager: bun. Formatter: Oxfmt. Linter: Oxlint. Test runner: `bun test --isolate`.
 
 ## Commands
 
 ```bash
-bun run dev          # run src/index.ts directly
-bun test             # run all tests
-bun run typecheck    # tsc --noEmit
+bun run dev             # run src/index.ts directly
+bun test                # run isolated tests
+bun run test:coverage   # run tests with a coverage report
+bun run format          # format all supported files with Oxfmt
+bun run lint            # run Oxlint; warnings fail the command
+bun run typecheck       # typecheck source and tests
+bun run check           # run the complete CI check
 ```
 
 ## Architecture
@@ -24,13 +28,15 @@ Entry point: `src/index.ts` orchestrates the full pipeline. CLI parsing: `src/cl
 src/
   cli.ts              CLI definition (Commander)
   index.ts            Main pipeline orchestration
+  progress.ts         Default and verbose progress reporting
+  version.ts          Tool version sourced from package.json
   scan/
     walk.ts            Directory walker (respects .gitignore, skips binaries)
     detect.ts          Language, stack, license, test detection
     dossier.ts         Builds ProjectDossier from scan results
     snippets.ts        File index, risk pattern scanning, snippet reading
   ai/
-    client.ts          Anthropic SDK wrapper, generateJSON with structured output fallback
+    client.ts          Vercel AI SDK wrapper for Anthropic structured output
     load-vibe.ts       Loads subreddit vibe packs from vibes/ directory
     discover.ts        AI-driven code discovery (planDiscovery + synthesizeEvidence)
     generate-post.ts   Generates the Reddit post
@@ -44,11 +50,11 @@ src/
     write.ts           Assembles and writes final JSON output
   ui/
     server.ts          Bun.serve for the browser UI
-    templates/         HTML templates per theme (reddit, hackernews, producthunt)
+    templates/         HTML templates for all six UI themes
 bin/
   cli.mjs            Node shim that finds bun and runs src/index.ts
 test/
-  e2e.test.ts        Full pipeline test with mocked LLM (mock.module)
+  e2e.test.ts        Full pipeline test with a mocked Vercel AI SDK boundary
   fixtures/          Sample project and fixture AI responses
   ai/                Unit tests for AI modules
   scan/              Unit tests for scan modules
@@ -77,7 +83,11 @@ test/
 
 ### AI client pattern
 
-All AI calls go through `generateJSON()` in `ai/client.ts`. It tries structured output (JSON schema via `output_config`) first, falls back to prompt-based JSON parsing if the model doesn't support it. All responses are validated with Zod schemas.
+All AI calls go through `generateJSON()` in `ai/client.ts`. It uses Vercel AI SDK `generateText()` with `Output.object()` and the Anthropic provider, validating every response against a Zod schema. The provider handles model capabilities, structured-output selection, retries, and unsupported-setting warnings such as `temperature` on Claude Sonnet 5.
+
+### Progress reporting
+
+All pipeline output goes through `createProgressReporter()` in `progress.ts`. Normal mode shows eight numbered stages. `--verbose` adds safe configuration, counts, selected reads, timings, and comment-batch events. Never log API keys, prompts, snippet contents, or raw model responses.
 
 ### Vibe packs
 
@@ -92,7 +102,9 @@ Scores and timestamps use a Mulberry32 PRNG seeded from the `--seed` flag (or `D
 - All AI generation functions follow the same signature pattern: `(client, dossier, vibePack, ...extras, options) => Promise<T>`
 - Zod schemas are defined alongside the interfaces they validate
 - The `GenerateOptions` type (`model` + `temperature`) is passed through to all AI calls
-- Tests mock the AI layer via `mock.module("../src/ai/client")` -- the mock returns fixture data
+- Tests run with Bun isolation and mock the Vercel AI SDK through `test/fixtures/ai-sdk-mock.ts`
+- CLI tests instantiate the real Commander definition through `createProgram()`
+- Format the repository with Oxfmt; do not hand-format around it
 - Comment styles are defined in `STYLE_DESCRIPTIONS` in generate-comments.ts: balanced, snarky, supportive, hostile, roast, scrutiny, fanboy, slop
 - The CLI exposes fewer styles than the code supports (balanced, snarky, supportive, hostile)
 - Output schema version is "1.0", tool version is tracked in package.json

@@ -209,14 +209,7 @@ Ship ~10 built-in packs as JSON files. Unknown subreddits: Claude infers the vib
 {
   "subreddit": "rust",
   "tone": ["technical", "direct", "earnest", "occasionally snarky"],
-  "pet_topics": [
-    "safety",
-    "performance",
-    "error handling",
-    "docs",
-    "benchmarks",
-    "unsafe"
-  ],
+  "pet_topics": ["safety", "performance", "error handling", "docs", "benchmarks", "unsafe"],
   "taboos": ["don't invent unstable features", "avoid excessive memes"],
   "archetypes": [
     { "type": "perf-nerd", "frequency": 0.15 },

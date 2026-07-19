@@ -23,11 +23,13 @@
 ### Task 1: Make generation-time UI opt-in
 
 **Files:**
+
 - Modify: `test/cli.test.ts`
 - Modify: `src/cli.ts`
 - Modify: `src/index.ts`
 
 **Interfaces:**
+
 - Consumes: `createProgram(handlers)` and `MainOptions`.
 - Produces: `MainOptions.open: boolean` as the sole generation-time server gate.
 
@@ -85,10 +87,12 @@ git commit -m "fix: make generated UI opt-in"
 ### Task 2: Normalize oversized comment batches
 
 **Files:**
+
 - Modify: `test/ai/generate-comments.test.ts`
 - Modify: `src/ai/generate-comments.ts`
 
 **Interfaces:**
+
 - Consumes: `GeneratedComment[]` returned by `generateCommentBatch()`.
 - Produces: `normalizeBatchSize(batch, expected, batchNumber, totalBatches): GeneratedComment[]`.
 
@@ -164,6 +168,7 @@ git commit -m "fix: trim oversized comment batches"
 ### Task 3: Generate shell completions from the Commander tree
 
 **Files:**
+
 - Create: `src/completions/model.ts`
 - Create: `src/completions/bash.ts`
 - Create: `src/completions/zsh.ts`
@@ -174,6 +179,7 @@ git commit -m "fix: trim oversized comment batches"
 - Modify: `src/cli.ts`
 
 **Interfaces:**
+
 - Produces: `SUPPORTED_SHELLS`, `Shell`, `buildCompletionModel(program)`, and `renderCompletionScript(program, shell)`.
 - Consumes: Commander `Command`, `Option`, and `Argument` metadata plus JSON filenames from `src/ai/vibes/`.
 
@@ -261,11 +267,13 @@ git commit -m "feat: generate shell completions"
 ### Task 4: Update user-facing documentation and batch script
 
 **Files:**
+
 - Modify: `README.md`
 - Modify: `CHANGELOG.md`
 - Modify: `batch.sh` (local untracked script; do not add it unless already tracked)
 
 **Interfaces:**
+
 - Documents the CLI behavior implemented in Tasks 1-3.
 
 - [ ] **Step 1: Update the README reference and how-to sections**
@@ -311,6 +319,7 @@ git commit -m "docs: document batch-safe CLI behavior"
 ### Task 5: Full verification and review
 
 **Files:**
+
 - Review all files changed by Tasks 1-4.
 
 - [ ] **Step 1: Run the complete repository check**
