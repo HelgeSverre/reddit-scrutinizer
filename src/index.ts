@@ -1,8 +1,9 @@
 #!/usr/bin/env bun
 
-import { program } from "./cli";
+import { program, type MainOptions } from "./cli";
 import chalk from "chalk";
 import { resolve } from "node:path";
+import { stat } from "node:fs/promises";
 import { buildDossier } from "./scan/dossier";
 import { walkDirectory } from "./scan/walk";
 import { buildFileIndex, scanRiskPatterns, executeDiscoveryPlan } from "./scan/snippets";
@@ -13,27 +14,10 @@ import { generatePost } from "./ai/generate-post";
 import { generateAgenda } from "./ai/generate-agenda";
 import { generateComments, type CommentOptions } from "./ai/generate-comments";
 import { assembleOutput, writeOutput } from "./output/write";
+import { createProgressReporter } from "./progress";
 
-interface RunOptions {
-  subreddit: string;
-  comments: number;
-  maxDepth: number;
-  maxReplies: number;
-  style: string;
-  model: string;
-  out: string;
-  open: boolean;
-  port: number;
-  ui: boolean;
-  theme: string;
-  temperature: number;
-  seed?: number;
-  maxTokens?: number;
-  batchSize: number;
-  apiKey?: string;
-}
-
-async function run(path: string, options: RunOptions) {
+async function run(path: string, options: MainOptions) {
+  const progress = createProgressReporter({ verbose: options.verbose });
   let apiKey: string | undefined;
   let apiKeySource: string;
 
@@ -41,8 +25,8 @@ async function run(path: string, options: RunOptions) {
     apiKey = options.apiKey;
     apiKeySource = "--api-key flag";
     if (process.stderr.isTTY && !process.env.CI) {
-      console.error(chalk.yellow("⚠ API key passed via CLI flag — it may appear in shell history and process listings."));
-      console.error(chalk.yellow("  Prefer: export ANTHROPIC_API_KEY=sk-ant-..."));
+      progress.warn("API key passed via CLI; it may appear in shell history and process listings.");
+      progress.warn("Prefer: export ANTHROPIC_API_KEY=sk-ant-...");
     }
   } else if (process.env.ANTHROPIC_API_KEY) {
     apiKey = process.env.ANTHROPIC_API_KEY;
@@ -54,57 +38,79 @@ async function run(path: string, options: RunOptions) {
     process.exit(1);
   }
 
-  console.log(chalk.dim(`Using API key from ${apiKeySource}`));
-
   const seed = options.seed ?? Date.now();
   const rootPath = resolve(path);
+  progress.detail(`API key source: ${apiKeySource}`);
+  progress.detail(
+    `Run: r/${options.subreddit}; ${options.style} style; ${options.theme} theme; ${options.model}`,
+  );
+  progress.detail(
+    `Comments: ${options.comments}; batch size: ${options.batchSize}; seed: ${seed}; open UI: ${options.open}`,
+  );
+  progress.detail(`Project: ${rootPath}`);
 
-  // 1. Build dossier
-  console.log(chalk.cyan(`Scanning ${rootPath}...`));
+  const scanStage = progress.stage(1, 8, "Rifling through the repo...");
   const dossier = await buildDossier(rootPath);
   const langNames = dossier.languages.map((l) => l.name).join(", ");
   const fileCount = dossier.excerpts.length;
-  console.log(chalk.dim(`Found ${fileCount} key files, languages detected: ${langNames}`));
+  scanStage.detail(`Key excerpts: ${fileCount}; languages: ${langNames || "none detected"}`);
+  scanStage.detail(
+    `Stack: ${dossier.stack.join(", ") || "none detected"}; tests: ${dossier.has_tests}; CI: ${dossier.has_ci}; license: ${dossier.license ?? "none"}`,
+  );
+  scanStage.complete("Project dossier assembled");
 
-  // 2. Load vibe pack and create client
   const vibePack = loadVibePack(options.subreddit);
   const client = createClient(apiKey);
-  const genOptions = { model: options.model, temperature: options.temperature };
+  const genOptions = {
+    model: options.model,
+    temperature: options.temperature,
+    maxTokens: options.maxTokens,
+  };
 
-  // 3. AI-driven code discovery
-  console.log(chalk.cyan("Discovering code patterns..."));
+  const patternsStage = progress.stage(2, 8, "Checking under the floorboards...");
   const files = await walkDirectory(rootPath);
   const fileIndex = buildFileIndex(files);
   const patternSummary = await scanRiskPatterns(rootPath, files);
-  if (patternSummary.signals.length > 0) {
-    console.log(chalk.dim(`Found ${patternSummary.signals.length} risk signals across ${patternSummary.total_files_with_signals} files`));
+  patternsStage.detail(
+    `Indexed ${fileIndex.total_scanned} files; kept ${fileIndex.files.length} for AI planning`,
+  );
+  patternsStage.detail(
+    `${patternSummary.signals.length} risk signals across ${patternSummary.total_files_with_signals} files`,
+  );
+  for (const signal of patternSummary.signals.slice(0, 10)) {
+    patternsStage.detail(`${signal.file}: ${signal.pattern} ×${signal.count}`);
   }
+  if (patternSummary.signals.length > 10) {
+    patternsStage.detail(`...and ${patternSummary.signals.length - 10} more signals`);
+  }
+  patternsStage.complete("Pattern scan complete");
 
-  console.log(chalk.cyan("Planning targeted code reads..."));
+  const planStage = progress.stage(3, 8, "Asking Claude where the bodies are buried...");
   const discoveryPlan = await planDiscovery(client, dossier, fileIndex, patternSummary, genOptions);
-  console.log(chalk.dim(`Reading ${discoveryPlan.reads.length} code regions...`));
-  const snippets = await executeDiscoveryPlan(rootPath, discoveryPlan);
-
-  console.log(chalk.cyan("Synthesizing evidence..."));
-  const evidence = await synthesizeEvidence(client, dossier, snippets, genOptions);
-  console.log(chalk.dim(`Found ${evidence.strengths.length} strengths, ${evidence.risks.length} risks, ${evidence.comment_ammo.length} comment angles`));
-
-  // 4. Generate post
-  console.log(chalk.cyan(`Generating r/${options.subreddit} post...`));
-  const post = await generatePost(client, dossier, vibePack, genOptions);
-
-  // 5. Generate agenda
-  console.log(chalk.cyan("Analyzing critique themes..."));
-  const agenda = await generateAgenda(client, dossier, vibePack, post, evidence, genOptions);
-
-  // 6. Generate comments (batched for large counts)
-  const batchSize = options.batchSize;
-  if (options.comments > batchSize) {
-    const batches = Math.ceil(options.comments / batchSize);
-    console.log(chalk.cyan(`Generating ${options.comments} comments in ${batches} batches of ~${batchSize}...`));
-  } else {
-    console.log(chalk.cyan(`Generating ${options.comments} comments...`));
+  for (const read of discoveryPlan.reads) {
+    planStage.detail(
+      `${read.path}:${read.start_line}-${read.start_line + read.line_count - 1} — ${read.reason}`,
+    );
   }
+  const snippets = await executeDiscoveryPlan(rootPath, discoveryPlan);
+  planStage.complete(`Read ${snippets.length} of ${discoveryPlan.reads.length} selected regions`);
+
+  const evidenceStage = progress.stage(4, 8, "Turning code into ammunition...");
+  const evidence = await synthesizeEvidence(client, dossier, snippets, genOptions);
+  evidenceStage.complete(
+    `${evidence.strengths.length} strengths, ${evidence.risks.length} risks, ${evidence.comment_ammo.length} comment angles`,
+  );
+
+  const postStage = progress.stage(5, 8, `Composing the r/${options.subreddit} bait...`);
+  const post = await generatePost(client, dossier, vibePack, genOptions);
+  postStage.complete("Submission drafted");
+
+  const agendaStage = progress.stage(6, 8, "Giving the mob some talking points...");
+  const agenda = await generateAgenda(client, dossier, vibePack, post, evidence, genOptions);
+  agendaStage.complete(`${agenda.length} critique themes ready`);
+
+  const batchSize = options.batchSize;
+  const commentsStage = progress.stage(7, 8, "Opening the comment floodgates...");
   const commentOpts: CommentOptions = {
     ...genOptions,
     maxTokens: options.maxTokens,
@@ -113,11 +119,30 @@ async function run(path: string, options: RunOptions) {
     maxReplies: options.maxReplies,
     style: options.style,
     batchSize,
+    onBatchProgress: (event) => {
+      if (event.phase === "start") {
+        commentsStage.detail(
+          `Batch ${event.batch}/${event.totalBatches}: requesting ${event.requested} comments (${event.remaining} remaining)`,
+        );
+      } else {
+        commentsStage.detail(
+          `Batch ${event.batch}/${event.totalBatches}: received ${event.generated}; ${event.totalGenerated} total`,
+        );
+      }
+    },
   };
-  const comments = await generateComments(client, dossier, vibePack, post, agenda, evidence, commentOpts);
+  const comments = await generateComments(
+    client,
+    dossier,
+    vibePack,
+    post,
+    agenda,
+    evidence,
+    commentOpts,
+  );
+  commentsStage.complete(`${comments.length} comments generated`);
 
-  // 7. Assemble and write output
-  console.log(chalk.cyan("Assembling output..."));
+  const outputStage = progress.stage(8, 8, "Stuffing the simulation into JSON...");
   const output = assembleOutput({
     input: {
       path: rootPath,
@@ -156,19 +181,28 @@ async function run(path: string, options: RunOptions) {
 
   const outPath = resolve(options.out);
   await writeOutput(output, outPath);
-  console.log(chalk.green(`Written to ${outPath}`));
+  const outputStats = await stat(outPath);
+  outputStage.detail(`Output: ${outPath} (${outputStats.size.toLocaleString()} bytes)`);
 
-  // 8. Start UI server (unless --no-ui)
-  if (options.ui) {
+  let actualPort: number | undefined;
+  if (options.open) {
     const { startServer } = await import("./ui/server");
-    const actualPort = await startServer(outPath, options.port, options.open, options.theme);
-    console.log(chalk.cyan(`UI available at http://localhost:${actualPort}`));
+    actualPort = await startServer(outPath, options.port, true, options.theme);
+    outputStage.detail(
+      actualPort === options.port
+        ? `UI using preferred port ${actualPort}`
+        : `Port ${options.port} was busy; UI moved to ${actualPort}`,
+    );
+  }
+  outputStage.complete(options.open ? "Output written and UI started" : "Output written");
+  progress.success(`Written to ${outPath}`);
+  if (actualPort !== undefined) {
+    progress.success(`UI available at http://localhost:${actualPort}`);
   }
 }
 
 // Wire up the default command action
-program.action(async (path: string) => {
-  const options = program.opts() as unknown as RunOptions;
+program.action(async (path: string, options: MainOptions) => {
   await run(path, options);
 });
 

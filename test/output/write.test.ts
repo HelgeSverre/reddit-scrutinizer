@@ -2,6 +2,7 @@ import { describe, test, expect } from "bun:test";
 import { assembleOutput, type AssembleOptions } from "../../src/output/write";
 import { fixturePost, fixtureComments } from "../fixtures/ai-responses";
 import { ScrutinyOutputSchema } from "../../src/output/schema";
+import pkg from "../../package.json";
 
 function makeOptions(seed = 42): AssembleOptions {
   return {
@@ -47,9 +48,7 @@ describe("assembleOutput", () => {
     const postId = output.simulation.post.id;
     expect(postId).toStartWith("t3_");
 
-    const topLevel = output.simulation.comments.filter(
-      (c) => c.depth === 0,
-    );
+    const topLevel = output.simulation.comments.filter((c) => c.depth === 0);
     for (const c of topLevel) {
       expect(c.parent_id).toBe(postId);
       expect(c.parent_id).not.toBe("post");
@@ -82,9 +81,7 @@ describe("assembleOutput", () => {
     expect(output.simulation.post.body_html).toContain("<strong>");
     expect(output.simulation.post.body_html).toContain("</p>");
     // Comment with **Docker** should produce <strong>
-    const dockerComment = output.simulation.comments.find((c) =>
-      c.body_md.includes("**Docker**"),
-    );
+    const dockerComment = output.simulation.comments.find((c) => c.body_md.includes("**Docker**"));
     expect(dockerComment).toBeDefined();
     expect(dockerComment!.body_html).toContain("<strong>Docker</strong>");
   });
@@ -92,6 +89,11 @@ describe("assembleOutput", () => {
   test("schema_version is '1.0'", () => {
     const output = assembleOutput(makeOptions());
     expect(output.schema_version).toBe("1.0");
+  });
+
+  test("tool version matches package.json", () => {
+    const output = assembleOutput(makeOptions());
+    expect(output.tool.version).toBe(pkg.version);
   });
 
   test("upvote_ratio with negative seed stays in [0.75, 0.95]", () => {

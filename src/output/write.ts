@@ -3,6 +3,7 @@ import { dirname } from "node:path";
 import type { ScrutinyOutput, Post, Comment } from "./schema";
 import { assignScores, assignTimestamps } from "./scores";
 import { mdToHtml } from "./markdown";
+import { TOOL_VERSION } from "../version";
 
 export interface AssembleOptions {
   input: {
@@ -89,7 +90,7 @@ export function assembleOutput(opts: AssembleOptions): ScrutinyOutput {
     body_md: c.body_md,
     body_html: mdToHtml(c.body_md),
     score: 0,
-    controversiality: 0 as 0,
+    controversiality: 0 as const,
     created_utc: 0,
     depth: c.depth,
     is_deleted: c.is_deleted,
@@ -99,9 +100,7 @@ export function assembleOutput(opts: AssembleOptions): ScrutinyOutput {
   assignTimestamps(post, postId, comments, opts.seed);
 
   // Post score: sum of top-level comment scores, roughly
-  post.score = comments
-    .filter((c) => c.depth === 0)
-    .reduce((sum, c) => sum + Math.abs(c.score), 0);
+  post.score = comments.filter((c) => c.depth === 0).reduce((sum, c) => sum + Math.abs(c.score), 0);
   post.upvote_ratio = 0.85 + (opts.seed % 10) * 0.01;
 
   return {
@@ -109,7 +108,7 @@ export function assembleOutput(opts: AssembleOptions): ScrutinyOutput {
     generated_at: new Date().toISOString(),
     tool: {
       name: "reddit-scrutinizer",
-      version: "0.4.0",
+      version: TOOL_VERSION,
     },
     input: {
       path: opts.input.path,
@@ -133,10 +132,7 @@ export function assembleOutput(opts: AssembleOptions): ScrutinyOutput {
   };
 }
 
-export async function writeOutput(
-  output: ScrutinyOutput,
-  outPath: string,
-): Promise<void> {
+export async function writeOutput(output: ScrutinyOutput, outPath: string): Promise<void> {
   await mkdir(dirname(outPath), { recursive: true });
   await writeFile(outPath, JSON.stringify(output, null, 2), "utf-8");
 }
