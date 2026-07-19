@@ -1,11 +1,19 @@
-import type Anthropic from "@anthropic-ai/sdk";
 import { z } from "zod";
 import type { ProjectDossier } from "../scan/dossier";
-import { generateJSON, type GenerateOptions } from "./client";
+import { generateJSON, type AIClient, type GenerateOptions } from "./client";
 import type { EvidencePack } from "./discover";
 import type { GeneratedPost } from "./generate-post";
 
-const STANCES = ["supportive", "skeptical", "hostile", "curious", "neutral", "snarky", "dismissive", "impressed"] as const;
+const STANCES = [
+  "supportive",
+  "skeptical",
+  "hostile",
+  "curious",
+  "neutral",
+  "snarky",
+  "dismissive",
+  "impressed",
+] as const;
 
 const AgendaItemSchema = z.object({
   topic: z.string(),
@@ -24,7 +32,7 @@ export interface AgendaItem {
 }
 
 export async function generateAgenda(
-  client: Anthropic,
+  client: AIClient,
   dossier: ProjectDossier,
   vibePack: Record<string, unknown>,
   post: GeneratedPost,
@@ -62,10 +70,14 @@ Post body:
 ${post.body_md}
 
 Project dossier:
-${JSON.stringify(dossier, null, 2)}${evidence ? `
+${JSON.stringify(dossier, null, 2)}${
+    evidence
+      ? `
 
 Code evidence (use these findings to ground your themes in real observations):
-${JSON.stringify(evidence, null, 2)}` : ""}`;
+${JSON.stringify(evidence, null, 2)}`
+      : ""
+  }`;
 
   return generateJSON<AgendaItem[]>(client, system, userPrompt, options, z.array(AgendaItemSchema));
 }

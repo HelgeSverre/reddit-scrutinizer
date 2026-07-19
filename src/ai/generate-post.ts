@@ -1,7 +1,6 @@
-import type Anthropic from "@anthropic-ai/sdk";
 import { z } from "zod";
 import type { ProjectDossier } from "../scan/dossier";
-import { generateJSON, type GenerateOptions } from "./client";
+import { generateJSON, type AIClient, type GenerateOptions } from "./client";
 
 const GeneratedPostSchema = z.object({
   title: z.string(),
@@ -20,7 +19,7 @@ export interface GeneratedPost {
 }
 
 export async function generatePost(
-  client: Anthropic,
+  client: AIClient,
   dossier: ProjectDossier,
   vibePack: Record<string, unknown>,
   options: GenerateOptions,

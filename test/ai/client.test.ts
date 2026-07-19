@@ -1,100 +1,131 @@
-import { describe, test, expect } from "bun:test";
+import { describe, test, expect, beforeEach } from "bun:test";
 import { z } from "zod";
-import type Anthropic from "@anthropic-ai/sdk";
+import type { AIClient } from "../../src/ai/client";
+import {
+  FakeNoObjectGeneratedError,
+  generateTextCalls,
+  resetAISDKMock,
+  setGenerateTextHandler,
+} from "../fixtures/ai-sdk-mock";
 
-// The e2e test globally mocks the client module with mock.module, which
-// persists across all test files in the same bun test run. To test the real
-// generateJSON logic we inline the source function here so we can exercise
-// the JSON-parsing and Zod-validation code paths without hitting the mock.
+const { generateJSON, MaxTokensError, DEFAULT_MAX_TOKENS } = await import("../../src/ai/client");
 
-async function generateJSON<T>(
-  client: Anthropic,
-  system: string,
-  userPrompt: string,
-  options: { model: string; temperature: number; maxTokens?: number },
-  schema?: z.ZodType<T>,
-): Promise<T> {
-  const response = await client.messages.create({
-    model: options.model,
-    max_tokens: options.maxTokens ?? 8192,
-    temperature: options.temperature,
-    system,
-    messages: [{ role: "user", content: userPrompt }],
-  });
+const fakeClient = ((modelId: string) => ({ modelId })) as AIClient;
+const schema = z.object({ title: z.string() });
+const defaultOptions = { model: "test-model", temperature: 0.8 };
 
-  const text = response.content
-    .filter((block): block is Anthropic.TextBlock => block.type === "text")
-    .map((block) => block.text)
-    .join("");
-
-  const validate = (parsed: unknown): T => {
-    if (schema) {
-      return schema.parse(parsed);
-    }
-    return parsed as T;
-  };
-
-  try {
-    return validate(JSON.parse(text));
-  } catch {
-    const fenceMatch = text.match(/```(?:json)?\s*\n([\s\S]*?)\n```/);
-    if (fenceMatch) {
-      return validate(JSON.parse(fenceMatch[1]));
-    }
-    throw new Error(`Failed to parse JSON from response:\n${text.slice(0, 500)}`);
-  }
+function okResult(output: unknown, overrides: Record<string, unknown> = {}) {
+  return { output, finishReason: "stop", warnings: undefined, ...overrides };
 }
 
-function makeFakeClient(responseText: string) {
-  return {
-    messages: {
-      create: async () => ({
-        content: [{ type: "text", text: responseText }],
-      }),
-    },
-  } as any;
-}
-
-const defaultOptions = { model: "test", temperature: 0 };
+beforeEach(() => {
+  resetAISDKMock();
+});
 
 describe("generateJSON", () => {
-  test("parses raw JSON", async () => {
-    const client = makeFakeClient('{"title":"hello"}');
-    const result = await generateJSON(client, "", "", defaultOptions);
+  test("passes model, output schema, prompts and settings to generateText", async () => {
+    setGenerateTextHandler(() => okResult({ title: "hello" }));
+
+    const result = await generateJSON(
+      fakeClient,
+      "system prompt",
+      "user prompt",
+      defaultOptions,
+      schema,
+    );
+
     expect(result).toEqual({ title: "hello" });
+    expect(generateTextCalls).toHaveLength(1);
+    const call = generateTextCalls.at(0);
+    expect(call).toBeDefined();
+    if (!call) throw new Error("generateText was not called");
+    expect(call.model).toEqual({ modelId: "test-model" });
+    expect(call.system).toBe("system prompt");
+    expect(call.prompt).toBe("user prompt");
+    expect(call.temperature).toBe(0.8);
+    expect(call.maxOutputTokens).toBe(DEFAULT_MAX_TOKENS);
+    const output = call.output as {
+      name?: string;
+      type?: string;
+      schema?: unknown;
+      responseFormat?: Promise<{ schema: { properties: { title: { type: string } } } }>;
+    };
+    expect(output.name ?? output.type).toBe("object");
+    if (output.schema) {
+      expect(output.schema).toBe(schema);
+    } else {
+      const responseFormat = await output.responseFormat;
+      expect(responseFormat?.schema.properties.title.type).toBe("string");
+    }
   });
 
-  test("parses JSON in markdown fences", async () => {
-    const client = makeFakeClient('```json\n{"title":"hello"}\n```');
-    const result = await generateJSON(client, "", "", defaultOptions);
-    expect(result).toEqual({ title: "hello" });
+  test("respects explicit maxTokens", async () => {
+    setGenerateTextHandler(() => okResult({ title: "hello" }));
+
+    await generateJSON(fakeClient, "", "", { ...defaultOptions, maxTokens: 1234 }, schema);
+
+    expect(generateTextCalls.at(0)?.maxOutputTokens).toBe(1234);
   });
 
-  test("parses JSON in fences without language tag", async () => {
-    const client = makeFakeClient('```\n{"title":"hello"}\n```');
-    const result = await generateJSON(client, "", "", defaultOptions);
-    expect(result).toEqual({ title: "hello" });
+  test("throws MaxTokensError when finishReason is length", async () => {
+    setGenerateTextHandler(() => okResult({ title: "hello" }, { finishReason: "length" }));
+
+    await expect(generateJSON(fakeClient, "", "", defaultOptions, schema)).rejects.toThrow(
+      MaxTokensError,
+    );
   });
 
-  test("throws on invalid JSON", async () => {
-    const client = makeFakeClient("not json at all");
-    await expect(
-      generateJSON(client, "", "", defaultOptions),
-    ).rejects.toThrow("Failed to parse");
+  test("maps NoObjectGeneratedError with finishReason length to MaxTokensError", async () => {
+    setGenerateTextHandler(() => {
+      throw new FakeNoObjectGeneratedError("truncated", "length");
+    });
+
+    await expect(generateJSON(fakeClient, "", "", defaultOptions, schema)).rejects.toThrow(
+      MaxTokensError,
+    );
   });
 
-  test("validates with Zod schema when provided", async () => {
-    const schema = z.object({ title: z.string() });
-    const client = makeFakeClient('{"title":"hello"}');
-    const result = await generateJSON(client, "", "", defaultOptions, schema);
-    expect(result).toEqual({ title: "hello" });
+  test("rethrows NoObjectGeneratedError for non-length finish reasons", async () => {
+    setGenerateTextHandler(() => {
+      throw new FakeNoObjectGeneratedError("bad json", "stop");
+    });
+
+    await expect(generateJSON(fakeClient, "", "", defaultOptions, schema)).rejects.toThrow(
+      FakeNoObjectGeneratedError,
+    );
   });
 
-  test("Zod validation rejects bad data", async () => {
-    const schema = z.object({ title: z.string() });
-    const client = makeFakeClient('{"title": 123}');
-    await expect(
-      generateJSON(client, "", "", defaultOptions, schema),
-    ).rejects.toThrow();
+  test("rethrows provider errors", async () => {
+    setGenerateTextHandler(() => {
+      throw new Error("api exploded");
+    });
+
+    await expect(generateJSON(fakeClient, "", "", defaultOptions, schema)).rejects.toThrow(
+      "api exploded",
+    );
+  });
+
+  test("does not duplicate warnings already logged by the AI SDK", async () => {
+    const errors: string[] = [];
+    const original = console.error;
+    console.error = (msg: string) => errors.push(String(msg));
+    try {
+      setGenerateTextHandler(() =>
+        okResult(
+          { title: "hello" },
+          {
+            warnings: [
+              { type: "unsupported", feature: "temperature", details: "temperature ignored" },
+            ],
+          },
+        ),
+      );
+
+      await generateJSON(fakeClient, "", "", defaultOptions, schema);
+    } finally {
+      console.error = original;
+    }
+
+    expect(errors).toEqual([]);
   });
 });

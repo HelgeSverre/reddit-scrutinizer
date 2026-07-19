@@ -1,27 +1,13 @@
-import { describe, test, expect, mock, beforeEach } from "bun:test";
+import { describe, test, expect, beforeEach } from "bun:test";
 import { fixturePost, fixtureAgenda, fixtureComments } from "./fixtures/ai-responses";
+import { resetAISDKMock, setGenerateTextHandler } from "./fixtures/ai-sdk-mock";
 
 let generateCalls: unknown[] = [];
-mock.module("../src/ai/client", () => ({
-  createClient: () => ({}),
-  generateJSON: async (_client: unknown, system: string) => {
-    let result: unknown;
-    if (system.includes("posting to r/")) {
-      result = fixturePost;
-    } else if (system.includes("predicting what")) {
-      result = fixtureAgenda;
-    } else {
-      result = fixtureComments;
-    }
-    generateCalls.push(result);
-    return result;
-  },
-}));
 
 import { join } from "node:path";
 import { readFile, unlink } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import type Anthropic from "@anthropic-ai/sdk";
+import type { AIClient } from "../src/ai/client";
 import { buildDossier } from "../src/scan/dossier";
 import { loadVibePack } from "../src/ai/load-vibe";
 import { generatePost } from "../src/ai/generate-post";
@@ -35,7 +21,7 @@ const SAMPLE_PROJECT = join(import.meta.dir, "fixtures/sample-project");
 async function runPipeline(seed: number) {
   const dossier = await buildDossier(SAMPLE_PROJECT);
   const vibePack = loadVibePack("programming");
-  const client = {} as Anthropic;
+  const client = ((modelId: string) => ({ modelId })) as AIClient;
   const options = { model: "claude-sonnet-4-20250514", temperature: 0.7 };
 
   const post = await generatePost(client, dossier, vibePack, options);
@@ -46,6 +32,7 @@ async function runPipeline(seed: number) {
     maxDepth: 3,
     maxReplies: 2,
     style: "mixed",
+    batchSize: 50,
   });
 
   const output = assembleOutput({
@@ -84,6 +71,20 @@ async function runPipeline(seed: number) {
 describe("E2E integration test with mocked LLM", () => {
   beforeEach(() => {
     generateCalls = [];
+    resetAISDKMock();
+    setGenerateTextHandler((options) => {
+      const system = String(options.system ?? "");
+      let object: unknown;
+      if (system.includes("posting to r/")) {
+        object = fixturePost;
+      } else if (system.includes("predicting what")) {
+        object = fixtureAgenda;
+      } else {
+        object = fixtureComments;
+      }
+      generateCalls.push(object);
+      return { output: object, finishReason: "stop", warnings: undefined };
+    });
   });
 
   test("full pipeline produces valid output", async () => {
@@ -102,7 +103,7 @@ describe("E2E integration test with mocked LLM", () => {
 
     // Agenda
     expect(agenda).toHaveLength(fixtureAgenda.length);
-    expect(agenda[0].topic).toBe("Testing");
+    expect(agenda.at(0)?.topic).toBe("Testing");
 
     // Comments
     expect(comments).toHaveLength(fixtureComments.length);

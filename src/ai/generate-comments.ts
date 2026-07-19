@@ -1,7 +1,6 @@
-import type Anthropic from "@anthropic-ai/sdk";
 import { z } from "zod";
 import type { ProjectDossier } from "../scan/dossier";
-import { generateJSON, MaxTokensError, type GenerateOptions } from "./client";
+import { generateJSON, type AIClient, type GenerateOptions } from "./client";
 import type { GeneratedPost } from "./generate-post";
 import type { AgendaItem } from "./generate-agenda";
 import type { EvidencePack } from "./discover";
@@ -29,13 +28,20 @@ export interface GeneratedComment {
 }
 
 const STYLE_DESCRIPTIONS: Record<string, string> = {
-  balanced: "Mix of supportive, skeptical, snarky, pedantic, and helpful comments. Realistic distribution.",
-  snarky: "Predominantly snarky and sarcastic. Comments drip with wit and condescension, but occasional genuine insight shines through.",
-  supportive: "Predominantly encouraging and constructive. Critics still exist but are outnumbered by genuine enthusiasm.",
-  hostile: "Predominantly aggressive and dismissive. Comments attack decisions, question competence, and pile on. A bad day on Reddit.",
-  roast: "Pure roast. Every comment finds flaws, mocks choices, and piles on. No praise survives. Comedy through cruelty.",
-  scrutiny: "Laser-focused technical critique. Every comment dissects architecture, questions decisions, and demands justification. Constructive but relentless — nothing gets a pass.",
-  fanboy: "Unconditional praise and hype. Everything is brilliant, innovative, and inspiring. Comments compete to out-enthusiasm each other. The creator can do no wrong.",
+  balanced:
+    "Mix of supportive, skeptical, snarky, pedantic, and helpful comments. Realistic distribution.",
+  snarky:
+    "Predominantly snarky and sarcastic. Comments drip with wit and condescension, but occasional genuine insight shines through.",
+  supportive:
+    "Predominantly encouraging and constructive. Critics still exist but are outnumbered by genuine enthusiasm.",
+  hostile:
+    "Predominantly aggressive and dismissive. Comments attack decisions, question competence, and pile on. A bad day on Reddit.",
+  roast:
+    "Pure roast. Every comment finds flaws, mocks choices, and piles on. No praise survives. Comedy through cruelty.",
+  scrutiny:
+    "Laser-focused technical critique. Every comment dissects architecture, questions decisions, and demands justification. Constructive but relentless — nothing gets a pass.",
+  fanboy:
+    "Unconditional praise and hype. Everything is brilliant, innovative, and inspiring. Comments compete to out-enthusiasm each other. The creator can do no wrong.",
   slop: "Anti-AI pile-on. Every commenter assumes the project is AI-generated slop. Comments accuse OP of using ChatGPT/Copilot, mass-downvote, demand to see 'the real code you wrote', mock AI-assisted README prose, and treat any use of AI tools as a personal insult to the craft. Typical Reddit AI backlash.",
 };
 
@@ -47,10 +53,21 @@ export interface CommentOptions extends GenerateOptions {
   maxReplies: number;
   style: string;
   batchSize: number;
+  onBatchProgress?: (event: CommentBatchProgress) => void;
+}
+
+export interface CommentBatchProgress {
+  phase: "start" | "complete";
+  batch: number;
+  totalBatches: number;
+  requested: number;
+  generated: number;
+  totalGenerated: number;
+  remaining: number;
 }
 
 export async function generateComments(
-  client: Anthropic,
+  client: AIClient,
   dossier: ProjectDossier,
   vibePack: Record<string, unknown>,
   post: GeneratedPost,
@@ -59,35 +76,87 @@ export async function generateComments(
   options: CommentOptions,
 ): Promise<GeneratedComment[]> {
   const batchSize = options.batchSize;
+  const totalBatches = Math.ceil(options.comments / batchSize);
 
   if (options.comments <= batchSize) {
-    return generateCommentBatch(client, dossier, vibePack, post, agenda, evidence, options, []);
+    options.onBatchProgress?.({
+      phase: "start",
+      batch: 1,
+      totalBatches,
+      requested: options.comments,
+      generated: 0,
+      totalGenerated: 0,
+      remaining: options.comments,
+    });
+    const generatedBatch = await generateCommentBatch(
+      client,
+      dossier,
+      vibePack,
+      post,
+      agenda,
+      evidence,
+      options,
+      [],
+    );
+    const batch = normalizeBatchSize(generatedBatch, options.comments, 1, totalBatches);
+    options.onBatchProgress?.({
+      phase: "complete",
+      batch: 1,
+      totalBatches,
+      requested: options.comments,
+      generated: batch.length,
+      totalGenerated: batch.length,
+      remaining: Math.max(0, options.comments - batch.length),
+    });
+    return batch;
   }
 
   // Generate in batches to avoid hitting max_tokens
   const allComments: GeneratedComment[] = [];
   let remaining = options.comments;
+  let batchNumber = 0;
 
   while (remaining > 0) {
+    batchNumber++;
     const currentBatch = Math.min(remaining, batchSize);
     const batchOptions = { ...options, comments: currentBatch };
-    const batch = await generateCommentBatch(
-      client, dossier, vibePack, post, agenda, evidence, batchOptions, allComments,
+    options.onBatchProgress?.({
+      phase: "start",
+      batch: batchNumber,
+      totalBatches,
+      requested: currentBatch,
+      generated: 0,
+      totalGenerated: allComments.length,
+      remaining,
+    });
+    const generatedBatch = await generateCommentBatch(
+      client,
+      dossier,
+      vibePack,
+      post,
+      agenda,
+      evidence,
+      batchOptions,
+      allComments,
     );
+    const batch = normalizeBatchSize(generatedBatch, currentBatch, batchNumber, totalBatches);
 
     // Re-number IDs to be globally sequential
     const offset = allComments.length;
     const idMap = new Map<string, string>();
-    for (let i = 0; i < batch.length; i++) {
-      const oldId = batch[i].id;
-      const newId = `c${offset + i + 1}`;
+    for (const [index, comment] of batch.entries()) {
+      const oldId = comment.id;
+      const newId = `c${offset + index + 1}`;
       idMap.set(oldId, newId);
-      batch[i].id = newId;
+      comment.id = newId;
     }
     for (const comment of batch) {
       if (idMap.has(comment.parent_id)) {
         comment.parent_id = idMap.get(comment.parent_id)!;
-      } else if (comment.parent_id !== "post" && !allComments.some((c) => c.id === comment.parent_id)) {
+      } else if (
+        comment.parent_id !== "post" &&
+        !allComments.some((c) => c.id === comment.parent_id)
+      ) {
         // Parent from previous batch doesn't exist — make it top-level
         comment.parent_id = "post";
         comment.depth = 0;
@@ -95,14 +164,41 @@ export async function generateComments(
     }
 
     allComments.push(...batch);
-    remaining -= batch.length;
+    remaining = Math.max(0, remaining - batch.length);
+    options.onBatchProgress?.({
+      phase: "complete",
+      batch: batchNumber,
+      totalBatches,
+      requested: currentBatch,
+      generated: batch.length,
+      totalGenerated: allComments.length,
+      remaining,
+    });
   }
 
   return allComments;
 }
 
+function normalizeBatchSize(
+  batch: GeneratedComment[],
+  expected: number,
+  batchNumber: number,
+  totalBatches: number,
+): GeneratedComment[] {
+  if (expected > 0 && batch.length === 0) {
+    throw new Error(`AI returned no comments for batch ${batchNumber} of ${totalBatches}`);
+  }
+  if (batch.length < expected) {
+    const noun = batch.length === 1 ? "comment" : "comments";
+    throw new Error(
+      `AI returned ${batch.length} ${noun} for batch ${batchNumber} of ${totalBatches}; expected exactly ${expected}`,
+    );
+  }
+  return batch.slice(0, expected);
+}
+
 async function generateCommentBatch(
-  client: Anthropic,
+  client: AIClient,
   dossier: ProjectDossier,
   vibePack: Record<string, unknown>,
   post: GeneratedPost,
@@ -185,5 +281,11 @@ ${JSON.stringify(evidence, null, 2)}`
   const maxTokens = options.maxTokens ?? Math.min(Math.max(16384, estimatedTokens), 64000);
   const batchOptions = { ...options, maxTokens };
 
-  return generateJSON<GeneratedComment[]>(client, system, userPrompt, batchOptions, z.array(GeneratedCommentSchema));
+  return generateJSON<GeneratedComment[]>(
+    client,
+    system,
+    userPrompt,
+    batchOptions,
+    z.array(GeneratedCommentSchema),
+  );
 }

@@ -1,8 +1,7 @@
-import type Anthropic from "@anthropic-ai/sdk";
 import { z } from "zod";
 import type { ProjectDossier } from "../scan/dossier";
 import type { DiscoveryPlan, EvidenceSnippet, FileIndex, PatternSummary } from "../scan/snippets";
-import { generateJSON, type GenerateOptions } from "./client";
+import { generateJSON, type AIClient, type GenerateOptions } from "./client";
 
 export interface EvidencePack {
   overview: string[];
@@ -27,29 +26,37 @@ const DiscoveryPlanSchema = z.object({
 
 const EvidencePackSchema = z.object({
   overview: z.array(z.string()),
-  strengths: z.array(z.object({
-    claim: z.string(),
-    evidence: z.array(z.string()),
-  })),
-  risks: z.array(z.object({
-    severity: z.enum(["low", "med", "high"]),
-    claim: z.string(),
-    evidence: z.array(z.string()),
-  })),
+  strengths: z.array(
+    z.object({
+      claim: z.string(),
+      evidence: z.array(z.string()),
+    }),
+  ),
+  risks: z.array(
+    z.object({
+      severity: z.enum(["low", "med", "high"]),
+      claim: z.string(),
+      evidence: z.array(z.string()),
+    }),
+  ),
   questions_for_op: z.array(z.string()),
-  comment_ammo: z.array(z.object({
-    angle: z.string(),
-    evidence_quote: z.string().optional(),
-    evidence_ref: z.string().optional(),
-  })),
-  citations: z.array(z.object({
-    ref: z.string(),
-    quote: z.string(),
-  })),
+  comment_ammo: z.array(
+    z.object({
+      angle: z.string(),
+      evidence_quote: z.string().optional(),
+      evidence_ref: z.string().optional(),
+    }),
+  ),
+  citations: z.array(
+    z.object({
+      ref: z.string(),
+      quote: z.string(),
+    }),
+  ),
 });
 
 export async function planDiscovery(
-  client: Anthropic,
+  client: AIClient,
   dossier: ProjectDossier,
   fileIndex: FileIndex,
   patternSummary: PatternSummary | null,
@@ -90,7 +97,8 @@ Return ONLY valid JSON:
       byPattern.set(s.pattern, existing);
     }
     const lines = Array.from(byPattern.entries()).map(
-      ([pattern, data]) => `- ${pattern}: ${data.total} occurrences in ${data.files.length} files (${data.files.slice(0, 3).join(", ")}${data.files.length > 3 ? "..." : ""})`,
+      ([pattern, data]) =>
+        `- ${pattern}: ${data.total} occurrences in ${data.files.length} files (${data.files.slice(0, 3).join(", ")}${data.files.length > 3 ? "..." : ""})`,
     );
     patternSection = `\nRisk signals detected:\n${lines.join("\n")}\n`;
   }
@@ -110,7 +118,13 @@ ${JSON.stringify(fileIndex.files, null, 2)}
 
 Pick the most informative reads to sample.`;
 
-  const plan = await generateJSON<DiscoveryPlan>(client, system, userPrompt, options, DiscoveryPlanSchema);
+  const plan = await generateJSON<DiscoveryPlan>(
+    client,
+    system,
+    userPrompt,
+    options,
+    DiscoveryPlanSchema,
+  );
 
   const validPaths = new Set(fileIndex.files.map((f) => f.path));
   plan.reads = plan.reads
@@ -127,7 +141,7 @@ Pick the most informative reads to sample.`;
 }
 
 export async function synthesizeEvidence(
-  client: Anthropic,
+  client: AIClient,
   dossier: ProjectDossier,
   snippets: EvidenceSnippet[],
   options: GenerateOptions,
@@ -152,9 +166,12 @@ Return ONLY valid JSON:
   "citations": [{ "ref": "E3:L5-L12", "quote": "..." }]
 }`;
 
-  const snippetText = snippets.map((s) =>
-    `[${s.id}] ${s.path}:${s.start_line}-${s.end_line} (${s.reason})\n---\n${s.content}\n---`,
-  ).join("\n\n");
+  const snippetText = snippets
+    .map(
+      (s) =>
+        `[${s.id}] ${s.path}:${s.start_line}-${s.end_line} (${s.reason})\n---\n${s.content}\n---`,
+    )
+    .join("\n\n");
 
   const userPrompt = `Project: ${dossier.name}
 Description: ${dossier.description}

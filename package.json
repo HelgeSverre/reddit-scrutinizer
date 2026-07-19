@@ -2,7 +2,21 @@
   "name": "reddit-scrutinizer",
   "version": "0.5.0",
   "description": "Simulate Reddit reactions to your codebase before you post. Uses Claude to generate realistic community feedback in the voice of any subreddit.",
-  "type": "module",
+  "keywords": [
+    "ai",
+    "anthropic",
+    "bun",
+    "claude",
+    "cli",
+    "code-review",
+    "feedback",
+    "reddit",
+    "simulation"
+  ],
+  "homepage": "https://github.com/helgesverre/reddit-scrutinizer",
+  "bugs": {
+    "url": "https://github.com/helgesverre/reddit-scrutinizer/issues"
+  },
   "license": "MIT",
   "author": {
     "name": "Helge Sverre",
@@ -13,21 +27,6 @@
     "type": "git",
     "url": "git+https://github.com/helgesverre/reddit-scrutinizer.git"
   },
-  "homepage": "https://github.com/helgesverre/reddit-scrutinizer",
-  "bugs": {
-    "url": "https://github.com/helgesverre/reddit-scrutinizer/issues"
-  },
-  "keywords": [
-    "reddit",
-    "cli",
-    "ai",
-    "claude",
-    "anthropic",
-    "feedback",
-    "code-review",
-    "simulation",
-    "bun"
-  ],
   "bin": {
     "reddit-scrutinizer": "bin/cli.mjs"
   },
@@ -35,29 +34,38 @@
     "bin/**/*",
     "src/**/*"
   ],
+  "type": "module",
   "scripts": {
+    "check": "bun run format:check && bun run lint && bun run typecheck && bun run test:coverage",
     "dev": "bun run src/index.ts",
-    "test": "bun test",
-    "typecheck": "tsc --noEmit",
-    "prepublishOnly": "tsc --noEmit"
-  },
-  "engines": {
-    "bun": ">=1.0.0"
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
+    "lint": "oxlint --deny-warnings",
+    "lint:fix": "oxlint --fix --deny-warnings",
+    "prepublishOnly": "bun run check",
+    "test": "bun test --isolate",
+    "test:coverage": "bun test --isolate --coverage --coverage-reporter=text",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.74.0",
-    "bun": "^1.0.0",
+    "@ai-sdk/anthropic": "^4.0.16",
+    "ai": "^7.0.31",
+    "bun": "^1.3.14",
     "chalk": "^5.6.2",
     "commander": "^13.1.0",
-    "get-port": "^7.1.0",
-    "ignore": "^7.0.5",
+    "get-port": "^7.2.0",
+    "ignore": "^7.0.6",
     "marked": "^15.0.12",
     "open": "^11.0.0",
-    "zod": "^3.25.76",
-    "zod-to-json-schema": "^3.25.1"
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@types/bun": "latest",
+    "oxfmt": "0.59.0",
+    "oxlint": "1.74.0",
     "typescript": "^5.9.3"
+  },
+  "engines": {
+    "bun": ">=1.0.0"
   }
 }
