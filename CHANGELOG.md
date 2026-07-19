@@ -1,5 +1,54 @@
 # Changelog
 
+## [Unreleased]
+
+## [0.6.0] - 2026-07-19
+
+### Added
+
+- `--verbose` progress details for scan results, selected code reads, stage timings, comment batches, output files, and UI startup
+- `completions <shell>` generation for Bash, Zsh, Fish, and PowerShell
+- Oxfmt, Oxlint, EditorConfig, isolated tests, coverage reporting, and a single `bun run check` command
+- Real CLI parsing tests, progress reporter tests, batch progress tests, and empty-batch protection
+
+### Changed
+
+- AI plumbing now uses the Vercel AI SDK Anthropic provider and its model capability handling
+- CLI help, examples, numeric validation, and option ordering now match actual behavior
+- Generation writes JSON and exits by default; `--open` explicitly starts the UI server and browser
+- TypeScript now typechecks source and tests with stricter Bun-oriented settings
+- Tool versions in generated output come from `package.json`
+
+### Fixed
+
+- New Anthropic models no longer fail when they reject the `temperature` parameter
+- Comment generation now trims oversized AI batches and fails clearly for empty or undersized batches
+
+## [0.5.0] - 2026-02-20
+
+### Added
+
+- Twitter, Bluesky, and QDB browser themes
+- Project website with an interactive command builder, favicon, and social preview image
+- `--api-key` CLI option as an alternative to `ANTHROPIC_API_KEY`
+- `AGENTS.md` architecture and development guide
+
+### Changed
+
+- Large comment requests are split into batches with automatically scaled output-token limits
+- Website command builder includes all available themes
+
+### Fixed
+
+- Large comment generations no longer fail when a single response reaches the output-token limit
+
+## [0.4.1] - 2026-02-16
+
+### Added
+
+- GitHub Actions workflow that creates a GitHub release when a version tag is pushed
+- Eight-stage pipeline documentation and Mermaid flowchart in the README
+
 ## [0.4.0] - 2026-02-16
 
 ### Added
