@@ -155,7 +155,7 @@ The `serve` command accepts `--port`, `--open`, `--theme`, and `--verbose`.
 
 ## Export command
 
-Generate a self-contained HTML file from an existing scrutiny JSON file. The exported page embeds its CSS, JavaScript, and data in one document and makes no network requests, so you can open or share it offline. The `export` command never starts a server or opens a browser.
+Generate a self-contained HTML file from an existing scrutiny JSON file. The page is server-rendered: the post, comments, and project facts are baked into the markup, so it reads correctly even with JavaScript disabled — JavaScript only adds optional interactions (voting, collapsing). Everything (CSS, content, and the small enhancement script) lives in one document and makes no network requests, so you can open or share it offline. The `export` command never starts a server or opens a browser.
 
 ```bash
 reddit-scrutinizer export ./reddit-scrutiny.json

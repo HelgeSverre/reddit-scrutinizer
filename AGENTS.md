@@ -4,7 +4,7 @@
 
 reddit-scrutinizer is a CLI tool that simulates Reddit reactions to a codebase. It scans a project, then uses Claude (Anthropic API) to generate a realistic Reddit post, critique themes, and threaded comments as if the project were posted to a specific subreddit.
 
-Runtime: Bun. Language: TypeScript (strict). Package manager: bun. Formatter: Oxfmt. Linter: Oxlint. Test runner: `bun test --isolate`.
+Runtime: Bun. Language: TypeScript (strict). UI: server-rendered Preact (`preact-render-to-string`, `.tsx`). Package manager: bun. Formatter: Oxfmt. Linter: Oxlint. Test runner: `bun test --isolate`.
 
 ## Commands
 
@@ -48,10 +48,12 @@ src/
     scores.ts          Seeded RNG for comment scores and timestamps
     markdown.ts        Markdown to HTML via marked
     write.ts           Assembles and writes final JSON output
-    export-html.ts     Self-contained HTML export (parse, theme resolve, render, atomic write)
+    export-html.ts     Self-contained HTML export (parse, theme resolve, atomic write; delegates rendering to ui/render)
   ui/
-    server.ts          Bun.serve for the browser UI
-    templates/         HTML templates for all six UI themes (embedded export data or /api/data; project title)
+    render.tsx         renderThemeDocument(theme, doc): server-renders a theme to a full HTML document (shared by serve + export)
+    shared.ts          Pure, DOM-free helpers (comment tree, time/score formatting, escaping-free — JSX escapes)
+    server.ts          Bun.serve that parses the JSON and serves the server-rendered HTML
+    themes/            One self-contained Preact (.tsx) component per UI theme
 bin/
   cli.mjs            Node shim that finds bun and runs src/index.ts
 test/
@@ -61,6 +63,8 @@ test/
   ai/                Unit tests for AI modules (incl. zod-schema.test.ts: Zod-through-AI-SDK boundary)
   scan/              Unit tests for scan modules
   output/            Unit tests for output modules (incl. export-html.test.ts)
+  ui/                render.test.ts: server-rendered themes (content baked without JS, escaping, determinism)
+  server.test.ts     Serves the server-rendered HTML per theme
 ```
 
 ### Pipeline (8 steps, 5 AI calls)
@@ -87,9 +91,11 @@ test/
 
 All AI calls go through `generateJSON()` in `ai/client.ts`. It uses Vercel AI SDK `generateText()` with `Output.object()` and the Anthropic provider, validating every response against a Zod schema. The provider handles model capabilities, structured-output selection, retries, and unsupported-setting warnings such as `temperature` on Claude Sonnet 5.
 
-### HTML export
+### HTML rendering and export
 
-`output/export-html.ts` parses and validates scrutiny JSON with `ScrutinyOutputSchema`, resolves themes and output paths, renders a template with embedded script-safe JSON and an HTML-escaped project title, and writes each file atomically (temp file + rename). It is reused by the main command's `--export-html` flag and the `export <file>` subcommand. The `export` subcommand never starts or opens a server. Completions are generated from the Commander tree, so `export`, `--export-html`, and `--export-theme` appear automatically.
+The six themes are **server-rendered** with Preact (`preact-render-to-string`). Each `ui/themes/<theme>.tsx` is a self-contained component (CSS as a string, sub-pieces as local functions, a small enhancement `<script>` string) exporting `Page({ doc })`. `ui/render.tsx` maps theme → component and `renderThemeDocument(theme, doc)` returns a full `<!doctype html>` document with all content baked into the markup — so served and exported pages read correctly with JavaScript disabled. JSX auto-escapes text/attributes; `body_html` (the rendered markdown) is injected raw via `dangerouslySetInnerHTML` (trusted-input model). Rendering is deterministic (relative time is computed against `generated_at`; no `Math.random`/local timezone), so `serve` and `export` produce identical, reproducible output.
+
+`output/export-html.ts` parses/validates scrutiny JSON with `ScrutinyOutputSchema`, resolves themes and output paths, delegates rendering to `renderThemeDocument`, and writes each file atomically (temp file + rename). It backs the main command's `--export-html` flag and the `export <file>` subcommand (which never starts or opens a server). `ui/server.ts` parses the JSON and serves the same server-rendered HTML. Completions are generated from the Commander tree, so `export`, `--export-html`, and `--export-theme` appear automatically.
 
 ### Progress reporting
 

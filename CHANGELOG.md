@@ -6,7 +6,7 @@
 
 ### Added
 
-- Self-contained HTML export: `--export-html` on the main command and a standalone `export <file>` subcommand, with repeatable themes and offline (no-network) output
+- Self-contained HTML export: `--export-html` on the main command and a standalone `export <file>` subcommand, with repeatable themes. Pages are server-rendered, so exported and served content is readable with JavaScript disabled (JS only adds optional voting/collapse); offline, no network requests
 - Project-specific browser titles (`<Project Name> — reddit-scrutinizer`) for every served and exported theme
 - `--verbose` progress details for scan results, selected code reads, stage timings, comment batches, output files, and UI startup
 - `completions <shell>` generation for Bash, Zsh, Fish, and PowerShell
@@ -20,7 +20,8 @@
 - Generation writes JSON and exits by default; `--open` explicitly starts the UI server and browser
 - TypeScript now typechecks source and tests with stricter Bun-oriented settings
 - Tool versions in generated output come from `package.json`
-- Upgraded commander (15), marked (18), zod (4), and typescript (7)
+- The browser UI is now server-rendered with Preact instead of a client-side SPA; `serve` and `export` share one deterministic render path (no more `/api/data` route or embedded-data client bootstrap)
+- Upgraded commander (15), marked (18), zod (4), and typescript (7); added preact + preact-render-to-string
 - CI uses current action majors (`actions/checkout@v7`, `actions/setup-node@v7`, `oven-sh/setup-bun@v2`) with read-only permissions and a Node 24/26 package-smoke matrix
 
 ### Fixed
