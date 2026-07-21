@@ -116,6 +116,35 @@ describe("CLI option parsing", () => {
     expect(parseMain(["./project", "--open"]).options.open).toBe(true);
   });
 
+  test("defaults export options off", () => {
+    const { options } = parseMain(["./project"]);
+    expect(options.exportHtml).toBe(false);
+    expect(options.exportTheme).toEqual([]);
+  });
+
+  test("collects repeatable --export-theme values", () => {
+    const { options } = parseMain([
+      "./project",
+      "--export-html",
+      "--export-theme",
+      "reddit",
+      "--export-theme",
+      "hackernews",
+    ]);
+    expect(options.exportHtml).toBe(true);
+    expect(options.exportTheme).toEqual(["reddit", "hackernews"]);
+  });
+
+  test("rejects an unknown --export-theme", () => {
+    expect(() => parseMain(["./project", "--export-html", "--export-theme", "myspace"])).toThrow();
+  });
+
+  test("rejects --export-theme without --export-html", () => {
+    expect(() => parseMain(["./project", "--export-theme", "reddit"])).toThrow(
+      "--export-theme requires --export-html",
+    );
+  });
+
   test("rejects the removed --no-ui option", () => {
     expect(() => parseMain(["./project", "--no-ui"])).toThrow("unknown option '--no-ui'");
   });

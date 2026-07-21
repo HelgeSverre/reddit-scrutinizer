@@ -25,6 +25,8 @@ export interface MainOptions {
   batchSize: number;
   apiKey?: string;
   verbose: boolean;
+  exportHtml: boolean;
+  exportTheme: string[];
 }
 
 export interface ServeOptions {
@@ -71,6 +73,21 @@ function parseTemperature(value: string): number {
     throw new InvalidArgumentError("must be a number between 0 and 1");
   }
   return parsed;
+}
+
+function collectTheme(value: string, previous: string[]): string[] {
+  if (!(THEMES as readonly string[]).includes(value)) {
+    throw new InvalidArgumentError(`Allowed choices are ${THEMES.join(", ")}.`);
+  }
+  return previous.concat(value);
+}
+
+export function assertMainExportOptions(
+  options: Pick<MainOptions, "exportHtml" | "exportTheme">,
+): void {
+  if (options.exportTheme.length > 0 && !options.exportHtml) {
+    throw new Error("--export-theme requires --export-html");
+  }
 }
 
 async function serve(file: string, options: ServeOptions): Promise<void> {
@@ -133,10 +150,20 @@ export function createProgram(handlers: ProgramHandlers = {}): Command {
     )
     .option("--batch-size <n>", "comments requested per AI batch", parsePositiveInteger, 50)
     .option("--api-key <key>", "Anthropic API key (prefer ANTHROPIC_API_KEY)")
-    .option("--verbose", "show timings, scan details, selected reads, and batch progress", false);
+    .option("--verbose", "show timings, scan details, selected reads, and batch progress", false)
+    .option("--export-html", "also write a self-contained HTML file next to the JSON", false)
+    .addOption(
+      new Option("--export-theme <name>", "HTML export theme; repeatable (requires --export-html)")
+        .choices(THEMES)
+        .argParser(collectTheme)
+        .default([]),
+    );
 
   if (handlers.run) {
-    program.action((path: string, options: MainOptions) => handlers.run!(path, options));
+    program.action((path: string, options: MainOptions) => {
+      assertMainExportOptions(options);
+      return handlers.run!(path, options);
+    });
   }
 
   const serveCommand = program

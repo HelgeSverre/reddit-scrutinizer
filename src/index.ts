@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 
-import { program, type MainOptions } from "./cli";
+import { program, type MainOptions, assertMainExportOptions } from "./cli";
 import chalk from "chalk";
 import { resolve } from "node:path";
 import { stat } from "node:fs/promises";
@@ -184,6 +184,14 @@ async function run(path: string, options: MainOptions) {
   const outputStats = await stat(outPath);
   outputStage.detail(`Output: ${outPath} (${outputStats.size.toLocaleString()} bytes)`);
 
+  if (options.exportHtml) {
+    const { exportForMainRun } = await import("./output/export-html");
+    const htmlPaths = await exportForMainRun(output, outPath, options);
+    for (const htmlPath of htmlPaths) {
+      progress.success(`HTML written to ${htmlPath}`);
+    }
+  }
+
   let actualPort: number | undefined;
   if (options.open) {
     const { startServer } = await import("./ui/server");
@@ -203,6 +211,7 @@ async function run(path: string, options: MainOptions) {
 
 // Wire up the default command action
 program.action(async (path: string, options: MainOptions) => {
+  assertMainExportOptions(options);
   await run(path, options);
 });
 
