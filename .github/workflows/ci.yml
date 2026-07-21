@@ -6,11 +6,45 @@ on:
   pull_request:
     branches: ["**"]
 
+permissions:
+  contents: read
+
 jobs:
-  ci:
+  quality:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: oven-sh/setup-bun@v2
       - run: bun install --frozen-lockfile
       - run: bun run check
+
+  package-smoke:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [24, 26] # 24 LTS, 26 Current (forward compatibility, not LTS)
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node }}
+      - run: bun install --frozen-lockfile
+      - name: Pack the npm artifact
+        run: npm pack --pack-destination "$RUNNER_TEMP"
+      - name: Install and smoke-test the packed CLI
+        run: |
+          set -euo pipefail
+          tarball="$(ls "$RUNNER_TEMP"/reddit-scrutinizer-*.tgz)"
+          workdir="$RUNNER_TEMP/smoke"
+          mkdir -p "$workdir"
+          cd "$workdir"
+          npm init -y >/dev/null
+          npm install "$tarball"
+          bin="$workdir/node_modules/.bin/reddit-scrutinizer"
+          "$bin" --version
+          "$bin" --help
+          "$bin" completions bash | head -n 1
+          "$bin" export "$GITHUB_WORKSPACE/test/fixtures/sample-scrutiny.json" -o "$workdir/out.html"
+          test -f "$workdir/out.html"
+          grep -q "test-project — reddit-scrutinizer" "$workdir/out.html"
