@@ -6,6 +6,8 @@ import { TOOL_VERSION } from "./version";
 
 export const THEMES = ["reddit", "hackernews", "producthunt", "twitter", "bluesky", "qdb"] as const;
 
+export type Theme = (typeof THEMES)[number];
+
 export interface MainOptions {
   subreddit: string;
   comments: number;
