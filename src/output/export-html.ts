@@ -1,9 +1,8 @@
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { basename, dirname, extname, join, resolve } from "node:path";
 import { THEMES, type Theme } from "../cli";
+import { renderThemeDocument } from "../ui/render";
 import { ScrutinyOutputSchema, type ScrutinyOutput } from "./schema";
-
-const TEMPLATES_DIR = join(import.meta.dir, "..", "ui", "templates");
 
 export interface ExportOptions {
   theme: string[];
@@ -69,26 +68,9 @@ export function deriveOutputPaths(
   return themes.map((theme) => ({ theme, path: join(dir, `${stem}-${theme}.html`) }));
 }
 
-export function escapeTitle(name: string): string {
-  return name.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
-}
-
-export function embedScriptSafeJson(json: string): string {
-  return json.replaceAll("<", "\\u003c").replaceAll(" ", "\\u2028").replaceAll(" ", "\\u2029");
-}
-
-export async function renderExportDocument(theme: Theme, doc: ScrutinyOutput): Promise<string> {
-  const template = await readFile(join(TEMPLATES_DIR, `${theme}.html`), "utf-8");
-  if (!template.includes("<title>reddit-scrutinizer</title>")) {
-    throw new Error(`template ${theme} is missing the expected title anchor`);
-  }
-  const title = `${escapeTitle(doc.project.name)} — reddit-scrutinizer`;
-  const dataScript = `<script id="scrutiny-data" type="application/json">${embedScriptSafeJson(
-    JSON.stringify(doc),
-  )}</script>\n  </head>`;
-  return template
-    .replace("<title>reddit-scrutinizer</title>", `<title>${title}</title>`)
-    .replace("</head>", dataScript);
+/** Server-render a theme into a full, self-contained HTML document (content baked in). */
+export function renderExportDocument(theme: Theme, doc: ScrutinyOutput): string {
+  return renderThemeDocument(theme, doc);
 }
 
 async function writeHtmlAtomic(path: string, contents: string): Promise<void> {
@@ -104,12 +86,11 @@ export async function exportFromDocument(
   themes: Theme[],
 ): Promise<string[]> {
   const targets = deriveOutputPaths(baseHtmlPath, themes);
-  const rendered = await Promise.all(
-    targets.map(async (target) => ({
-      path: target.path,
-      html: await renderExportDocument(target.theme, doc),
-    })),
-  );
+  // Render every document before writing any, so a render error leaves outputs untouched.
+  const rendered = targets.map((target) => ({
+    path: target.path,
+    html: renderExportDocument(target.theme, doc),
+  }));
   const written: string[] = [];
   for (const document of rendered) {
     await writeHtmlAtomic(document.path, document.html);

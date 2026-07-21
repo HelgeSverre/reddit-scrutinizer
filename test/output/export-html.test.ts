@@ -5,9 +5,7 @@ import { join } from "node:path";
 import { THEMES } from "../../src/cli";
 import {
   deriveOutputPaths,
-  embedScriptSafeJson,
   ensureHtmlExtension,
-  escapeTitle,
   exportForMainRun,
   exportFromDocument,
   htmlBaseFromJson,
@@ -20,6 +18,7 @@ import {
 const FIXTURE_JSON = join(import.meta.dir, "../fixtures/sample-scrutiny.json");
 const fixtureText = await readFile(FIXTURE_JSON, "utf-8");
 const fixtureDoc = parseScrutiny(fixtureText);
+const firstAuthor = fixtureDoc.simulation.comments[0]!.author;
 
 const tmpDirs: string[] = [];
 async function tmp(): Promise<string> {
@@ -32,13 +31,6 @@ afterEach(async () => {
     await rm(tmpDirs.pop()!, { recursive: true, force: true });
   }
 });
-
-function embeddedJsonOf(html: string): string {
-  const marker = 'id="scrutiny-data" type="application/json">';
-  const start = html.indexOf(marker) + marker.length;
-  const end = html.indexOf("</script>", start);
-  return html.slice(start, end);
-}
 
 describe("theme and path resolution", () => {
   test("dedupes themes preserving first occurrence", () => {
@@ -89,41 +81,26 @@ describe("parsing", () => {
   });
 });
 
-describe("script-safe embedding and titles", () => {
-  test("escapes < U+2028 U+2029 and round-trips through JSON.parse", () => {
-    const raw = JSON.stringify({ a: "</script><b>  " });
-    const embedded = embedScriptSafeJson(raw);
-    expect(embedded).not.toContain("</script>");
-    expect(embedded).toContain("\\u003c");
-    expect(embedded).toContain("\\u2028");
-    expect(embedded).toContain("\\u2029");
-    expect(JSON.parse(embedded)).toEqual({ a: "</script><b>  " });
-  });
-
-  test("HTML-escapes project names for the title", () => {
-    expect(escapeTitle('A <b> & "q"')).toBe('A &lt;b&gt; &amp; "q"');
-  });
-});
-
-describe("rendering", () => {
-  test.each([...THEMES])("renders %s with the project title and embedded data", async (theme) => {
-    const html = await renderExportDocument(theme, fixtureDoc);
-    expect(html).toContain("<title>test-project — reddit-scrutinizer</title>");
-    expect(html).toContain('<script id="scrutiny-data" type="application/json">');
-    expect(html).toContain('document.getElementById("scrutiny-data")');
-    expect(JSON.parse(embeddedJsonOf(html)).project.name).toBe("test-project");
+describe("server-rendered documents", () => {
+  test.each([...THEMES])("%s bakes content into the markup (readable with JS off)", (theme) => {
+    const html = renderExportDocument(theme, fixtureDoc);
+    expect(html.startsWith("<!doctype html>")).toBe(true);
     expect(html).toContain("</html>");
+    expect(html).toContain("<title>test-project — reddit-scrutinizer</title>");
+    expect(html).toContain(firstAuthor); // comment content is present in the static markup
+    expect(html).not.toContain("Loading");
   });
 
-  test("neutralizes </script> and escapes the title from project content", async () => {
+  test("escapes author-controlled text and bakes body_html raw", () => {
     const doc = structuredClone(fixtureDoc);
     doc.project.name = "Owned</script><script>alert(1)</script>";
     doc.simulation.post.body_html = "<script>alert(2)</script> tail";
-    const html = await renderExportDocument("reddit", doc);
-    const embedded = embeddedJsonOf(html);
-    expect(embedded).not.toContain("</script>");
-    expect(html).toContain("&lt;/script&gt;");
-    expect(JSON.parse(embedded).simulation.post.body_html).toBe("<script>alert(2)</script> tail");
+    const html = renderExportDocument("reddit", doc);
+    // project.name is escaped in the <title> — it cannot inject a real tag
+    expect(html).toContain("&lt;/script>");
+    expect(html).not.toContain("<title>Owned</script>");
+    // body_html is the rendered markdown and is baked raw (trusted-input model)
+    expect(html).toContain("<script>alert(2)</script> tail");
   });
 });
 
@@ -140,7 +117,7 @@ describe("writing", () => {
     const dir = await tmp();
     const written = await exportFromDocument(fixtureDoc, join(dir, "s.html"), ["reddit", "qdb"]);
     expect(written).toEqual([join(dir, "s-reddit.html"), join(dir, "s-qdb.html")]);
-    expect(await readFile(join(dir, "s-qdb.html"), "utf-8")).toContain("scrutiny-data");
+    expect(await readFile(join(dir, "s-qdb.html"), "utf-8")).toContain(firstAuthor);
   });
 
   test("exportForMainRun uses --theme when no export themes and replaces it otherwise", async () => {

@@ -1,10 +1,17 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>reddit-scrutinizer</title>
-    <style>
+import type { VNode } from "preact";
+import {
+  buildCommentTree,
+  type CommentNode,
+  deterministicOnline,
+  fakeMembers,
+  fmtDateUTC,
+  formatScoreK,
+  refNowSeconds,
+  type ScrutinyOutput,
+  timeAgoShort,
+} from "../shared";
+
+const CSS = `
       *,
       *::before,
       *::after {
@@ -508,40 +515,6 @@
         text-align: center;
       }
 
-      /* Loading */
-      .loading {
-        text-align: center;
-        padding: 60px 20px;
-        color: var(--text-muted);
-        font-size: 16px;
-      }
-      .loading-spinner {
-        width: 32px;
-        height: 32px;
-        border: 3px solid var(--border);
-        border-top-color: var(--accent);
-        border-radius: 50%;
-        animation: spin 0.8s linear infinite;
-        margin: 0 auto 16px;
-      }
-      @keyframes spin {
-        to {
-          transform: rotate(360deg);
-        }
-      }
-
-      /* Error */
-      .error {
-        max-width: 740px;
-        margin: 60px auto;
-        padding: 20px;
-        background: var(--surface);
-        border: 1px solid #ff4444;
-        border-radius: 4px;
-        text-align: center;
-        color: #ff6666;
-      }
-
       @media (max-width: 600px) {
         .main {
           padding: 0 8px;
@@ -553,280 +526,244 @@
           display: none;
         }
       }
-    </style>
-  </head>
-  <body>
-    <nav class="topnav">
-      <div class="topnav-logo">
-        <svg viewBox="0 0 20 20" fill="var(--accent)">
-          <circle cx="10" cy="10" r="10" />
-          <circle cx="6.5" cy="9" r="1.5" fill="#fff" />
-          <circle cx="13.5" cy="9" r="1.5" fill="#fff" />
-          <path d="M6 13 Q10 16 14 13" stroke="#fff" stroke-width="1.2" fill="none" />
-          <ellipse cx="3" cy="8" rx="2" ry="2.5" fill="var(--accent)" />
-          <ellipse cx="17" cy="8" rx="2" ry="2.5" fill="var(--accent)" />
-          <line x1="14" y1="2" x2="17" y2="2" stroke="var(--accent)" stroke-width="2.5" />
-          <line x1="17" y1="2" x2="17" y2="5" stroke="var(--accent)" stroke-width="2.5" />
-          <circle cx="17" cy="2" r="1.5" fill="var(--accent)" />
-        </svg>
-        <span>reddit</span>
-      </div>
-      <div class="topnav-search">Search Reddit</div>
-      <div class="topnav-badge">SIMULATED</div>
-    </nav>
+`;
 
-    <div id="app">
-      <div class="loading">
-        <div class="loading-spinner"></div>
-        Loading simulation...
-      </div>
-    </div>
-
-    <script>
-      const UP_SVG = `<svg viewBox="0 0 20 20"><path d="M10 3 L3 11 H7 V17 H13 V11 H17 Z" fill="currentColor"/></svg>`;
-      const DOWN_SVG = `<svg viewBox="0 0 20 20"><path d="M10 17 L3 9 H7 V3 H13 V9 H17 Z" fill="currentColor"/></svg>`;
-      const COMMENT_SVG = `<svg viewBox="0 0 20 20"><path d="M2 4 H18 V14 H8 L4 18 V14 H2 Z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>`;
-
-      let DATA = null;
-
-      async function loadScrutinyData() {
-        const embedded = document.getElementById("scrutiny-data");
-        if (embedded) return JSON.parse(embedded.textContent);
-        const res = await fetch("/api/data");
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.json();
+const ENHANCE = `
+(function () {
+  function fmt(n) { return n >= 1000 ? (n / 1000).toFixed(1) + "k" : String(n); }
+  document.addEventListener("click", function (e) {
+    var el = e.target;
+    var line = el.closest(".comment-thread-line");
+    if (line) { line.closest(".comment").classList.toggle("collapsed"); return; }
+    var join = el.closest(".sub-join");
+    if (join) { join.textContent = join.textContent === "Join" ? "Joined" : "Join"; return; }
+    var btn = el.closest(".vote-btn");
+    if (!btn) return;
+    var container = btn.closest(".post-votes") || btn.closest(".comment-actions");
+    if (!container) return;
+    var scoreEl = container.querySelector(".post-score, .c-score");
+    if (!scoreEl) return;
+    var base = parseInt(scoreEl.dataset.base, 10) || 0;
+    var buttons = container.querySelectorAll(".vote-btn");
+    var upBtn = buttons[0], downBtn = buttons[1];
+    if (btn.dataset.vote === "up") {
+      if (upBtn.classList.contains("upvoted")) {
+        upBtn.classList.remove("upvoted"); scoreEl.classList.remove("upvoted"); scoreEl.textContent = fmt(base);
+      } else {
+        upBtn.classList.add("upvoted"); downBtn.classList.remove("downvoted");
+        scoreEl.classList.add("upvoted"); scoreEl.classList.remove("downvoted"); scoreEl.textContent = fmt(base + 1);
       }
-
-      async function init() {
-        try {
-          DATA = await loadScrutinyData();
-          document.title = `${DATA.project.name} — reddit-scrutinizer`;
-          render();
-        } catch (e) {
-          document.getElementById("app").innerHTML =
-            `<div class="error"><h3>Failed to load</h3><p>${e.message}</p></div>`;
-        }
+    } else {
+      if (downBtn.classList.contains("downvoted")) {
+        downBtn.classList.remove("downvoted"); scoreEl.classList.remove("downvoted"); scoreEl.textContent = fmt(base);
+      } else {
+        downBtn.classList.add("downvoted"); upBtn.classList.remove("upvoted");
+        scoreEl.classList.add("downvoted"); scoreEl.classList.remove("upvoted"); scoreEl.textContent = fmt(base - 1);
       }
+    }
+  });
+})();
+`;
 
-      function render() {
-        const sim = DATA.simulation;
-        const project = DATA.project;
-        const app = document.getElementById("app");
+function UpArrow() {
+  return (
+    <svg viewBox="0 0 20 20">
+      <path d="M10 3 L3 11 H7 V17 H13 V11 H17 Z" fill="currentColor" />
+    </svg>
+  );
+}
 
-        app.innerHTML = `
-    <div class="sub-header">
-      <div class="sub-header-inner">
-        <div class="sub-icon">${sim.subreddit.name[0].toUpperCase()}</div>
-        <div class="sub-info">
-          <h1>${sim.subreddit.display}</h1>
-          <div class="sub-meta">${fakeMembers(sim.subreddit.name)} members · ${fakeOnline()} online</div>
+function DownArrow() {
+  return (
+    <svg viewBox="0 0 20 20">
+      <path d="M10 17 L3 9 H7 V3 H13 V9 H17 Z" fill="currentColor" />
+    </svg>
+  );
+}
+
+function CommentIcon() {
+  return (
+    <svg viewBox="0 0 20 20">
+      <path
+        d="M2 4 H18 V14 H8 L4 18 V14 H2 Z"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+      />
+    </svg>
+  );
+}
+
+function CommentItem({ node, refNow }: { node: CommentNode; refNow: number }) {
+  const c = node.comment;
+  const classes = ["comment"];
+  if (c.is_deleted) classes.push("deleted");
+  if (c.score < 0) classes.push("negative");
+
+  return (
+    <div class={classes.join(" ")} data-id={c.id}>
+      <div class="comment-thread-line" title="Collapse thread" />
+      <div class="comment-main">
+        <div class="comment-header">
+          <span class={`comment-author${c.is_op ? " is-op" : ""}`}>
+            {c.is_deleted ? "[deleted]" : `u/${c.author}`}
+          </span>
+          {c.is_op && <span class="op-badge">OP</span>}
+          {c.author_flair && !c.is_deleted && <span class="comment-flair">{c.author_flair}</span>}
+          <span>· {timeAgoShort(c.created_utc, refNow)}</span>
+          <span class="collapse-hint">(collapsed)</span>
         </div>
-        <button class="sub-join" onclick="this.textContent=this.textContent==='Join'?'Joined':'Join'">Join</button>
+        <div class="comment-body" dangerouslySetInnerHTML={{ __html: c.body_html }} />
+        <div class="comment-actions">
+          <button class="vote-btn" data-vote="up" title="Upvote">
+            <UpArrow />
+          </button>
+          <span class={`c-score${c.controversiality ? " controversial" : ""}`} data-base={c.score}>
+            {formatScoreK(c.score)}
+          </span>
+          <button class="vote-btn" data-vote="down" title="Downvote">
+            <DownArrow />
+          </button>
+          <button class="action-btn" style="margin-left:8px">
+            Reply
+          </button>
+          <button class="action-btn">Share</button>
+          <button class="action-btn">⋯</button>
+        </div>
+        <div class="comment-children">
+          {node.children.map((child) => (
+            <CommentItem key={child.comment.id} node={child} refNow={refNow} />
+          ))}
+        </div>
       </div>
     </div>
-    <div class="main">
-      ${renderPost(sim.post, sim.comments.length)}
-      <div class="comments-header">
-        <span style="font-size:12px;color:var(--text-muted)">${sim.comments.length} Comments</span>
-        <button class="comments-sort">Sort by: Best ▾</button>
-      </div>
-      <div class="comment-tree">
-        ${renderCommentTree(sim.comments, sim.post.id)}
-      </div>
-    </div>
-    <div class="disclaimer">
-      ⚠️ This is a simulated Reddit thread generated by reddit-scrutinizer using ${DATA.input.model}.
-      No real users were involved. Generated ${new Date(DATA.generated_at).toLocaleDateString()}.
-    </div>
-  `;
-      }
+  );
+}
 
-      function renderPost(post, commentCount) {
-        return `
+function PostCard({
+  post,
+  commentCount,
+  refNow,
+}: {
+  post: ScrutinyOutput["simulation"]["post"];
+  commentCount: number;
+  refNow: number;
+}) {
+  return (
     <div class="post">
       <div class="post-votes">
-        <button class="vote-btn" onclick="postVote(this,1)" title="Upvote">${UP_SVG}</button>
-        <span class="post-score" data-base="${post.score}">${formatScore(post.score)}</span>
-        <button class="vote-btn" onclick="postVote(this,-1)" title="Downvote">${DOWN_SVG}</button>
+        <button class="vote-btn" data-vote="up" title="Upvote">
+          <UpArrow />
+        </button>
+        <span class="post-score" data-base={post.score}>
+          {formatScoreK(post.score)}
+        </span>
+        <button class="vote-btn" data-vote="down" title="Downvote">
+          <DownArrow />
+        </button>
       </div>
       <div class="post-content">
         <div class="post-meta">
-          ${post.post_flair ? `<span class="post-flair">${esc(post.post_flair)}</span>` : ""}
-          Posted by <span class="op-name">u/${esc(post.author)}</span>
-          ${post.author_flair ? `<span class="comment-flair">${esc(post.author_flair)}</span>` : ""}
-          · ${formatTime(post.created_utc)}
+          {post.post_flair && <span class="post-flair">{post.post_flair}</span>}
+          Posted by <span class="op-name">u/{post.author}</span>
+          {post.author_flair && <span class="comment-flair">{post.author_flair}</span>}·{" "}
+          {timeAgoShort(post.created_utc, refNow)}
         </div>
-        <h2 class="post-title">${esc(post.title)}</h2>
-        ${
-          post.awards.length
-            ? `<div class="post-awards">${post.awards
-                .map(
-                  (a) =>
-                    `<span class="award">${a.icon}<span class="award-count">${a.count > 1 ? a.count : ""}</span></span>`,
-                )
-                .join("")}</div>`
-            : ""
-        }
-        <div class="post-body">${post.body_html}</div>
+        <h2 class="post-title">{post.title}</h2>
+        {post.awards.length > 0 && (
+          <div class="post-awards">
+            {post.awards.map((a, i) => (
+              <span class="award" key={i}>
+                <span dangerouslySetInnerHTML={{ __html: a.icon }} />
+                <span class="award-count">{a.count > 1 ? a.count : ""}</span>
+              </span>
+            ))}
+          </div>
+        )}
+        <div class="post-body" dangerouslySetInnerHTML={{ __html: post.body_html }} />
         <div class="post-actions">
-          <button class="action-btn">${COMMENT_SVG} ${commentCount} Comments</button>
+          <button class="action-btn">
+            <CommentIcon /> {commentCount} Comments
+          </button>
           <button class="action-btn">↗ Share</button>
           <button class="action-btn">⚑ Save</button>
           <button class="action-btn">⋯</button>
         </div>
       </div>
     </div>
-  `;
-      }
+  );
+}
 
-      function renderCommentTree(comments, postId) {
-        const byParent = {};
-        for (const c of comments) {
-          const pid = c.parent_id;
-          if (!byParent[pid]) byParent[pid] = [];
-          byParent[pid].push(c);
-        }
-        // Sort children by score descending
-        for (const k in byParent) {
-          byParent[k].sort((a, b) => b.score - a.score);
-        }
+export function Page({ doc }: { doc: ScrutinyOutput }): VNode {
+  const sim = doc.simulation;
+  const refNow = refNowSeconds(doc.generated_at);
+  const tree = buildCommentTree(sim.comments, sim.post.id);
 
-        function renderChildren(parentId) {
-          const kids = byParent[parentId];
-          if (!kids || !kids.length) return "";
-          return kids.map((c) => renderComment(c, byParent)).join("");
-        }
+  return (
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{`${doc.project.name} — reddit-scrutinizer`}</title>
+        <style dangerouslySetInnerHTML={{ __html: CSS }} />
+      </head>
+      <body>
+        <nav class="topnav">
+          <div class="topnav-logo">
+            <svg viewBox="0 0 20 20" fill="var(--accent)">
+              <circle cx="10" cy="10" r="10" />
+              <circle cx="6.5" cy="9" r="1.5" fill="#fff" />
+              <circle cx="13.5" cy="9" r="1.5" fill="#fff" />
+              <path d="M6 13 Q10 16 14 13" stroke="#fff" stroke-width="1.2" fill="none" />
+              <ellipse cx="3" cy="8" rx="2" ry="2.5" fill="var(--accent)" />
+              <ellipse cx="17" cy="8" rx="2" ry="2.5" fill="var(--accent)" />
+              <line x1="14" y1="2" x2="17" y2="2" stroke="var(--accent)" stroke-width="2.5" />
+              <line x1="17" y1="2" x2="17" y2="5" stroke="var(--accent)" stroke-width="2.5" />
+              <circle cx="17" cy="2" r="1.5" fill="var(--accent)" />
+            </svg>
+            <span>reddit</span>
+          </div>
+          <div class="topnav-search">Search Reddit</div>
+          <div class="topnav-badge">SIMULATED</div>
+        </nav>
 
-        return renderChildren(postId);
-      }
-
-      function renderComment(comment, byParent) {
-        const classes = ["comment"];
-        if (comment.is_deleted) classes.push("deleted");
-        if (comment.score < 0) classes.push("negative");
-
-        const children = byParent[comment.id];
-        const hasChildren = children && children.length > 0;
-
-        return `
-    <div class="${classes.join(" ")}" data-id="${comment.id}">
-      <div class="comment-thread-line" onclick="toggleCollapse(this)" title="Collapse thread"></div>
-      <div class="comment-main">
-        <div class="comment-header">
-          <span class="comment-author ${comment.is_op ? "is-op" : ""}">${comment.is_deleted ? "[deleted]" : "u/" + esc(comment.author)}</span>
-          ${comment.is_op ? '<span class="op-badge">OP</span>' : ""}
-          ${comment.author_flair && !comment.is_deleted ? `<span class="comment-flair">${esc(comment.author_flair)}</span>` : ""}
-          <span>· ${formatTime(comment.created_utc)}</span>
-          <span class="collapse-hint">(collapsed)</span>
+        <div id="app">
+          <div class="sub-header">
+            <div class="sub-header-inner">
+              <div class="sub-icon">{sim.subreddit.name[0]?.toUpperCase() ?? "R"}</div>
+              <div class="sub-info">
+                <h1>{sim.subreddit.display}</h1>
+                <div class="sub-meta">
+                  {fakeMembers(sim.subreddit.name)} members ·{" "}
+                  {deterministicOnline(sim.subreddit.name)} online
+                </div>
+              </div>
+              <button class="sub-join">Join</button>
+            </div>
+          </div>
+          <div class="main">
+            <PostCard post={sim.post} commentCount={sim.comments.length} refNow={refNow} />
+            <div class="comments-header">
+              <span style="font-size:12px;color:var(--text-muted)">
+                {sim.comments.length} Comments
+              </span>
+              <button class="comments-sort">Sort by: Best ▾</button>
+            </div>
+            <div class="comment-tree">
+              {tree.map((node) => (
+                <CommentItem key={node.comment.id} node={node} refNow={refNow} />
+              ))}
+            </div>
+          </div>
+          <div class="disclaimer">
+            ⚠️ This is a simulated Reddit thread generated by reddit-scrutinizer using{" "}
+            {doc.input.model}. No real users were involved. Generated {fmtDateUTC(doc.generated_at)}
+            .
+          </div>
         </div>
-        <div class="comment-body">${comment.body_html}</div>
-        <div class="comment-actions">
-          <button class="vote-btn" onclick="commentVote(this,1)" title="Upvote">${UP_SVG}</button>
-          <span class="c-score${comment.controversiality ? " controversial" : ""}" data-base="${comment.score}">${formatScore(comment.score)}</span>
-          <button class="vote-btn" onclick="commentVote(this,-1)" title="Downvote">${DOWN_SVG}</button>
-          <button class="action-btn" style="margin-left:8px">Reply</button>
-          <button class="action-btn">Share</button>
-          <button class="action-btn">⋯</button>
-        </div>
-        <div class="comment-children">
-          ${
-            hasChildren
-              ? children
-                  .sort((a, b) => b.score - a.score)
-                  .map((c) => renderComment(c, byParent))
-                  .join("")
-              : ""
-          }
-        </div>
-      </div>
-    </div>
-  `;
-      }
 
-      function toggleCollapse(el) {
-        el.closest(".comment").classList.toggle("collapsed");
-      }
-
-      function postVote(btn, dir) {
-        const parent = btn.closest(".post-votes");
-        const scoreEl = parent.querySelector(".post-score");
-        doVote(btn, scoreEl, dir, parent);
-      }
-
-      function commentVote(btn, dir) {
-        const actions = btn.closest(".comment-actions");
-        const scoreEl = actions.querySelector(".c-score");
-        doVote(btn, scoreEl, dir, actions);
-      }
-
-      function doVote(btn, scoreEl, dir, container) {
-        const base = parseInt(scoreEl.dataset.base);
-        const upBtn =
-          container.querySelector(".vote-btn:first-of-type") ||
-          container.querySelectorAll(".vote-btn")[0];
-        const downBtn = container.querySelectorAll(".vote-btn")[1];
-
-        if (dir === 1) {
-          if (upBtn.classList.contains("upvoted")) {
-            upBtn.classList.remove("upvoted");
-            scoreEl.classList.remove("upvoted");
-            scoreEl.textContent = formatScore(base);
-          } else {
-            upBtn.classList.add("upvoted");
-            downBtn.classList.remove("downvoted");
-            scoreEl.classList.add("upvoted");
-            scoreEl.classList.remove("downvoted");
-            scoreEl.textContent = formatScore(base + 1);
-          }
-        } else {
-          if (downBtn.classList.contains("downvoted")) {
-            downBtn.classList.remove("downvoted");
-            scoreEl.classList.remove("downvoted");
-            scoreEl.textContent = formatScore(base);
-          } else {
-            downBtn.classList.add("downvoted");
-            upBtn.classList.remove("upvoted");
-            scoreEl.classList.add("downvoted");
-            scoreEl.classList.remove("upvoted");
-            scoreEl.textContent = formatScore(base - 1);
-          }
-        }
-      }
-
-      function formatScore(n) {
-        if (n >= 10000) return (n / 1000).toFixed(1) + "k";
-        if (n >= 1000) return (n / 1000).toFixed(1) + "k";
-        return String(n);
-      }
-
-      function formatTime(utc) {
-        const now = Date.now() / 1000;
-        // Use time relative to the post time if data is simulated
-        const diff = Math.max(0, now - utc);
-        if (diff < 60) return "just now";
-        if (diff < 3600) return Math.floor(diff / 60) + "m";
-        if (diff < 86400) return Math.floor(diff / 3600) + "h";
-        if (diff < 604800) return Math.floor(diff / 86400) + "d";
-        return Math.floor(diff / 604800) + "w";
-      }
-
-      function fakeMembers(sub) {
-        const hash = sub.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
-        const n = 50000 + ((hash * 7919) % 450000);
-        return n.toLocaleString();
-      }
-
-      function fakeOnline() {
-        return (200 + Math.floor(Math.random() * 800)).toLocaleString();
-      }
-
-      function esc(s) {
-        const d = document.createElement("div");
-        d.textContent = s;
-        return d.innerHTML;
-      }
-
-      init();
-    </script>
-  </body>
-</html>
+        <script dangerouslySetInnerHTML={{ __html: ENHANCE }} />
+      </body>
+    </html>
+  );
+}

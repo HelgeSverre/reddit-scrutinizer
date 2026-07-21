@@ -1,10 +1,17 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>reddit-scrutinizer</title>
-    <style>
+import type { VNode } from "preact";
+import {
+  buildCommentTree,
+  colorForUser,
+  type CommentNode,
+  fmtDateUTC,
+  formatCount,
+  initials,
+  refNowSeconds,
+  type ScrutinyOutput,
+  timeAgoShort,
+} from "../shared";
+
+const CSS = `
       *,
       *::before,
       *::after {
@@ -519,303 +526,313 @@
         border-bottom: 1px solid var(--border);
       }
 
-      /* Loading */
-      .loading {
-        text-align: center;
-        padding: 60px 20px;
-        color: var(--text-muted);
-        font-size: 15px;
-      }
-      .loading-spinner {
-        width: 28px;
-        height: 28px;
-        border: 3px solid var(--border);
-        border-top-color: var(--accent);
-        border-radius: 50%;
-        animation: spin 0.8s linear infinite;
-        margin: 0 auto 16px;
-      }
-      @keyframes spin {
-        to {
-          transform: rotate(360deg);
-        }
-      }
-
-      .error {
-        text-align: center;
-        padding: 60px 20px;
-        color: #e74c3c;
-      }
-      .error h3 {
-        margin-bottom: 8px;
-      }
-
       @media (max-width: 600px) {
         .feed {
           border-left: none;
           border-right: none;
         }
       }
-    </style>
-  </head>
-  <body>
-    <nav class="topnav">
-      <div class="topnav-logo">
-        <svg viewBox="0 0 600 530" fill="var(--accent)">
-          <path
-            d="M135.72 44.03C202.216 93.951 273.74 195.17 300 249.49c26.262-54.316 97.782-155.54 164.28-205.46C512.26 8.009 590-19.862 590 68.825c0 17.712-10.155 148.79-16.111 170.07-20.703 73.984-96.144 92.854-163.25 81.433 117.3 19.964 147.14 86.092 82.697 152.22-122.39 125.59-175.91-31.511-189.63-71.766-2.514-7.38-3.69-10.832-3.708-7.896-.017-2.936-1.193.516-3.707 7.896-13.714 40.255-67.233 197.36-189.63 71.766-64.444-66.128-34.605-132.256 82.697-152.22-67.108 11.421-142.549-7.449-163.25-81.433C20.15 217.613 10 86.536 10 68.824c0-88.687 77.742-60.816 125.72-24.795z"
-          />
-        </svg>
-        <span>Bluesky</span>
-      </div>
-      <div class="topnav-badge">SIMULATED</div>
-    </nav>
 
-    <div id="app">
-      <div class="loading">
-        <div class="loading-spinner"></div>
-        Loading...
+      /* Heart fill toggle (JS toggles .liked; no JS-injected SVG) */
+      .post-action.like .heart-filled,
+      .c-action.like .heart-filled {
+        display: none;
+      }
+      .post-action.like.liked .heart-outline,
+      .c-action.like.liked .heart-outline {
+        display: none;
+      }
+      .post-action.like.liked .heart-filled,
+      .c-action.like.liked .heart-filled {
+        display: inline;
+      }
+`;
+
+const ENHANCE = `
+(function () {
+  function fmt(n) {
+    if (n >= 1000000) return (n / 1000000).toFixed(1) + "M";
+    if (n >= 1000) return (n / 1000).toFixed(1) + "K";
+    return String(n);
+  }
+  document.addEventListener("click", function (e) {
+    var el = e.target;
+    var avatar = el.closest(".comment-avatar[data-collapse]");
+    if (avatar) {
+      var comment = avatar.closest(".comment");
+      if (comment) comment.classList.toggle("collapsed");
+      return;
+    }
+    var like = el.closest("[data-like]");
+    if (!like) return;
+    var base = parseInt(like.dataset.base, 10) || 0;
+    var countEl = like.querySelector(".like-count");
+    if (like.classList.contains("liked")) {
+      like.classList.remove("liked");
+      if (countEl) countEl.textContent = fmt(base);
+    } else {
+      like.classList.add("liked");
+      if (countEl) countEl.textContent = fmt(base + 1);
+    }
+  });
+})();
+`;
+
+const AVATAR_COLORS = [
+  "#0085ff",
+  "#6c5ce7",
+  "#00b894",
+  "#e84393",
+  "#fd79a8",
+  "#e17055",
+  "#00cec9",
+  "#a29bfe",
+  "#ffeaa7",
+  "#55a3f5",
+  "#74b9ff",
+  "#ff7675",
+  "#636e72",
+  "#b2bec3",
+  "#2d3436",
+];
+
+function ReplySvg() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.8"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+    </svg>
+  );
+}
+
+function RepostSvg() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.8"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <path d="M17 1l4 4-4 4" />
+      <path d="M3 11V9a4 4 0 0 1 4-4h14" />
+      <path d="M7 23l-4-4 4-4" />
+      <path d="M21 13v2a4 4 0 0 1-4 4H3" />
+    </svg>
+  );
+}
+
+function HeartSvg() {
+  return (
+    <svg
+      class="heart-outline"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.8"
+    >
+      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.501 5.501 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+    </svg>
+  );
+}
+
+function HeartFilledSvg() {
+  return (
+    <svg class="heart-filled" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.501 5.501 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+    </svg>
+  );
+}
+
+function MoreSvg() {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor">
+      <circle cx="5" cy="12" r="1.5" />
+      <circle cx="12" cy="12" r="1.5" />
+      <circle cx="19" cy="12" r="1.5" />
+    </svg>
+  );
+}
+
+function handleFor(name: string): string {
+  return `@${name.toLowerCase().replace(/[^a-z0-9_]/g, "")}.bsky.social`;
+}
+
+function CommentItem({ node, refNow }: { node: CommentNode; refNow: number }): VNode {
+  const c = node.comment;
+  const classes = ["comment"];
+  if (c.is_deleted) classes.push("deleted");
+  const authorDisplay = c.is_deleted ? "[deleted]" : c.author;
+  const color = colorForUser(authorDisplay, AVATAR_COLORS);
+  const handle = handleFor(authorDisplay);
+  const likeBase = Math.max(0, c.score);
+
+  return (
+    <div class={classes.join(" ")} data-id={c.id}>
+      <div class="comment-avatar" style={`background:${color}`} data-collapse="" title="Collapse">
+        {initials(authorDisplay)}
+      </div>
+      <div class="comment-main">
+        <div class="comment-header">
+          <span class={`comment-name${c.is_op ? " is-op" : ""}`}>
+            {c.is_deleted ? "[deleted]" : c.author}
+          </span>
+          {c.is_op && !c.is_deleted && <span class="author-badge">Author</span>}
+          {c.author_flair && !c.is_deleted && <span class="comment-flair">{c.author_flair}</span>}
+          <span class="comment-handle">{handle}</span>
+          <span class="comment-dot">·</span>
+          <span class="comment-time">{timeAgoShort(c.created_utc, refNow)}</span>
+          <span class="collapse-hint">(collapsed)</span>
+        </div>
+        <div class="comment-body" dangerouslySetInnerHTML={{ __html: c.body_html }} />
+        <div class="comment-actions">
+          <button class="c-action reply">
+            <ReplySvg />
+          </button>
+          <button class="c-action repost">
+            <RepostSvg />
+          </button>
+          <button class="c-action like" data-like="" data-base={likeBase}>
+            <HeartSvg />
+            <HeartFilledSvg />
+            <span class="like-count">{formatCount(likeBase)}</span>
+          </button>
+          <button class="c-action more">
+            <MoreSvg />
+          </button>
+        </div>
+        {node.children.length > 0 && (
+          <div class="comment-children">
+            {node.children.map((child) => (
+              <CommentItem key={child.comment.id} node={child} refNow={refNow} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
+  );
+}
 
-    <script>
-      const REPLY_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`;
-      const REPOST_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>`;
-      const HEART_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.501 5.501 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`;
-      const HEART_FILLED_SVG = `<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.501 5.501 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`;
-      const MORE_SVG = `<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>`;
+function PostCard({
+  post,
+  commentCount,
+  refNow,
+}: {
+  post: ScrutinyOutput["simulation"]["post"];
+  commentCount: number;
+  refNow: number;
+}): VNode {
+  const color = colorForUser(post.author, AVATAR_COLORS);
+  const handle = handleFor(post.author);
+  const reposts = Math.floor(post.score * 0.1);
 
-      const AVATAR_COLORS = [
-        "#0085ff",
-        "#6c5ce7",
-        "#00b894",
-        "#e84393",
-        "#fd79a8",
-        "#e17055",
-        "#00cec9",
-        "#a29bfe",
-        "#ffeaa7",
-        "#55a3f5",
-        "#74b9ff",
-        "#ff7675",
-        "#636e72",
-        "#b2bec3",
-        "#2d3436",
-      ];
-
-      let DATA = null;
-
-      async function loadScrutinyData() {
-        const embedded = document.getElementById("scrutiny-data");
-        if (embedded) return JSON.parse(embedded.textContent);
-        const res = await fetch("/api/data");
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.json();
-      }
-
-      function colorForUser(name) {
-        const hash = name.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
-        return AVATAR_COLORS[hash % AVATAR_COLORS.length];
-      }
-
-      function initialsFor(name) {
-        if (!name || name === "[deleted]") return "?";
-        return name.slice(0, 2).toUpperCase();
-      }
-
-      async function init() {
-        try {
-          DATA = await loadScrutinyData();
-          document.title = `${DATA.project.name} — reddit-scrutinizer`;
-          render();
-        } catch (e) {
-          document.getElementById("app").innerHTML =
-            `<div class="error"><h3>Failed to load</h3><p>${e.message}</p></div>`;
-        }
-      }
-
-      function render() {
-        const sim = DATA.simulation;
-        const app = document.getElementById("app");
-
-        app.innerHTML = `
-    <div class="feed">
-      ${renderPost(sim.post, sim.comments.length)}
-      <div class="thread-header">
-        Replies
-        <span class="thread-count">${sim.comments.length}</span>
-      </div>
-      <div class="comment-tree">
-        ${renderCommentTree(sim.comments, sim.post.id)}
-      </div>
-      <div class="disclaimer">
-        This is a simulated Bluesky thread generated by reddit-scrutinizer using ${esc(DATA.input.model)}.
-        No real users were involved. Generated ${new Date(DATA.generated_at).toLocaleDateString()}.
-      </div>
-    </div>
-  `;
-      }
-
-      function renderPost(post, commentCount) {
-        const color = colorForUser(post.author);
-        const handle = "@" + post.author.toLowerCase().replace(/[^a-z0-9_]/g, "") + ".bsky.social";
-        const reposts = Math.floor(post.score * 0.1);
-
-        return `
+  return (
     <div class="post">
       <div class="post-header">
-        <div class="post-avatar" style="background:${color}">${initialsFor(post.author)}</div>
+        <div class="post-avatar" style={`background:${color}`}>
+          {initials(post.author)}
+        </div>
         <div class="post-meta">
           <div class="post-author-row">
-            <span class="post-name">${esc(post.author)}</span>
+            <span class="post-name">{post.author}</span>
             <span class="author-badge">Author</span>
-            ${post.post_flair ? `<span class="post-flair-tag">${esc(post.post_flair)}</span>` : ""}
+            {post.post_flair && <span class="post-flair-tag">{post.post_flair}</span>}
           </div>
           <div>
-            <span class="post-handle">${esc(handle)}</span>
-            <span class="post-dot">·</span>
-            <span class="post-time">${formatTime(post.created_utc)}</span>
+            <span class="post-handle">{handle}</span> <span class="post-dot">·</span>{" "}
+            <span class="post-time">{timeAgoShort(post.created_utc, refNow)}</span>
           </div>
         </div>
       </div>
       <div class="post-body">
-        <span class="post-title-line">${esc(post.title)}</span>
-        ${post.body_html}
+        <span class="post-title-line">{post.title}</span>
+        <div dangerouslySetInnerHTML={{ __html: post.body_html }} />
       </div>
-      ${
-        post.awards && post.awards.length
-          ? `<div class="post-awards">${post.awards
-              .map(
-                (a) =>
-                  `<span class="post-award">${a.icon}${a.count > 1 ? `<span class="post-award-count">${a.count}</span>` : ""}</span>`,
-              )
-              .join("")}</div>`
-          : ""
-      }
+      {post.awards.length > 0 && (
+        <div class="post-awards">
+          {post.awards.map((a, i) => (
+            <span class="post-award" key={i}>
+              <span dangerouslySetInnerHTML={{ __html: a.icon }} />
+              {a.count > 1 && <span class="post-award-count">{a.count}</span>}
+            </span>
+          ))}
+        </div>
+      )}
       <div class="post-actions">
-        <button class="post-action reply">${REPLY_SVG}<span>${formatScore(commentCount)}</span></button>
-        <button class="post-action repost">${REPOST_SVG}<span>${formatScore(reposts)}</span></button>
-        <button class="post-action like" onclick="togglePostLike(this)" data-base="${post.score}">${HEART_SVG}<span class="like-count">${formatScore(post.score)}</span></button>
-        <button class="post-action more">${MORE_SVG}</button>
+        <button class="post-action reply">
+          <ReplySvg />
+          <span>{formatCount(commentCount)}</span>
+        </button>
+        <button class="post-action repost">
+          <RepostSvg />
+          <span>{formatCount(reposts)}</span>
+        </button>
+        <button class="post-action like" data-like="" data-base={post.score}>
+          <HeartSvg />
+          <HeartFilledSvg />
+          <span class="like-count">{formatCount(post.score)}</span>
+        </button>
+        <button class="post-action more">
+          <MoreSvg />
+        </button>
       </div>
     </div>
-  `;
-      }
+  );
+}
 
-      function renderCommentTree(comments, postId) {
-        const byParent = {};
-        for (const c of comments) {
-          if (!byParent[c.parent_id]) byParent[c.parent_id] = [];
-          byParent[c.parent_id].push(c);
-        }
-        for (const k in byParent) {
-          byParent[k].sort((a, b) => b.score - a.score);
-        }
-        function renderChildren(parentId) {
-          const kids = byParent[parentId];
-          if (!kids || !kids.length) return "";
-          return kids.map((c) => renderComment(c, byParent)).join("");
-        }
-        return renderChildren(postId);
-      }
+export function Page({ doc }: { doc: ScrutinyOutput }): VNode {
+  const sim = doc.simulation;
+  const refNow = refNowSeconds(doc.generated_at);
+  const tree = buildCommentTree(sim.comments, sim.post.id);
 
-      function renderComment(comment, byParent) {
-        const classes = ["comment"];
-        if (comment.is_deleted) classes.push("deleted");
-        const children = byParent[comment.id];
-        const hasChildren = children && children.length > 0;
-        const authorDisplay = comment.is_deleted ? "[deleted]" : comment.author;
-        const color = colorForUser(authorDisplay);
-        const handle =
-          "@" + authorDisplay.toLowerCase().replace(/[^a-z0-9_]/g, "") + ".bsky.social";
-        const likeCount = Math.max(0, comment.score);
+  return (
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{`${doc.project.name} — reddit-scrutinizer`}</title>
+        <style dangerouslySetInnerHTML={{ __html: CSS }} />
+      </head>
+      <body>
+        <nav class="topnav">
+          <div class="topnav-logo">
+            <svg viewBox="0 0 600 530" fill="var(--accent)">
+              <path d="M135.72 44.03C202.216 93.951 273.74 195.17 300 249.49c26.262-54.316 97.782-155.54 164.28-205.46C512.26 8.009 590-19.862 590 68.825c0 17.712-10.155 148.79-16.111 170.07-20.703 73.984-96.144 92.854-163.25 81.433 117.3 19.964 147.14 86.092 82.697 152.22-122.39 125.59-175.91-31.511-189.63-71.766-2.514-7.38-3.69-10.832-3.708-7.896-.017-2.936-1.193.516-3.707 7.896-13.714 40.255-67.233 197.36-189.63 71.766-64.444-66.128-34.605-132.256 82.697-152.22-67.108 11.421-142.549-7.449-163.25-81.433C20.15 217.613 10 86.536 10 68.824c0-88.687 77.742-60.816 125.72-24.795z" />
+            </svg>
+            <span>Bluesky</span>
+          </div>
+          <div class="topnav-badge">SIMULATED</div>
+        </nav>
 
-        return `
-    <div class="${classes.join(" ")}" data-id="${comment.id}">
-      <div class="comment-avatar" style="background:${color}" onclick="toggleCollapse(this)" title="Collapse">${initialsFor(authorDisplay)}</div>
-      <div class="comment-main">
-        <div class="comment-header">
-          <span class="comment-name ${comment.is_op ? "is-op" : ""}">${comment.is_deleted ? "[deleted]" : esc(comment.author)}</span>
-          ${comment.is_op && !comment.is_deleted ? '<span class="author-badge">Author</span>' : ""}
-          ${comment.author_flair && !comment.is_deleted ? `<span class="comment-flair">${esc(comment.author_flair)}</span>` : ""}
-          <span class="comment-handle">${esc(handle)}</span>
-          <span class="comment-dot">·</span>
-          <span class="comment-time">${formatTime(comment.created_utc)}</span>
-          <span class="collapse-hint">(collapsed)</span>
+        <div id="app">
+          <div class="feed">
+            <PostCard post={sim.post} commentCount={sim.comments.length} refNow={refNow} />
+            <div class="thread-header">
+              Replies
+              <span class="thread-count">{sim.comments.length}</span>
+            </div>
+            <div class="comment-tree">
+              {tree.map((node) => (
+                <CommentItem key={node.comment.id} node={node} refNow={refNow} />
+              ))}
+            </div>
+            <div class="disclaimer">
+              This is a simulated Bluesky thread generated by reddit-scrutinizer using{" "}
+              {doc.input.model}. No real users were involved. Generated{" "}
+              {fmtDateUTC(doc.generated_at)}.
+            </div>
+          </div>
         </div>
-        <div class="comment-body">${comment.body_html}</div>
-        <div class="comment-actions">
-          <button class="c-action reply">${REPLY_SVG}</button>
-          <button class="c-action repost">${REPOST_SVG}</button>
-          <button class="c-action like" onclick="toggleLike(this)" data-base="${comment.score}">${HEART_SVG}<span class="like-count">${formatScore(likeCount)}</span></button>
-          <button class="c-action more">${MORE_SVG}</button>
-        </div>
-        ${
-          hasChildren
-            ? `<div class="comment-children">${children
-                .sort((a, b) => b.score - a.score)
-                .map((c) => renderComment(c, byParent))
-                .join("")}</div>`
-            : ""
-        }
-      </div>
-    </div>
-  `;
-      }
 
-      function toggleCollapse(el) {
-        el.closest(".comment").classList.toggle("collapsed");
-      }
-
-      function togglePostLike(btn) {
-        const base = parseInt(btn.dataset.base);
-        if (btn.classList.contains("liked")) {
-          btn.classList.remove("liked");
-          btn.innerHTML = HEART_SVG + `<span class="like-count">${formatScore(base)}</span>`;
-        } else {
-          btn.classList.add("liked");
-          btn.innerHTML =
-            HEART_FILLED_SVG + `<span class="like-count">${formatScore(base + 1)}</span>`;
-        }
-      }
-
-      function toggleLike(btn) {
-        const base = parseInt(btn.dataset.base);
-        const likeBase = Math.max(0, base);
-        if (btn.classList.contains("liked")) {
-          btn.classList.remove("liked");
-          btn.innerHTML = HEART_SVG + `<span class="like-count">${formatScore(likeBase)}</span>`;
-        } else {
-          btn.classList.add("liked");
-          btn.innerHTML =
-            HEART_FILLED_SVG + `<span class="like-count">${formatScore(likeBase + 1)}</span>`;
-        }
-      }
-
-      function formatScore(n) {
-        if (n >= 1000000) return (n / 1000000).toFixed(1) + "M";
-        if (n >= 10000) return (n / 1000).toFixed(1) + "K";
-        if (n >= 1000) return (n / 1000).toFixed(1) + "K";
-        return String(n);
-      }
-
-      function formatTime(utc) {
-        const now = Date.now() / 1000;
-        const diff = Math.max(0, now - utc);
-        if (diff < 60) return "now";
-        if (diff < 3600) return Math.floor(diff / 60) + "m";
-        if (diff < 86400) return Math.floor(diff / 3600) + "h";
-        if (diff < 604800) return Math.floor(diff / 86400) + "d";
-        return Math.floor(diff / 604800) + "w";
-      }
-
-      function esc(s) {
-        const d = document.createElement("div");
-        d.textContent = s;
-        return d.innerHTML;
-      }
-
-      init();
-    </script>
-  </body>
-</html>
+        <script dangerouslySetInnerHTML={{ __html: ENHANCE }} />
+      </body>
+    </html>
+  );
+}

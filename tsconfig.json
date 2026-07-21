@@ -3,6 +3,8 @@
     "lib": ["ESNext"],
     "target": "ESNext",
     "module": "Preserve",
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact",
     "moduleDetection": "force",
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
@@ -19,6 +21,6 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true
   },
-  "include": ["src/**/*.ts", "test/**/*.ts"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "test/**/*.ts", "test/**/*.tsx"],
   "exclude": ["node_modules", "dist", "coverage"]
 }

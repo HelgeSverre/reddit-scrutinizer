@@ -1,6 +1,5 @@
 import { afterAll, afterEach, describe, expect, test } from "bun:test";
 import { join } from "node:path";
-import { ScrutinyOutputSchema } from "../src/output/schema";
 import { startServer } from "../src/ui/server";
 
 const FIXTURE_JSON = join(import.meta.dir, "fixtures/sample-scrutiny.json");
@@ -38,7 +37,7 @@ describe("startServer", () => {
     expect(actualPort).toBe(port);
   });
 
-  test("serves HTML on /", async () => {
+  test("serves server-rendered HTML with baked content on /", async () => {
     const port = 19877;
     await startServer(FIXTURE_JSON, port, false, "reddit");
 
@@ -48,21 +47,7 @@ describe("startServer", () => {
 
     const body = await res.text();
     expect(body).toContain("</html>");
-  });
-
-  test("serves JSON on /api/data", async () => {
-    const port = 19878;
-    await startServer(FIXTURE_JSON, port, false, "reddit");
-
-    const res = await fetch(`http://localhost:${port}/api/data`);
-    expect(res.status).toBe(200);
-    expect(res.headers.get("content-type")).toContain("application/json");
-
-    const data = ScrutinyOutputSchema.parse(await res.json());
-    expect(data.schema_version).toBe("1.0");
-    expect(data.simulation).toBeDefined();
-    expect(data.simulation.post).toBeDefined();
-    expect(data.simulation.comments).toBeArray();
+    expect(body).toContain("I built a test project"); // post title baked into markup
   });
 
   test("returns 404 for unknown routes", async () => {
@@ -71,14 +56,6 @@ describe("startServer", () => {
 
     const res = await fetch(`http://localhost:${port}/nonexistent`);
     expect(res.status).toBe(404);
-  });
-
-  test("serves /api/data with CORS header", async () => {
-    const port = 19880;
-    await startServer(FIXTURE_JSON, port, false, "reddit");
-
-    const res = await fetch(`http://localhost:${port}/api/data`);
-    expect(res.headers.get("access-control-allow-origin")).toBe("*");
   });
 
   test("serves hackernews theme", async () => {
@@ -103,17 +80,17 @@ describe("startServer", () => {
     expect(body).toContain("</html>");
   });
 
-  test("reddit theme contains reddit-specific content", async () => {
+  test("reddit theme contains baked reddit content", async () => {
     const port = 19883;
     await startServer(FIXTURE_JSON, port, false, "reddit");
 
     const res = await fetch(`http://localhost:${port}/`);
     const body = await res.text();
     expect(body).toContain("reddit-scrutinizer");
-    expect(body).toContain("/api/data");
+    expect(body).toContain("I built a test project");
   });
 
-  test("invalid theme throws an error", async () => {
+  test("invalid theme throws an error", () => {
     expect(startServer(FIXTURE_JSON, 19884, false, "nonexistent")).rejects.toThrow();
   });
 });

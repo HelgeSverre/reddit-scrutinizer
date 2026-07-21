@@ -1,7 +1,10 @@
 import { readFile } from "node:fs/promises";
-import { resolve, join } from "node:path";
+import { resolve } from "node:path";
 import getPort from "get-port";
 import open from "open";
+import type { Theme } from "../cli";
+import { parseScrutiny } from "../output/export-html";
+import { renderThemeDocument } from "./render";
 
 export async function startServer(
   jsonPath: string,
@@ -10,10 +13,9 @@ export async function startServer(
   theme: string = "reddit",
 ): Promise<number> {
   const dataPath = resolve(jsonPath);
-  const jsonData = await readFile(dataPath, "utf-8");
-
-  const templatePath = join(import.meta.dir, "templates", `${theme}.html`);
-  const template = await readFile(templatePath, "utf-8");
+  const doc = parseScrutiny(await readFile(dataPath, "utf-8"));
+  // Render once at startup; the scrutiny data is static. Throws on an unknown theme.
+  const html = renderThemeDocument(theme as Theme, doc);
 
   const port = await getPort({ port: preferredPort });
 
@@ -23,17 +25,8 @@ export async function startServer(
       const url = new URL(req.url);
 
       if (url.pathname === "/" || url.pathname === "/index.html") {
-        return new Response(template, {
+        return new Response(html, {
           headers: { "Content-Type": "text/html; charset=utf-8" },
-        });
-      }
-
-      if (url.pathname === "/api/data") {
-        return new Response(jsonData, {
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-          },
         });
       }
 
