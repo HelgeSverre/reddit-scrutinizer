@@ -1,7 +1,7 @@
 # Reddit Scrutinizer
 
 [![Bun](https://img.shields.io/badge/runtime-Bun-f9f1e1?logo=bun)](https://bun.sh)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue?logo=typescript)](https://www.typescriptlang.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-7.0-blue?logo=typescript)](https://www.typescriptlang.org/)
 [![Claude API](https://img.shields.io/badge/AI-Claude%20API-cc785c?logo=anthropic)](https://docs.anthropic.com)
 
 Simulate Reddit reactions to your codebase before you post.
@@ -87,28 +87,36 @@ reddit-scrutinizer serve ./reddit-scrutiny.json --open
 
 # View with a different theme
 reddit-scrutinizer serve ./reddit-scrutiny.json --theme hackernews --open
+
+# Also write a self-contained HTML file next to the JSON
+reddit-scrutinizer ./my-project --export-html
+
+# Export multiple themes at once
+reddit-scrutinizer ./my-project --export-html --export-theme reddit --export-theme hackernews
 ```
 
 ## Options
 
-| Flag                 | Default                      | Description                                                                  |
-| -------------------- | ---------------------------- | ---------------------------------------------------------------------------- |
-| `--api-key <key>`    | —                            | Anthropic API key (overrides `ANTHROPIC_API_KEY` env var)                    |
-| `--subreddit <name>` | `programming`                | Target subreddit voice                                                       |
-| `--comments <n>`     | `40`                         | Number of comments to generate                                               |
-| `--max-depth <n>`    | `4`                          | Max reply nesting depth                                                      |
-| `--max-replies <n>`  | `3`                          | Number of OP replies                                                         |
-| `--style <mode>`     | `balanced`                   | `balanced`, `snarky`, `supportive`, `hostile`                                |
-| `--theme <name>`     | `reddit`                     | UI theme: `reddit`, `hackernews`, `producthunt`, `twitter`, `bluesky`, `qdb` |
-| `--model <name>`     | `claude-sonnet-4-5-20250929` | Anthropic model                                                              |
-| `--out <file>`       | `./reddit-scrutiny.json`     | Output file path                                                             |
-| `--open`             | `false`                      | Start the UI server and open it in the browser                               |
-| `--port <n>`         | `3000`                       | Preferred UI server port when using `--open`                                 |
-| `--temperature <n>`  | `0.8`                        | Sampling temperature from 0 to 1; ignored by unsupported models              |
-| `--seed <n>`         | —                            | Random seed for reproducibility                                              |
-| `--max-tokens <n>`   | automatic                    | Override output tokens per AI call; comment batches auto-scale up to 64000   |
-| `--batch-size <n>`   | `50`                         | Comments per batch. Large comment counts are split into batches              |
-| `--verbose`          | `false`                      | Show timings, scan details, selected reads, and comment batch progress       |
+| Flag                    | Default                      | Description                                                                         |
+| ----------------------- | ---------------------------- | ----------------------------------------------------------------------------------- |
+| `--api-key <key>`       | —                            | Anthropic API key (overrides `ANTHROPIC_API_KEY` env var)                           |
+| `--subreddit <name>`    | `programming`                | Target subreddit voice                                                              |
+| `--comments <n>`        | `40`                         | Number of comments to generate                                                      |
+| `--max-depth <n>`       | `4`                          | Max reply nesting depth                                                             |
+| `--max-replies <n>`     | `3`                          | Number of OP replies                                                                |
+| `--style <mode>`        | `balanced`                   | `balanced`, `snarky`, `supportive`, `hostile`                                       |
+| `--theme <name>`        | `reddit`                     | UI theme: `reddit`, `hackernews`, `producthunt`, `twitter`, `bluesky`, `qdb`        |
+| `--model <name>`        | `claude-sonnet-4-5-20250929` | Anthropic model                                                                     |
+| `--out <file>`          | `./reddit-scrutiny.json`     | Output file path                                                                    |
+| `--open`                | `false`                      | Start the UI server and open it in the browser                                      |
+| `--port <n>`            | `3000`                       | Preferred UI server port when using `--open`                                        |
+| `--temperature <n>`     | `0.8`                        | Sampling temperature from 0 to 1; ignored by unsupported models                     |
+| `--seed <n>`            | —                            | Random seed for reproducibility                                                     |
+| `--max-tokens <n>`      | automatic                    | Override output tokens per AI call; comment batches auto-scale up to 64000          |
+| `--batch-size <n>`      | `50`                         | Comments per batch. Large comment counts are split into batches                     |
+| `--verbose`             | `false`                      | Show timings, scan details, selected reads, and comment batch progress              |
+| `--export-html`         | `false`                      | Also write a self-contained HTML file next to the JSON                              |
+| `--export-theme <name>` | `--theme` value              | HTML export theme; repeatable, requires `--export-html`, replaces the default theme |
 
 Newer Anthropic models may reject sampling parameters such as `temperature`. The Anthropic provider in the Vercel AI SDK detects those models, ignores the unsupported setting, and reports a warning instead of failing the run.
 
@@ -144,6 +152,26 @@ reddit-scrutinizer serve ./reddit-scrutiny.json --theme qdb --open
 ```
 
 The `serve` command accepts `--port`, `--open`, `--theme`, and `--verbose`.
+
+## Export command
+
+Generate a self-contained HTML file from an existing scrutiny JSON file. The exported page embeds its CSS, JavaScript, and data in one document and makes no network requests, so you can open or share it offline. The `export` command never starts a server or opens a browser.
+
+```bash
+reddit-scrutinizer export ./reddit-scrutiny.json
+reddit-scrutinizer export ./reddit-scrutiny.json --theme qdb
+reddit-scrutinizer export ./reddit-scrutiny.json --theme reddit --theme hackernews -o demo.html
+```
+
+`--theme` is repeatable and defaults to `reddit`. `-o, --output` sets the output base; a value without an `.html` extension receives one. You can also add `--export-html` to the main command to write HTML right after generation.
+
+### Filenames
+
+- One theme uses the unsuffixed name: `scrutiny.json` → `scrutiny.html`.
+- Multiple themes suffix every file: `scrutiny.json` + `reddit`, `hackernews` → `scrutiny-reddit.html`, `scrutiny-hackernews.html`.
+- With `-o demo.html` and multiple themes: `demo-reddit.html`, `demo-qdb.html`.
+
+> **Trusted input only.** Exported and served pages render the stored `body_html` without sanitization. Only export or serve scrutiny JSON that you generated or otherwise trust; do not open files from an untrusted source.
 
 ## Shell completions
 

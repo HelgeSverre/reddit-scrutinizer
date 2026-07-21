@@ -48,17 +48,19 @@ src/
     scores.ts          Seeded RNG for comment scores and timestamps
     markdown.ts        Markdown to HTML via marked
     write.ts           Assembles and writes final JSON output
+    export-html.ts     Self-contained HTML export (parse, theme resolve, render, atomic write)
   ui/
     server.ts          Bun.serve for the browser UI
-    templates/         HTML templates for all six UI themes
+    templates/         HTML templates for all six UI themes (embedded export data or /api/data; project title)
 bin/
   cli.mjs            Node shim that finds bun and runs src/index.ts
 test/
   e2e.test.ts        Full pipeline test with a mocked Vercel AI SDK boundary
+  export-command.test.ts Export subcommand integration test
   fixtures/          Sample project and fixture AI responses
-  ai/                Unit tests for AI modules
+  ai/                Unit tests for AI modules (incl. zod-schema.test.ts: Zod-through-AI-SDK boundary)
   scan/              Unit tests for scan modules
-  output/            Unit tests for output modules
+  output/            Unit tests for output modules (incl. export-html.test.ts)
 ```
 
 ### Pipeline (8 steps, 5 AI calls)
@@ -84,6 +86,10 @@ test/
 ### AI client pattern
 
 All AI calls go through `generateJSON()` in `ai/client.ts`. It uses Vercel AI SDK `generateText()` with `Output.object()` and the Anthropic provider, validating every response against a Zod schema. The provider handles model capabilities, structured-output selection, retries, and unsupported-setting warnings such as `temperature` on Claude Sonnet 5.
+
+### HTML export
+
+`output/export-html.ts` parses and validates scrutiny JSON with `ScrutinyOutputSchema`, resolves themes and output paths, renders a template with embedded script-safe JSON and an HTML-escaped project title, and writes each file atomically (temp file + rename). It is reused by the main command's `--export-html` flag and the `export <file>` subcommand. The `export` subcommand never starts or opens a server. Completions are generated from the Commander tree, so `export`, `--export-html`, and `--export-theme` appear automatically.
 
 ### Progress reporting
 
