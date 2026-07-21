@@ -30,4 +30,21 @@ describe("mdToHtml", () => {
     expect(html).toContain("<p>Paragraph one.</p>");
     expect(html).toContain("<p>Paragraph two.</p>");
   });
+
+  test("renders single newlines as <br> with breaks enabled", () => {
+    expect(mdToHtml("line one\nline two")).toContain("<br>");
+  });
+
+  test("renders fenced code blocks", () => {
+    const html = mdToHtml("```\nconst x = 1;\n```");
+    expect(html).toContain("<pre>");
+    expect(html).toContain("<code>");
+    expect(html).toContain("const x = 1;");
+  });
+
+  test("renders task-style lists via GFM", () => {
+    const html = mdToHtml("- [x] done\n- [ ] todo");
+    expect(html).toContain("<ul>");
+    expect(html).toContain("<li>");
+  });
 });
