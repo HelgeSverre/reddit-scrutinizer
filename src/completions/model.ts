@@ -50,7 +50,7 @@ function optionMeta(option: Option): CompletionOption {
   const takesValue = option.required || option.optional;
   let kind: CompletionKind = takesValue ? "value" : "none";
   if (choices.length > 0) kind = "choices";
-  if (option.long === "--out") kind = "file";
+  if (option.long === "--out" || option.long === "--output") kind = "file";
 
   return {
     flags: [option.short, option.long].filter((flag): flag is string => Boolean(flag)),

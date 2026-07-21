@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import type { Command } from "commander";
 import pkg from "../package.json";
-import { createProgram, type MainOptions, type ServeOptions } from "../src/cli";
+import { createProgram, type ExportOptions, type MainOptions, type ServeOptions } from "../src/cli";
 
 const themes = ["reddit", "hackernews", "producthunt", "twitter", "bluesky", "qdb"];
 
@@ -42,6 +42,21 @@ function parseServe(args: string[]): { file: string; options: ServeOptions } {
   );
 
   program.parse(["node", "reddit-scrutinizer", "serve", ...args]);
+  expect(capture).toBeDefined();
+  return capture!;
+}
+
+function parseExport(args: string[]): { file: string; options: ExportOptions } {
+  let capture: { file: string; options: ExportOptions } | undefined;
+  const program = quiet(
+    createProgram({
+      exportFile: (file, options) => {
+        capture = { file, options };
+      },
+    }),
+  );
+
+  program.parse(["node", "reddit-scrutinizer", "export", ...args]);
   expect(capture).toBeDefined();
   return capture!;
 }
@@ -171,6 +186,26 @@ describe("CLI option parsing", () => {
 
   test("rejects unsupported completion shells", () => {
     expect(() => parseCompletions(["tcsh"])).toThrow();
+  });
+
+  test("parses export defaults, repeatable themes, and output", () => {
+    expect(parseExport(["data.json"]).options).toMatchObject({ theme: [] });
+    const custom = parseExport([
+      "data.json",
+      "--theme",
+      "reddit",
+      "--theme",
+      "qdb",
+      "-o",
+      "demo.html",
+    ]);
+    expect(custom.file).toBe("data.json");
+    expect(custom.options.theme).toEqual(["reddit", "qdb"]);
+    expect(custom.options.output).toBe("demo.html");
+  });
+
+  test("rejects an unknown export --theme", () => {
+    expect(() => parseExport(["data.json", "--theme", "myspace"])).toThrow();
   });
 
   test("rejects malformed or out-of-range numeric options", () => {

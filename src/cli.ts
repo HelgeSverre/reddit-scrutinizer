@@ -1,8 +1,11 @@
 import { Argument, Command, InvalidArgumentError, Option } from "commander";
 import { resolve } from "node:path";
 import { SUPPORTED_SHELLS, type Shell } from "./completions/model";
+import type { ExportOptions } from "./output/export-html";
 import { createProgressReporter } from "./progress";
 import { TOOL_VERSION } from "./version";
+
+export type { ExportOptions };
 
 export const THEMES = ["reddit", "hackernews", "producthunt", "twitter", "bluesky", "qdb"] as const;
 
@@ -39,6 +42,7 @@ export interface ServeOptions {
 interface ProgramHandlers {
   run?: (path: string, options: MainOptions) => void | Promise<void>;
   serve?: (file: string, options: ServeOptions) => void | Promise<void>;
+  exportFile?: (file: string, options: ExportOptions) => void | Promise<void>;
   completions?: (shell: Shell) => void | Promise<void>;
 }
 
@@ -178,6 +182,29 @@ export function createProgram(handlers: ProgramHandlers = {}): Command {
     (handlers.serve ?? serve)(file, options),
   );
 
+  const exportCommand = program
+    .command("export <file>")
+    .description("write a self-contained HTML file from an existing scrutiny JSON file")
+    .addOption(
+      new Option("--theme <name>", "HTML export theme; repeatable")
+        .choices(THEMES)
+        .argParser(collectTheme)
+        .default([]),
+    )
+    .option("-o, --output <file>", "output HTML path (base name when multiple themes)");
+
+  exportCommand.action(async (file: string, options: ExportOptions) => {
+    if (handlers.exportFile) {
+      await handlers.exportFile(file, options);
+      return;
+    }
+    const { runExportCommand } = await import("./output/export-html");
+    const written = await runExportCommand(file, options);
+    for (const path of written) {
+      process.stdout.write(`${path}\n`);
+    }
+  });
+
   program
     .command("completions")
     .description("print a shell completion script")
@@ -200,6 +227,7 @@ Examples:
   $ reddit-scrutinizer ./my-project --subreddit rust
   $ reddit-scrutinizer ./my-project --comments 70 --style hostile --verbose
   $ reddit-scrutinizer serve ./reddit-scrutiny.json --theme hackernews --open
+  $ reddit-scrutinizer export ./reddit-scrutiny.json --theme reddit --theme qdb
   $ reddit-scrutinizer completions zsh
 `,
   );

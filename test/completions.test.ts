@@ -14,7 +14,11 @@ describe("completion model", () => {
   const model = buildCompletionModel(createProgram());
 
   test("reflects current commands and options", () => {
-    expect(model.subcommands.map((command) => command.name)).toEqual(["serve", "completions"]);
+    expect(model.subcommands.map((command) => command.name)).toEqual([
+      "serve",
+      "export",
+      "completions",
+    ]);
     expect(model.options.some((option) => option.long === "--open")).toBe(true);
     expect(model.options.some((option) => option.long === "--no-ui")).toBe(false);
   });
@@ -27,6 +31,17 @@ describe("completion model", () => {
     expect(
       model.subcommands.find((command) => command.name === "completions")?.arguments.at(0)?.choices,
     ).toEqual([...SUPPORTED_SHELLS]);
+    expect(
+      model.subcommands.find((command) => command.name === "export")?.arguments.at(0)?.kind,
+    ).toBe("file");
+    expect(
+      model.subcommands
+        .find((command) => command.name === "export")
+        ?.options.find((option) => option.long === "--theme")?.choices,
+    ).toContain("qdb");
+    expect(model.options.find((option) => option.long === "--export-theme")?.choices).toContain(
+      "reddit",
+    );
     expect(model.options.find((option) => option.long === "--style")?.choices).toContain(
       "balanced",
     );
@@ -51,6 +66,7 @@ describe("completion scripts", () => {
       }
       for (const expected of [
         "serve",
+        "export",
         "completions",
         "balanced",
         "reddit",
@@ -81,12 +97,14 @@ describe("completion scripts", () => {
     expect(output).toContain("case '--style'");
     expect(output).toContain("-l style -x -a 'balanced snarky supportive hostile'");
     expect(output).toContain(
-      "__fish_reddit_scrutinizer_accepts_positional; and not __fish_seen_subcommand_from serve completions",
+      "__fish_reddit_scrutinizer_accepts_positional; and not __fish_seen_subcommand_from serve export completions",
     );
   });
 
   test("scopes Fish root options away from subcommands", () => {
     const output = renderCompletionScript(createProgram(), "fish");
-    expect(output).toContain("-n 'not __fish_seen_subcommand_from serve completions' -l comments");
+    expect(output).toContain(
+      "-n 'not __fish_seen_subcommand_from serve export completions' -l comments",
+    );
   });
 });
