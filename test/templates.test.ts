@@ -30,6 +30,18 @@ describe("UI templates", () => {
         const content = await readFile(join(TEMPLATES_DIR, `${theme}.html`), "utf-8");
         expect(content).toContain("simulated");
       });
+
+      test("template falls back to the reddit-scrutinizer title", async () => {
+        const content = await readFile(join(TEMPLATES_DIR, `${theme}.html`), "utf-8");
+        expect(content).toContain("<title>reddit-scrutinizer</title>");
+      });
+
+      test("template prefers embedded data then sets the document title", async () => {
+        const content = await readFile(join(TEMPLATES_DIR, `${theme}.html`), "utf-8");
+        expect(content).toContain('document.getElementById("scrutiny-data")');
+        expect(content).toContain("document.title");
+        expect(content).toContain("/api/data");
+      });
     });
   }
 });

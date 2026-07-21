@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>QDB: Quote Database</title>
+    <title>reddit-scrutinizer</title>
     <style>
       body {
         background-color: #ffffff;
@@ -191,6 +191,14 @@
     <script>
       let DATA = null;
 
+      async function loadScrutinyData() {
+        const embedded = document.getElementById("scrutiny-data");
+        if (embedded) return JSON.parse(embedded.textContent);
+        const res = await fetch("/api/data");
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      }
+
       function quoteNum(s) {
         let h = 0;
         for (let i = 0; i < s.length; i++) {
@@ -227,9 +235,8 @@
 
       async function init() {
         try {
-          const res = await fetch("/api/data");
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          DATA = await res.json();
+          DATA = await loadScrutinyData();
+          document.title = `${DATA.project.name} — reddit-scrutinizer`;
           render();
         } catch (e) {
           document.getElementById("app").innerHTML =

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hacker News</title>
+    <title>reddit-scrutinizer</title>
     <style>
       *,
       *::before,
@@ -418,11 +418,18 @@
     <script>
       let DATA = null;
 
+      async function loadScrutinyData() {
+        const embedded = document.getElementById("scrutiny-data");
+        if (embedded) return JSON.parse(embedded.textContent);
+        const res = await fetch("/api/data");
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      }
+
       async function init() {
         try {
-          const res = await fetch("/api/data");
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          DATA = await res.json();
+          DATA = await loadScrutinyData();
+          document.title = `${DATA.project.name} — reddit-scrutinizer`;
           render();
         } catch (e) {
           document.getElementById("app").innerHTML =
