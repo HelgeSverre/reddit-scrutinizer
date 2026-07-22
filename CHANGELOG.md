@@ -2,7 +2,7 @@
 
 ## [Unreleased]
 
-## [0.6.0] - 2026-07-19
+## [0.6.0] - 2026-07-22
 
 ### Added
 
@@ -28,6 +28,7 @@
 
 - New Anthropic models no longer fail when they reject the `temperature` parameter
 - Comment generation now trims oversized AI batches and fails clearly for empty or undersized batches
+- HTML export and the browser UI no longer crash on a clean npm install with `Cannot find module 'react/jsx-dev-runtime'` — themes now select the Preact JSX runtime via per-file `@jsxImportSource` pragmas instead of relying on `tsconfig.json`, which isn't shipped in the published package
 
 ## [0.5.0] - 2026-02-20
 

@@ -1,3 +1,4 @@
+/** @jsxImportSource preact */
 import type { VNode } from "preact";
 import {
   buildCommentTree,

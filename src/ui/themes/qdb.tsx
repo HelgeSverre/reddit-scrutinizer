@@ -1,3 +1,4 @@
+/** @jsxImportSource preact */
 import { Fragment, type VNode } from "preact";
 import { type Comment, type ScrutinyOutput, stripHtml } from "../shared";
 

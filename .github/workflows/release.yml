@@ -10,7 +10,6 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
       - uses: actions/checkout@v7
       - run: gh release create "${{ github.ref_name }}" --generate-notes
         env:

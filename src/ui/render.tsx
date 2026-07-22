@@ -1,3 +1,4 @@
+/** @jsxImportSource preact */
 import { render } from "preact-render-to-string";
 import type { VNode } from "preact";
 import type { Theme } from "../cli";
