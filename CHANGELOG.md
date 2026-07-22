@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-07-22
+
+### Added
+
+- Stack Overflow browser theme (`--theme stackoverflow`): the post becomes a question, top-level comments become answers (the highest-scored one marked accepted), replies become flattened answer comments, with vote gutters, tag pills, a project-info sidebar, and a closed-question banner
+
 ## [0.6.0] - 2026-07-22
 
 ### Added

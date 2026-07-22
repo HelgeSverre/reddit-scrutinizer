@@ -1,6 +1,6 @@
 {
   "name": "reddit-scrutinizer",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Simulate Reddit reactions to your codebase before you post. Uses Claude to generate realistic community feedback in the voice of any subreddit.",
   "keywords": [
     "ai",

@@ -7,7 +7,15 @@ import { TOOL_VERSION } from "./version";
 
 export type { ExportOptions };
 
-export const THEMES = ["reddit", "hackernews", "producthunt", "twitter", "bluesky", "qdb"] as const;
+export const THEMES = [
+  "reddit",
+  "hackernews",
+  "producthunt",
+  "twitter",
+  "bluesky",
+  "qdb",
+  "stackoverflow",
+] as const;
 
 export type Theme = (typeof THEMES)[number];
 

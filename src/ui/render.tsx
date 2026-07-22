@@ -8,6 +8,7 @@ import { Page as HackerNewsPage } from "./themes/hackernews";
 import { Page as ProductHuntPage } from "./themes/producthunt";
 import { Page as QdbPage } from "./themes/qdb";
 import { Page as RedditPage } from "./themes/reddit";
+import { Page as StackOverflowPage } from "./themes/stackoverflow";
 import { Page as TwitterPage } from "./themes/twitter";
 
 type PageComponent = (props: { doc: ScrutinyOutput }) => VNode;
@@ -19,6 +20,7 @@ const THEME_PAGES: Record<Theme, PageComponent> = {
   twitter: TwitterPage,
   bluesky: BlueskyPage,
   qdb: QdbPage,
+  stackoverflow: StackOverflowPage,
 };
 
 /**

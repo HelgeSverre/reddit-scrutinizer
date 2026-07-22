@@ -44,3 +44,29 @@ describe("renderThemeDocument", () => {
     expect(html).toContain("<strong>bold</strong>");
   });
 });
+
+describe("stackoverflow theme", () => {
+  const html = renderThemeDocument("stackoverflow", doc);
+  const topLevel = doc.simulation.comments.filter((c) => c.parent_id === doc.simulation.post.id);
+
+  test("renders the question title and answer count", () => {
+    expect(html).toContain(doc.simulation.post.title);
+    // fixture has one top-level comment → "1 Answer" (singular)
+    expect(html).toContain(`${topLevel.length} Answer`);
+  });
+
+  test("marks exactly one accepted answer when answers exist", () => {
+    // Match the rendered element's class attribute, not the CSS rule of the same name.
+    const accepted = html.match(/class="accepted-check-label"/g) ?? [];
+    expect(accepted.length).toBe(topLevel.length > 0 ? 1 : 0);
+  });
+
+  test("renders tags from the project stack and languages", () => {
+    expect(html).toContain(">bun<");
+    expect(html).toContain(">TypeScript<");
+  });
+
+  test("shows the closed-question banner", () => {
+    expect(html).toContain("Closed.");
+  });
+});
