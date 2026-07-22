@@ -13,9 +13,9 @@
     "reddit",
     "simulation"
   ],
-  "homepage": "https://github.com/helgesverre/reddit-scrutinizer",
+  "homepage": "https://github.com/HelgeSverre/reddit-scrutinizer",
   "bugs": {
-    "url": "https://github.com/helgesverre/reddit-scrutinizer/issues"
+    "url": "https://github.com/HelgeSverre/reddit-scrutinizer/issues"
   },
   "license": "MIT",
   "author": {
@@ -25,7 +25,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/helgesverre/reddit-scrutinizer.git"
+    "url": "git+https://github.com/HelgeSverre/reddit-scrutinizer.git"
   },
   "bin": {
     "reddit-scrutinizer": "bin/cli.mjs"
