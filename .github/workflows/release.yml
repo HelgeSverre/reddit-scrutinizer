@@ -4,8 +4,11 @@ on:
   push:
     tags: ["v*"]
 
+permissions:
+  contents: read
+
 jobs:
-  release:
+  github-release:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -14,3 +17,20 @@ jobs:
       - run: gh release create "${{ github.ref_name }}" --generate-notes
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  npm-publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # OIDC token for npm trusted publishing (no NPM_TOKEN needed)
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24" # ships npm >= 11.5.1, required for trusted publishing
+          registry-url: "https://registry.npmjs.org"
+      # Install with bun so `prepublishOnly` (bun run check) can run during publish.
+      - run: bun install --frozen-lockfile
+      # OIDC exchange happens here; npm also attaches a provenance attestation.
+      - run: npm publish
